@@ -1,29 +1,31 @@
 ﻿using RPY_PID_Control.Motors;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace RPY_PID_Control
 {
-    public class BasicControl : MonoBehaviour {
+    public class BasicControl : MonoBehaviour
+    {
 
         [Header("Control")]
-        public Controller.Controller Controller;
-        public float ThrottleIncrease;
+        public Controller.Controller controller;
+        public float throttleIncrease;
 	
         [Header("Motors")]
-        public Motor[] Motors;
-        public float ThrottleValue;
+        public Motor[] motors;
+        public float throttleValue;
 
         [Header("Internal")]
-        public ComputerModule Computer;
+        public ComputerModule computer;
 
-        void FixedUpdate() {
-            Computer.UpdateComputer(Controller.Pitch, Controller.Roll, Controller.Throttle * ThrottleIncrease);
-            ThrottleValue = Computer.HeightCorrection;
-            //		Debug.Log (Computer.PitchCorrection);
+        private void FixedUpdate() 
+        {
+            computer.UpdateComputer(controller.pitch, controller.roll, controller.throttle * throttleIncrease);
+            throttleValue = computer.heightCorrection;
             ComputeMotors();
-            if (Computer != null)
-                Computer.UpdateGyro();
+            if (computer != null)
+                computer.UpdateGyro();
             ComputeMotorSpeeds();
         }
 
@@ -32,24 +34,24 @@ namespace RPY_PID_Control
             float yaw = 0.0f;
             Rigidbody rb = GetComponent<Rigidbody>();
             int i = 0;
-            foreach (Motor motor in Motors)
+            foreach (Motor motor in motors)
             {
                 motor.UpdateForceValues();
-                yaw += motor.SideForce;
+                yaw += motor.sideForce;
                 i++;
                 Transform t = motor.GetComponent<Transform>();
                 //			Debug.Log (i);
-                //			Debug.Log (motor.UpForce);
-                rb.AddForceAtPosition(transform.up * motor.UpForce, t.position, ForceMode.Impulse);
+                //			Debug.Log (motor.upForce);
+                rb.AddForceAtPosition(transform.up * motor.upForce, t.position, ForceMode.Impulse);
             }
             rb.AddTorque(Vector3.up * yaw, ForceMode.Force);
         }
 
         private void ComputeMotorSpeeds()
         {
-            foreach (Motor motor in Motors)
+            foreach (Motor motor in motors)
             {
-                if (Computer.Gyro.Altitude < 0.1)
+                if (computer.gyro.altitude < 0.1)
                     motor.UpdatePropeller(0.0f);
                 else
                     motor.UpdatePropeller(1200.0f);

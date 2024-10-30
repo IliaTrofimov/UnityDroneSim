@@ -1,29 +1,30 @@
 namespace RPY_PID_Control
 {
 	[System.Serializable]
-	public class PID {
+	public class PID 
+	{
+		private float integral, lastError;
 		public float pFactor, iFactor, dFactor;
-		
-		float integral;
-		float lastError;
 	
-	
-		public PID(float pFactor, float iFactor, float dFactor) {
+		public PID(float pFactor, float iFactor, float dFactor)
+		{
 			this.pFactor = pFactor;
 			this.iFactor = iFactor;
 			this.dFactor = dFactor;
 		}
 	
-	
-		public float Update(float setpoint, float actual, float timeFrame) {
-			float present = setpoint - actual;
-			integral += present * timeFrame;
-			float deriv = (present - lastError) / timeFrame;
-			lastError = present;
-			float finalPID = present * pFactor + integral * iFactor + deriv * dFactor;
-			if ((finalPID > -0.1) && (finalPID < 0.1))
-				finalPID = 0;
-			return finalPID;
+		public float Update(float setpoint, float actual, float timeFrame)
+		{
+			var error = setpoint - actual;
+			integral += error * timeFrame;
+			
+			var deriv = (error - lastError) / timeFrame;
+			lastError = error;
+			
+			var final = error*pFactor + integral*iFactor + deriv*dFactor;
+			if (final > -0.1f && final < 0.1f)
+				final = 0f;
+			return final;
 		}
 	}
 }

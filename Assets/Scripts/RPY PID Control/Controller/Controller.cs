@@ -1,53 +1,58 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace RPY_PID_Control.Controller
 {
-	public class Controller : MonoBehaviour {
+	public enum ThrottleMode { None, LockHeight};
+	
+	
+	public class Controller : MonoBehaviour 
+	{
+		public bool isAgentControl;
 
-		public bool isAgentControl = false;
-
-		public float Throttle = 0.0f;
-		public float Yaw = 0.0f;
-		public float Pitch = 0.0f;
-		public float Roll = 0.0f;
-
-		public enum ThrottleMode { None, LockHeight};
-
+		[Header("Values")]
+		public float throttle;
+		public float yaw;
+		public float pitch;
+		public float roll;
+		
 		[Header("Throttle command")]
-		public string ThrottleCommand = "Throttle";
-		public bool InvertThrottle = true;
+		public string throttleCommand = "Throttle";
+		public bool invertThrottle = true;
 
 		[Header("Yaw Command")]
-		public string YawCommand = "Yaw";
-		public bool InvertYaw = false;
+		public string yawCommand = "Yaw";
+		public bool invertYaw = false;
 
-		[Header("Pitch Command")]
-		public string PitchCommand = "Pitch";
-		public bool InvertPitch = true;
+		[NonSerialized] [Header("Pitch Command")]
+		public string pitchCommand = "Pitch";
+		public bool invertPitch = true;
 
 		[Header("Roll Command")]
-		public string RollCommand = "Roll";
-		public bool InvertRoll = true;
+		public string rollCommand = "Roll";
+		public bool invertRoll = true;
 
 
-		void Update() {
-			if (!isAgentControl) {
-				Throttle = Input.GetAxisRaw (ThrottleCommand) * (InvertThrottle ? -1 : 1);
-				Yaw = Input.GetAxisRaw (YawCommand) * (InvertYaw ? -1 : 1);
-				Pitch = Input.GetAxisRaw (PitchCommand) * (InvertPitch ? -1 : 1);
-				Roll = Input.GetAxisRaw (RollCommand) * (InvertRoll ? -1 : 1);
-			}
+		private void Update()
+		{
+			if (isAgentControl) return;
+
+			throttle = Input.GetAxisRaw(throttleCommand) * (invertThrottle ? -1 : 1);
+			yaw = Input.GetAxisRaw(yawCommand) * (invertYaw ? -1 : 1);
+			pitch = Input.GetAxisRaw(pitchCommand) * (invertPitch ? -1 : 1);
+			roll = Input.GetAxisRaw(rollCommand) * (invertRoll ? -1 : 1);
 		}
 
-		public void InputAction(float throttle, float pitch, float roll, float yaw) {
-			if (isAgentControl) {
-				Throttle = throttle;
-				Yaw = yaw;
-				Pitch = pitch;
-				Roll = roll;
-			}
-		}
+		public void InputAction(float throttle, float pitch, float roll, float yaw)
+		{
+			if (!isAgentControl) return;
 
+			this.throttle = throttle;
+			this.yaw = yaw;
+			this.pitch = pitch;
+			this.roll = roll;
+		}
 	}
 }

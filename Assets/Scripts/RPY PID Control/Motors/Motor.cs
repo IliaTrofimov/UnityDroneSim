@@ -1,58 +1,52 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 
 // Basic motor class.  Have to be applied to a BasicControl class.  The motor only compute its force individualy.  The force application must be done by the Rigidbody class.
 namespace RPY_PID_Control.Motors
 {
-	public class Motor : MonoBehaviour {
+	public class Motor : MonoBehaviour 
+	{
+		public float upForce = 0.0f;		// Total force to be applied by this motor.  This may be transfered to the parent RigidBody
+		public float sideForce = 0.0f;		// Torque or side force applied by this motor.  This may be transfered to the parent RigidBody and get computed with others motors
+		public float power = 2;				// A power multiplier. An easy way to create more potent motors
+		public float exceedForce = 0.0f;	// Negative force value when Upforce gets below 0
 
-		public float UpForce = 0.0f;     // Total force to be applied by this motor.  This may be transfered to the parent RigidBody
-		public float SideForce = 0.0f;   // Torque or side force applied by this motor.  This may be transfered to the parent RigidBody and get computed with others motors
-		public float Power = 2;          // A power multiplier.  An easy way to create more potent motors
-		public float ExceedForce = 0.0f; // Negative force value when Upforce gets below 0
-
-		public float YawFactor = 0.0f;   // A factor to be applied to the side force.  Higher values get a faster Yaw movement
-		public bool InvertDirection;     // Whether the direction of the motor is counter or counterclockwise
-		public float PitchFactor = 0.0f; // A factor to be applied to the pitch correction
-		public float RollFactor = 0.0f;  // A factor to be applied to the roll correction
-
-		public float Mass = 0.0f;
-
-		public BasicControl mainController; // Parent main controller.  Where usualy may be found the RigidBody
-		public GameObject Propeller;        // The propeller object.  Annimation will be done here.
-		private float SpeedPropeller = 0;
+		public float yawFactor = 0.0f;      // A factor to be applied to the side force.  Higher values get a faster Yaw movement
+		public bool invertDirection;        // Whether the direction of the motor is counter or counterclockwise
+		public float pitchFactor = 0.0f;	// A factor to be applied to the pitch correction
+		public float rollFactor = 0.0f;		// A factor to be applied to the roll correction
+		
+		public BasicControl mainController; // Parent main controller. Where usually may be found the RigidBody
+		public GameObject propeller;		// The propeller object. Animation will be done here.
+		private float speedPropeller = 0;
 
 		// Method called by BasicControl class to calculate force value of this specific motor.  The force application itself will be done at BasicControl class
-		public void UpdateForceValues() {
-			float UpForceThrottle = Mathf.Clamp(mainController.ThrottleValue, 0, 1) * Power;
-			float UpForceTotal = UpForceThrottle;
-			UpForceTotal -= mainController.Computer.PitchCorrection * PitchFactor;
-			UpForceTotal -= mainController.Computer.RollCorrection * RollFactor;
+		public void UpdateForceValues() 
+		{
+			var upForce = Mathf.Clamp(mainController.throttleValue, 0, 1) * power;
+			var upForceTotal = upForce;
+			upForceTotal -= mainController.computer.pitchCorrection * pitchFactor;
+			upForceTotal -= mainController.computer.rollCorrection * rollFactor;
 
-			UpForce = UpForceTotal;
-			Debug.Log (UpForce);
+			this.upForce = upForceTotal;
+			Debug.Log (this.upForce);
 
-			SideForce = PreNormalize (mainController.Controller.Yaw, YawFactor);
+			sideForce = PreNormalize (mainController.controller.yaw, yawFactor);
 
-			SpeedPropeller = Mathf.Lerp(SpeedPropeller, UpForce * 2500.0f, Time.deltaTime);
-			UpdatePropeller(SpeedPropeller);
+			speedPropeller = Mathf.Lerp(speedPropeller, this.upForce * 2500.0f, Time.deltaTime);
+			UpdatePropeller(speedPropeller);
 		}
 
 		public void UpdatePropeller(float speed)
 		{
-			Propeller.transform.Rotate(0.0f, 0.0f, SpeedPropeller * 2 * Time.deltaTime);
+			propeller.transform.Rotate(0.0f, 0.0f, speedPropeller * 2 * Time.deltaTime);
 		}
 
-		// Method to apply the factor and clamp the torque to its limit
-		private float PreNormalize(float input, float factor) {
-			float finalValue = input;
-
-			if (InvertDirection)
-				finalValue = Mathf.Clamp (finalValue, -1, 0);
-			else
-				finalValue = Mathf.Clamp (finalValue, 0, 1);
-
-			return finalValue * (YawFactor);
+		private float PreNormalize(float input, float factor)
+		{
+			input = invertDirection ? Mathf.Clamp(input, -1, 0) : Mathf.Clamp(input, 0, 1);
+			return input * yawFactor;
 		}
 	}
 }

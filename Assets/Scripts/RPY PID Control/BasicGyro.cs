@@ -7,28 +7,28 @@ namespace RPY_PID_Control
 	[System.Serializable]
 	public class BasicGyro 
 	{
-		public float Pitch;            // The current pitch for the given transform
-		public float Roll;             // The current roll for the given transform
-		public float Yaw;              // The current Yaw for the given transform
-		public float Altitude;         // The current altitude from the zero position
-		public Vector3 VelocityVector; // Velocity vector
-		public float VelocityScalar;   // Velocity scalar value
-
-		public void UpdateGyro(Transform transform) 
-		{
-			Pitch = transform.eulerAngles.x;
-			Pitch = (Pitch > 180) ? Pitch - 360 : Pitch;
+		public float pitch;				// The current pitch for the given transform
+		public float roll;				// The current roll for the given transform
+		public float yaw;				// The current Yaw for the given transform
+		public float altitude;			// The current altitude from the zero position
+		public Vector3 velocityVector;	// Velocity vector
+		public float velocityScalar;    // Velocity scalar value
 		
-			Roll = transform.eulerAngles.z;
-			Roll = (Roll > 180) ? Roll - 360 : Roll;
+		
+		public void UpdateGyro(Rigidbody rigidbody) 
+		{
+			pitch = rigidbody.transform.eulerAngles.x;
+			pitch = pitch > 180 ? pitch - 360 : pitch;
+		
+			roll = rigidbody.transform.eulerAngles.z;
+			roll = roll > 180 ? roll - 360 : roll;
 
-			Yaw = transform.eulerAngles.y;
-			Yaw = (Yaw > 180) ? Yaw - 360 : Yaw;
+			yaw = rigidbody.transform.eulerAngles.y;
+			yaw = yaw > 180 ? yaw - 360 : yaw;
 
-			Altitude = transform.position.y;
-
-			VelocityVector = transform.GetComponent<Rigidbody>().linearVelocity;
-			VelocityScalar = VelocityVector.magnitude;
+			altitude = rigidbody.transform.position.y;
+			velocityVector = rigidbody.linearVelocity;
+			//velocityScalar = velocityVector.magnitude;
 		}
 	}
 }

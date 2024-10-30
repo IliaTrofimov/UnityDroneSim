@@ -1,43 +1,38 @@
 ﻿using UnityEngine;
 
-
 // Module reuniting computing parts of a drone.  Used by a BasicControl.
 namespace RPY_PID_Control
 {
     public class ComputerModule : MonoBehaviour
     {
+        public Rigidbody body;
+        
         [Header("Settings")]
-        [Range(0, 90)] public float PitchLimit;
-        [Range(0, 90)] public float RollLimit;
+        [Range(0, 90)] public float pitchLimit;
+        [Range(0, 90)] public float rollLimit;
 
         [Header("Parts")]
-        public PID PidThrottle;
-        public PID PidPitch;
-        public PID PidRoll;
-        public BasicGyro Gyro;
-
-
+        public PID pidThrottle;
+        public PID pidPitch;
+        public PID pidRoll;
+        public BasicGyro gyro;
+        
         [Header("Values")]
-        public float PitchCorrection;
-        public float RollCorrection;
-        public float HeightCorrection;
+        public float pitchCorrection;
+        public float rollCorrection;
+        public float heightCorrection;
 
-        public void UpdateComputer(float ControlPitch, float ControlRoll, float ControlHeight)
+        public void UpdateComputer(float controlPitch, float controlRoll, float controlHeight)
         {
-            //		string cp = ControlPitch.ToString();
-            //		int ip = int.Parse (cp);
-            //		string cr = ControlRoll.ToString();
-            //		int ir = int.Parse (cr);
             UpdateGyro();
-            PitchCorrection = PidPitch.Update(ControlPitch * PitchLimit, Gyro.Pitch, Time.deltaTime);
-            RollCorrection = PidRoll.Update(Gyro.Roll, ControlRoll * RollLimit, Time.deltaTime);
-            HeightCorrection = PidThrottle.Update(ControlHeight, Gyro.VelocityVector.y, Time.deltaTime);
-
+            pitchCorrection = pidPitch.Update(controlPitch * pitchLimit, gyro.pitch, Time.deltaTime);
+            rollCorrection = pidRoll.Update(gyro.roll, controlRoll * rollLimit, Time.deltaTime);
+            heightCorrection = pidThrottle.Update(controlHeight, gyro.velocityVector.y, Time.deltaTime);
         }
 
         public void UpdateGyro()
         {
-            Gyro.UpdateGyro(transform);
+            gyro.UpdateGyro(body);
         }
     }
 }
