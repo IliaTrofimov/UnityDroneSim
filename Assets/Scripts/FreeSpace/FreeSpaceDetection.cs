@@ -8,11 +8,17 @@ namespace FreeSpace
     {
         private NativeArray<RaycastCommand> commands;
 
+        [Range(100, 5000)] 
         public int numHorizontalPoints;
+        
+        [Range(10, 1000)] 
         public int numBins;
+        
+        [Range(45, 360)] 
         public float fovDegrees; 
+        
+        [Range(1, 1000)] 
         public float maxDist;
-        public bool displayFreeSpace;
     
         public void Start() 
         {
@@ -68,8 +74,7 @@ namespace FreeSpace
             results.Dispose();
             return normOutput;
         }
-    
-
+        
         private void OnDestroy()
         {
             commands.Dispose();

@@ -7,7 +7,7 @@ namespace Camera
     public class CameraFollowScript : MonoBehaviour
     {
         private Transform target;
-        private DroneMovementScript movementScript;
+        private DroneContinuousMovement movementScript;
         private Vector3 velocityCameraFollow;
         
         public Vector3 behindPosition = new(0, 2, -4);
@@ -16,7 +16,7 @@ namespace Camera
         private void Awake()
         {
             target = GameObject.FindGameObjectWithTag("Player").transform; 
-            movementScript = GetComponent<DroneMovementScript>();
+            movementScript = GetComponent<DroneContinuousMovement>();
         }
     
         private void Update()

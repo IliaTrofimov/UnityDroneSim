@@ -164,8 +164,7 @@ public class DroneAgent: Agent
 		sensor.AddObservation(collided ? 1.0f : 0.0f);
 		sensor.AddObservation(freeSpace.BatchRaycast());
 	}
-
-
+	
 	// 1 element input
 	// -> -1 : STOP
 	// -> 0 : LEFT + FORWARD

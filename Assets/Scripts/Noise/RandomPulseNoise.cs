@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
+
 
 namespace Noise
 {
@@ -20,7 +22,7 @@ namespace Noise
         private WindPulseMode pulseMode = WindPulseMode.InitPulsing;
         private WindMotionMode motionMode = WindMotionMode.InitMotion;
         
-        public Rigidbody drone;
+        public Rigidbody body;
         public bool applyForce = true;
         public float strengthCoef = 0.0015f;
         public float strengthOffSpeed = 50.0f;
@@ -68,9 +70,9 @@ namespace Noise
 
             var ray = currentStrength * (transform.rotation * Vector3.forward);
             if (applyForce)
-                drone.AddForce(ray * strengthCoef, ForceMode.Impulse);
+                body.AddForce(ray * strengthCoef, ForceMode.Impulse);
             
-            Debug.DrawRay(drone.position, ray, Color.green);
+            Debug.DrawRay(body.position, ray, Color.green);
         }
         
         private void InitWindPulsing()

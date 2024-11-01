@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-// Module reuniting computing parts of a drone.  Used by a BasicControl.
+// Module reuniting computing parts of a body.  Used by a BasicControl.
 namespace RPY_PID_Control
 {
     public class ComputerModule : MonoBehaviour
