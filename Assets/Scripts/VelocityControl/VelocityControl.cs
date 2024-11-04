@@ -100,16 +100,6 @@ namespace VelocityControl
             propFR.transform.Rotate(Vector3.forward * Time.deltaTime * desiredThrust * speedScale);
             propRR.transform.Rotate(Vector3.forward * Time.deltaTime * desiredThrust * speedScale);
             propRL.transform.Rotate(Vector3.forward * Time.deltaTime * desiredThrust * speedScale);
-
-            //Debug.Log ("Velocity" + state.VelocityVector);
-            //Debug.Log ("Desired Velocity" + desiredVelocity);
-            //Debug.Log ("Desired Acceleration" + desiredAcceleration);
-            //Debug.Log ("Angles" + state.Angles);
-            //Debug.Log ("Desired Angles" + desiredTheta);
-            //Debug.Log ("Angular Velocity" + state.AngularVelocityVector);
-            //Debug.Log ("Desired Angular Velocity" + desiredOmega);
-            //Debug.Log ("Desired Angular Acceleration" + desiredAlpha);
-            //Debug.Log ("Desired Torque" + desiredTorque);
         }
 
         public void Reset() {
