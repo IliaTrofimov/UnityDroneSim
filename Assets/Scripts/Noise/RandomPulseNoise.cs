@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Serialization;
+﻿using System;
+using UnityEngine;
+using Utils;
+using Random = UnityEngine.Random;
 
 
 namespace Noise
@@ -10,7 +12,7 @@ namespace Noise
 
         private enum WindMotionMode { InitMotion, Motion }
         
-        private System.Random random = new();
+        
         private float pulseTimer;
         private float pulsePeriod;
         private float pulseDuration;
@@ -22,32 +24,33 @@ namespace Noise
         private WindPulseMode pulseMode = WindPulseMode.InitPulsing;
         private WindMotionMode motionMode = WindMotionMode.InitMotion;
         
+        
         public Rigidbody body;
-        public bool applyForce = true;
         public float strengthCoef = 0.0015f;
         public float strengthOffSpeed = 50.0f;
         public float strengthOnSpeed = 70.0f;
-        public Quaternion targetDirection; // wind noise direction
+        public Quaternion targetDirection; 
 
-        //mean/variance of force currentStrength setpt
-        public RandomDistributionParam randomStrength = new(30f, 20f);
-
-        //variance of force vector magnitude during the pulse around the setpt
         public float strengthHold = 1000.0f;
 
-        //mean/variance time between pulses
-        public RandomDistributionParam randomPulsePeriod = new(7f, 5f); // seconds
-
-        //mean/variance duration of pulses
-        public RandomDistributionParam randomPulseDuration = new(10f, 2f); // seconds
-
-        //mean/variance amount of time for each motion direction target
-        public RandomDistributionParam randomMotionPeriod = new(8f, 3f); //seconds
-       
-        //mean/variance speed of wind vector rotation
-        public RandomDistributionParam randomWindChangeSpeed = new(0.05f, 0.01f);
+        public RandomDistributionParam randomStrength = new(30f, 20f);
         
-	
+        public RandomDistributionParam randomPulsePeriod = new(7f, 5f);
+
+        public RandomDistributionParam randomPulseDuration = new(10f, 2f);
+
+        public RandomDistributionParam randomMotionPeriod = new(8f, 3f);
+       
+        public RandomDistributionParam randomWindChangeSpeed = new(0.05f, 0.01f);
+
+
+        public void Awake()
+        {
+            if (body is null)
+                throw new UnityException("Body is null");
+        }
+
+
         private void FixedUpdate()
         {
             switch (pulseMode)
@@ -61,24 +64,22 @@ namespace Noise
                 case WindPulseMode.Pulsing:
                     WindPulsing();
                     break;
-            } 
-            
+            }
+
             if (motionMode is WindMotionMode.InitMotion)
                 InitWindMotion();
             else
                 WindMotion();
-
-            var ray = currentStrength * (transform.rotation * Vector3.forward);
-            if (applyForce)
-                body.AddForce(ray * strengthCoef, ForceMode.Impulse);
             
+            var ray = currentStrength * (transform.rotation * Vector3.forward);
+            body.AddForce(ray * strengthCoef, ForceMode.Impulse);
             Debug.DrawRay(body.position, ray, Color.green);
         }
         
         private void InitWindPulsing()
         {
-            pulseTimer = 0.0f; //reset
-            pulsePeriod = SamplePositive(randomPulsePeriod);
+            pulseTimer = 0.0f;
+            pulsePeriod = MathExtensions.SamplePositive(randomPulsePeriod);
             pulseMode = WindPulseMode.Wait;
         }
 
@@ -93,8 +94,8 @@ namespace Noise
             if (pulseTimer >= pulsePeriod)
             {
                 pulseTimer = 0.0f; //reset
-                pulseDuration = SamplePositive(randomPulseDuration);
-                baseStrength = SamplePositive(randomStrength);
+                pulseDuration = MathExtensions.SamplePositive(randomPulseDuration);
+                baseStrength = MathExtensions.SamplePositive(randomStrength);
                 pulseMode = WindPulseMode.Pulsing;
             }
         }
@@ -110,7 +111,7 @@ namespace Noise
             else 
             {
                 //apply force here
-                var targetStrength = Sample(baseStrength, strengthHold);
+                var targetStrength = MathExtensions.Sample(baseStrength, strengthHold);
                     
                 if (Mathf.Abs(currentStrength - targetStrength) / (targetStrength + 1e-8) < 0.4)
                     currentStrength = targetStrength;
@@ -125,11 +126,12 @@ namespace Noise
             }
         }
         
+        
         private void InitWindMotion()
         {
             motionTimer = 0.0f;
-            motionPeriod = SamplePositive(randomMotionPeriod);
-            windChangeSpeed = SamplePositive(randomWindChangeSpeed);
+            motionPeriod = MathExtensions.SamplePositive(randomMotionPeriod);
+            windChangeSpeed = MathExtensions.SamplePositive(randomWindChangeSpeed);
             targetDirection = Quaternion.Euler(new Vector3(0.0f, Random.Range(-180.0f, 180.0f), 0.0f));
             motionMode = WindMotionMode.Motion;
         }
@@ -137,42 +139,13 @@ namespace Noise
         private void WindMotion()
         {
             motionTimer += Time.deltaTime;
-
             transform.rotation = Quaternion.Slerp(transform.rotation, targetDirection, Time.deltaTime * windChangeSpeed);
+           
             if (motionTimer > motionPeriod) 
             {
                 motionTimer = 0.0f;
                 motionMode = WindMotionMode.InitMotion; 
             }
-        }
-        
-        private float Sample(RandomDistributionParam param)
-        {
-            return NextGaussianDouble() * Mathf.Sqrt(param.variance) + param.mean;
-        }
-        
-        private float Sample(float mean, float variance)
-        {
-            return NextGaussianDouble() * Mathf.Sqrt(variance) + mean;
-        }
-
-        private float SamplePositive(RandomDistributionParam param)
-        {
-            return Mathf.Abs(Sample(param));
-        }
-
-        private float NextGaussianDouble()
-        {
-            float u, S;
-            do
-            {
-                var v = 2.0f * (float)random.NextDouble() - 1.0f;
-                u = 2.0f * (float)random.NextDouble() - 1.0f;
-                S = u*u + v*v;
-            }
-            while (S >= 1.0f);
-            var fac = Mathf.Sqrt(-2.0f * Mathf.Log(S) / S);
-            return u * fac;
         }
     }
 }
