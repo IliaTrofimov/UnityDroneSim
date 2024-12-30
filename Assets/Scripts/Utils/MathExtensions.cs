@@ -6,7 +6,7 @@ namespace Utils
 {
     public static class MathExtensions
     {
-        public static float Sample(RandomDistributionParam param)
+        public static float Sample(NormalDistributionParam param)
         {
             return NextGaussianDouble() * Mathf.Sqrt(param.variance) + param.mean;
         }
@@ -16,7 +16,7 @@ namespace Utils
             return NextGaussianDouble() * Mathf.Sqrt(variance) + mean;
         }
 
-        public static float SamplePositive(RandomDistributionParam param)
+        public static float SamplePositive(NormalDistributionParam param)
         {
             return Mathf.Abs( NextGaussianDouble() * Mathf.Sqrt(param.variance) + param.mean);
         }
@@ -34,6 +34,7 @@ namespace Utils
             var fac = Mathf.Sqrt(-2.0f * Mathf.Log(s) / s);
             return u * fac;
         }
+        
         
     }
 }
