@@ -3,23 +3,24 @@ using System;
 
 namespace Noise
 {
+    /// <summary>Parameters of normal distribution.</summary>
     [Serializable]
-    public class RandomDistributionParam
+    public class NormalDistributionParam
     {
         public float mean;
         public float variance;
 
-        public RandomDistributionParam(float mean, float variance)
+        public NormalDistributionParam(float mean, float variance)
         {
             this.variance = variance;
             this.mean = mean;
         }
         
-        public RandomDistributionParam(float variance)
+        public NormalDistributionParam(float variance)
         {
             this.variance = variance;
         }
         
-        public RandomDistributionParam() { }
+        public NormalDistributionParam() { }
     }
 }

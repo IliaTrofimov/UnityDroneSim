@@ -1,5 +1,6 @@
-﻿using System;
+﻿using Exceptions;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -33,24 +34,22 @@ namespace Noise
 
         public float strengthHold = 1000.0f;
 
-        public RandomDistributionParam randomStrength = new(30f, 20f);
+        [FormerlySerializedAs("randomStrength")] public NormalDistributionParam normalStrength = new(30f, 20f);
         
-        public RandomDistributionParam randomPulsePeriod = new(7f, 5f);
+        [FormerlySerializedAs("randomPulsePeriod")] public NormalDistributionParam normalPulsePeriod = new(7f, 5f);
 
-        public RandomDistributionParam randomPulseDuration = new(10f, 2f);
+        [FormerlySerializedAs("randomPulseDuration")] public NormalDistributionParam normalPulseDuration = new(10f, 2f);
 
-        public RandomDistributionParam randomMotionPeriod = new(8f, 3f);
+        [FormerlySerializedAs("randomMotionPeriod")] public NormalDistributionParam normalMotionPeriod = new(8f, 3f);
        
-        public RandomDistributionParam randomWindChangeSpeed = new(0.05f, 0.01f);
+        [FormerlySerializedAs("randomWindChangeSpeed")] public NormalDistributionParam normalWindChangeSpeed = new(0.05f, 0.01f);
 
 
         public void Awake()
         {
-            if (body is null)
-                throw new UnityException("Body is null");
+            ExceptionHelper.ThrowIfComponentIsMissing(this, body, nameof(body));
         }
-
-
+        
         private void FixedUpdate()
         {
             switch (pulseMode)
@@ -79,7 +78,7 @@ namespace Noise
         private void InitWindPulsing()
         {
             pulseTimer = 0.0f;
-            pulsePeriod = MathExtensions.SamplePositive(randomPulsePeriod);
+            pulsePeriod = MathExtensions.SamplePositive(normalPulsePeriod);
             pulseMode = WindPulseMode.Wait;
         }
 
@@ -94,8 +93,8 @@ namespace Noise
             if (pulseTimer >= pulsePeriod)
             {
                 pulseTimer = 0.0f; //reset
-                pulseDuration = MathExtensions.SamplePositive(randomPulseDuration);
-                baseStrength = MathExtensions.SamplePositive(randomStrength);
+                pulseDuration = MathExtensions.SamplePositive(normalPulseDuration);
+                baseStrength = MathExtensions.SamplePositive(normalStrength);
                 pulseMode = WindPulseMode.Pulsing;
             }
         }
@@ -130,8 +129,8 @@ namespace Noise
         private void InitWindMotion()
         {
             motionTimer = 0.0f;
-            motionPeriod = MathExtensions.SamplePositive(randomMotionPeriod);
-            windChangeSpeed = MathExtensions.SamplePositive(randomWindChangeSpeed);
+            motionPeriod = MathExtensions.SamplePositive(normalMotionPeriod);
+            windChangeSpeed = MathExtensions.SamplePositive(normalWindChangeSpeed);
             targetDirection = Quaternion.Euler(new Vector3(0.0f, Random.Range(-180.0f, 180.0f), 0.0f));
             motionMode = WindMotionMode.Motion;
         }
