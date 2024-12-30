@@ -1,9 +1,9 @@
-namespace Utils
+namespace Exceptions
 {
     public class MissingComponentException<TImport, TParent> : UnityEngine.MissingComponentException
     {
         public MissingComponentException() 
-            : base($"Component {typeof(TParent)} is missing required component  of type {typeof(TImport)}.")
+            : base($"Component {typeof(TParent)} is missing required component of type {typeof(TImport)}.")
         {
         }
         
@@ -16,7 +16,7 @@ namespace Utils
     public class MissingComponentException<TImport> : UnityEngine.MissingComponentException
     {
         public MissingComponentException() 
-            : base($"Missing required component  of type {typeof(TImport)}.")
+            : base($"Missing required component of type {typeof(TImport)}.")
         {
         }
         
