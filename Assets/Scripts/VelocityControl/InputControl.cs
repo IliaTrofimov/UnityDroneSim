@@ -1,7 +1,6 @@
-﻿using Inputs;
+﻿using Exceptions;
+using Inputs;
 using UnityEngine;
-using Utils;
-
 
 namespace VelocityControl
 {
@@ -16,9 +15,8 @@ namespace VelocityControl
 
 		private void Awake()
 		{
+			ExceptionHelper.ThrowIfComponentIsMissing(this, velocityControl, nameof(velocityControl));
 			controls = new DroneControls();
-			if (velocityControl is null)
-				throw new MissingComponentException<VelocityControl>();
 			Debug.Log("Start");
 		}
 
@@ -30,7 +28,7 @@ namespace VelocityControl
 		private void FixedUpdate()
 		{
 			rotation = controls.Default.Rotation.ReadValue<Vector2>();
-			movement = controls.Default.Movement.ReadValue<Vector3>();
+			//movement = controls.Default.Movement.ReadValue<Vector3>();
 
 			velocityControl.desired_vx = movement.z;
 			velocityControl.desired_vy = movement.x;

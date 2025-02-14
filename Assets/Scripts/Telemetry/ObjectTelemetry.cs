@@ -7,22 +7,22 @@ namespace Telemetry
     public readonly struct ObjectTelemetry
     {
         /// <summary>Object's absolute position.</summary>
-        public readonly Vector3 Position;
+        public readonly Vector3 position;
         
         /// <summary>Object's rotation. Stores Euler angles.</summary>
-        public readonly Vector3 Rotation;
+        public readonly Vector3 rotation;
         
         /// <summary>Object's linear velocity vector.</summary>
-        public readonly Vector3 LinearVelocity;
+        public readonly Vector3 linearVelocity;
         
         /// <summary>Object's linear angular vector.</summary>
-        public readonly Vector3 AngularVelocity;
+        public readonly Vector3 angularVelocity;
         
         /// <summary>Object's linear acceleration vector.</summary>
-        public readonly Vector3 LinearAcceleration;
+        public readonly Vector3 linearAcceleration;
         
         /// <summary>Time at which telemetry data was collected. Equals to <see cref="Time"/>.<see cref="Time.realtimeSinceStartup"/>.</summary>
-        public readonly float Timestamp;
+        public readonly float timestamp;
         
         
         /// <summary>Create telemetry data from rigid body.</summary>
@@ -39,17 +39,17 @@ namespace Telemetry
         public ObjectTelemetry(Vector3 pos, Vector3 rotation, 
                                Vector3 linearVel = default, Vector3 angularVel = default, Vector3 linearAcc = default)
         {
-            Timestamp = Time.realtimeSinceStartup;
+            timestamp = Time.realtimeSinceStartup;
             
-            Position = pos;
-            Rotation = rotation;
-            LinearVelocity = linearVel;
-            AngularVelocity = angularVel;
-            LinearAcceleration = linearAcc;
+            position = pos;
+            this.rotation = rotation;
+            linearVelocity = linearVel;
+            angularVelocity = angularVel;
+            linearAcceleration = linearAcc;
         }
         
 
         public override string ToString() => 
-            $"[{Timestamp:F2}] r:{Rotation:F1}, v:{LinearVelocity:F1}, ω:{AngularVelocity:F1}, a:{LinearAcceleration:F1}";
+            $"[{timestamp:F2}] r:{rotation:F1}, v:{linearVelocity:F1}, ω:{angularVelocity:F1}, a:{linearAcceleration:F1}";
     }
 }

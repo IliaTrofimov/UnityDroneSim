@@ -37,15 +37,17 @@ namespace VelocityControl
         private float speedScale = 500.0f;
 
         // Use this for initialization
-        void Start () {
+        private void Start()
+        {
             state.GetState ();
-            Rigidbody rb = GetComponent<Rigidbody> ();
+            Rigidbody rb = GetComponent<Rigidbody>();
             Vector3 desiredForce = new Vector3 (0.0f, gravity * state.mass, 0.0f);
             rb.AddForce (desiredForce, ForceMode.Acceleration);
         }
 
         // Update is called once per frame
-        void FixedUpdate () {
+        void FixedUpdate ()
+        {
             state.GetState ();
         
             // NOTE: I'm using stupid vector order (sideways, up, forward) at the end

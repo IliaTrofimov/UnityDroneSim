@@ -1,5 +1,8 @@
+using System.Runtime.CompilerServices;
 using Noise;
+using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace Utils
@@ -34,7 +37,20 @@ namespace Utils
             var fac = Mathf.Sqrt(-2.0f * Mathf.Log(s) / s);
             return u * fac;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetNaN(this Vector3 vector) => vector.Set(float.NaN, float.NaN, float.NaN);
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetNaN(this Vector2 vector) => vector.Set(float.NaN, float.NaN);
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 NaNVector3() => new (float.NaN, float.NaN, float.NaN);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ClampAngle(float a) => math.ceil(math.floor(a / 180f) / 2f) * 360f;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 Abs(this Vector3 vector) => new (math.abs(vector.x), math.abs(vector.y), math.abs(vector.z));
     }
 }
