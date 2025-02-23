@@ -1,13 +1,9 @@
 using System;
-using System.Linq;
-using DebugUtils.VectorDrawer;
-using InspectorTools;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 
-namespace DebugUtils
+namespace UtilsDebug
 {
     [Flags]
     public enum VelocityDebugType
@@ -60,17 +56,13 @@ namespace DebugUtils
             
             gameObject.TryGetDimensions(out boundsLength);
             
-            var actualCapSize = boundsLength / 2 * capSize;
-            linVelocityGizmoOptions = new GizmoOptions(Color.yellow, actualCapSize, FontStyle.Bold, GizmoLabelPlacement.End);
-            angVelocityGizmoOptions = new GizmoOptions(Color.cyan, actualCapSize, FontStyle.Bold, GizmoLabelPlacement.End);
-            accelerationGizmoOptions = new GizmoOptions(new(1f, 0.5f, 0.016f), actualCapSize, FontStyle.Bold, GizmoLabelPlacement.End);
-            centerOfMassGizmoOptions = new GizmoOptions(Color.grey, actualCapSize, FontStyle.Italic, GizmoLabelPlacement.End);
-            
-            var maxVectorLength = boundsLength / 2 * vectorSize;
-            linVelocityGizmoOptions.maxVectorLength = maxVectorLength;
-            angVelocityGizmoOptions.maxVectorLength = maxVectorLength;
-            accelerationGizmoOptions.maxVectorLength = maxVectorLength;
-            centerOfMassGizmoOptions.maxVectorLength = maxVectorLength;
+            var _capSize = boundsLength / 2 * capSize;
+            var _vectSize = boundsLength / 2 * vectorSize;
+
+            linVelocityGizmoOptions = new GizmoOptions(Color.yellow, _capSize, _vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
+            angVelocityGizmoOptions = new GizmoOptions(Color.cyan, _capSize, _vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
+            accelerationGizmoOptions = new GizmoOptions(new(1f, 0.5f, 0.016f), _capSize,  _vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
+            centerOfMassGizmoOptions = new GizmoOptions(Color.grey, _capSize, _vectSize,  FontStyle.Italic, GizmoLabelPlacement.End);
         }
         
         private void Start()
@@ -81,17 +73,17 @@ namespace DebugUtils
 
         private void OnValidate()
         {
-            var actualCapSize = boundsLength / 2 * capSize;
-            linVelocityGizmoOptions.capSize = actualCapSize;
-            angVelocityGizmoOptions.capSize = actualCapSize;
-            accelerationGizmoOptions.capSize = actualCapSize;
-            centerOfMassGizmoOptions.capSize = actualCapSize;
-            
-            var maxVectorLength = boundsLength / 2 * vectorSize;
-            linVelocityGizmoOptions.maxVectorLength = maxVectorLength;
-            angVelocityGizmoOptions.maxVectorLength = maxVectorLength;
-            accelerationGizmoOptions.maxVectorLength = maxVectorLength;
-            centerOfMassGizmoOptions.maxVectorLength = maxVectorLength;
+            var _capSize = boundsLength / 2 * capSize;
+            var _vectSize = boundsLength / 2 * vectorSize;
+
+            linVelocityGizmoOptions.capSize = _capSize;
+            angVelocityGizmoOptions.capSize = _capSize;
+            accelerationGizmoOptions.capSize = _capSize;
+            centerOfMassGizmoOptions.capSize = _capSize;
+            linVelocityGizmoOptions.vectSize = _vectSize;
+            angVelocityGizmoOptions.vectSize = _vectSize;
+            accelerationGizmoOptions.vectSize = _vectSize;
+            centerOfMassGizmoOptions.vectSize = _vectSize;
         }
         
         private void OnDrawGizmos()
@@ -102,24 +94,24 @@ namespace DebugUtils
 
             if (debugType.HasFlag(VelocityDebugType.CenterOfMassError))
             {
-                VectorDrawerLite.DrawLine(rigidBody.transform.TransformPoint(rigidBody.centerOfMass),
+                VectorDrawer.DrawLine(rigidBody.transform.TransformPoint(rigidBody.centerOfMass),
                     rigidBody.position,
                     cmErrorName,
                     centerOfMassGizmoOptions);
             }
             else if (debugType.HasFlag(VelocityDebugType.CenterOfMass))
             {
-                VectorDrawerLite.DrawPoint(p, cmPointName, centerOfMassGizmoOptions);
+                VectorDrawer.DrawPoint(p, cmPointName, centerOfMassGizmoOptions);
             }
 
             if (debugType.HasFlag(VelocityDebugType.Linear)) 
-                VectorDrawerLite.DrawDirection(p, rigidBody.linearVelocity * vectorSize, linVelocityName, linVelocityGizmoOptions);
+                VectorDrawer.DrawDirection(p, rigidBody.linearVelocity * vectorSize, linVelocityName, linVelocityGizmoOptions);
             
             if (debugType.HasFlag(VelocityDebugType.Angular)) 
-                VectorDrawerLite.DrawDirection(p, rigidBody.angularVelocity * vectorSize, angVelocityName, angVelocityGizmoOptions);
+                VectorDrawer.DrawDirection(p, rigidBody.angularVelocity * vectorSize, angVelocityName, angVelocityGizmoOptions);
             
             if (debugType.HasFlag(VelocityDebugType.Acceleration)) 
-                VectorDrawerLite.DrawDirection(p, linearAcceleration * vectorSize, accelerationName, accelerationGizmoOptions);
+                VectorDrawer.DrawDirection(p, linearAcceleration * vectorSize, accelerationName, accelerationGizmoOptions);
         }
         
         private void FixedUpdate()

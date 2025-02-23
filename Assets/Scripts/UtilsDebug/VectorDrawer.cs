@@ -2,9 +2,9 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace DebugUtils.VectorDrawer
+namespace UtilsDebug
 {
-    public static class VectorDrawerLite
+    public static class VectorDrawer
     {
         public static void DrawCircle(Vector3 origin, Vector3 normal, float radius, string label = "", GizmoOptions options = default)
         {
@@ -27,7 +27,7 @@ namespace DebugUtils.VectorDrawer
             if (direction == Vector3.zero) return;
             
             var q = Quaternion.LookRotation(direction.normalized);
-            var end = origin + Vector3.ClampMagnitude(direction, options.maxVectorLength);
+            var end = origin + Vector3.ClampMagnitude(direction, options.vectSize);
             
             var lastColor = Gizmos.color;
             Gizmos.color = options.color;
@@ -77,6 +77,19 @@ namespace DebugUtils.VectorDrawer
             #endif
         }
         
+        public static void DrawPointCube(Vector3 origin, string label = "", GizmoOptions options = default)
+        {
+            #if UNITY_EDITOR
+            var lastColor = Gizmos.color;
+            Gizmos.color = options.color;
+            Gizmos.DrawCube(origin, Vector3.one * options.capSize);
+            
+            if (!string.IsNullOrEmpty(label))
+                DrawLabel(origin, label, options);
+            Gizmos.color = lastColor;
+            #endif
+        }
+        
         public static void DrawLabel(Vector3 origin, string label, GizmoOptions options = default)
         {
             #if UNITY_EDITOR
@@ -85,6 +98,19 @@ namespace DebugUtils.VectorDrawer
             
             if (point.z > 0 && new Rect(0, 0, camera.pixelWidth, camera.pixelHeight).Contains(point))
             {
+                if (options.labelOutline)
+                {
+                    var outlineColor = options.labelColor.grayscale > 0.5f ? Color.black : Color.white;
+                    Handles.Label(origin, label, new GUIStyle("label")
+                    {
+                        normal = { textColor = outlineColor }, // shadow effect
+                        onHover = { textColor = Color.black }, // shadow always black on hovering
+                        hover = { textColor = Color.black },
+                        onActive = { textColor = Color.black },
+                        contentOffset = new Vector2(3, -5),
+                        fontStyle = options.labelStyle
+                    });   
+                }
                 Handles.Label(origin, label, new GUIStyle("label")
                 {
                     normal = { textColor = options.labelColor },
