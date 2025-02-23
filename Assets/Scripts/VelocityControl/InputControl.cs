@@ -1,25 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Exceptions;
+using Inputs;
 using UnityEngine;
 
-public class InputControl : MonoBehaviour {
-
-	public VelocityControl vc;
-
-	private float abs_height = 1;
-
-	// Use this for initialization
-	void Start () {
+namespace VelocityControl
+{
+	public class InputControl : MonoBehaviour 
+	{
+		private float absHeight = 1;
+		private Vector3 movement;
+		private Vector2 rotation;
+		private DroneControls controls;
 		
-	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-//		vc.desired_vx = Input.GetAxisRaw ("Pitch")*4.0f;
-//		vc.desired_vy = Input.GetAxisRaw ("Roll")*4.0f;
-//		vc.desired_yaw = Input.GetAxisRaw ("Yaw")*0.5f;
-//		abs_height += Input.GetAxisRaw("Throttle") * 0.1f;
-//
-//		vc.desired_height = abs_height;
+		public VelocityControl velocityControl;
+
+		private void Awake()
+		{
+			ExceptionHelper.ThrowIfComponentIsMissing(this, velocityControl, nameof(velocityControl));
+			controls = new DroneControls();
+			Debug.Log("Start");
+		}
+
+		private void OnGUI()
+		{ 
+			GUI.Label(new Rect(10, 10, 200, 100), $"Movement: {movement};\nRotation: {rotation}");
+		}
+
+		private void FixedUpdate()
+		{
+			rotation = controls.Default.Rotation.ReadValue<Vector2>();
+			//movement = controls.Default.Movement.ReadValue<Vector3>();
+
+			velocityControl.desired_vx = movement.z;
+			velocityControl.desired_vy = movement.x;
+			velocityControl.desired_yaw = rotation.x;
+			absHeight += movement.y * 0.1f;
+			velocityControl.desired_height = absHeight;
+		}
+
+		public void OnEnable()
+		{
+			controls?.Enable();	
+		} 
+
+		public void OnDisable() 
+		{
+			controls?.Disable();	
+		} 
 	}
 }

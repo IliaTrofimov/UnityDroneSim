@@ -1,56 +1,51 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using FreeSpace;
 using UnityEngine;
-using MLAgents;
+using Unity.MLAgents;
+using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Sensors;
 
-public class DroneAgent: Agent {
 
-	public VelocityControl velocityControl;
-	[Range(0,100)] public float Scale;
-
-	public bool use_new_state = true;
+public class DroneAgent: Agent 
+{
+	private GameObject currentStartRegion;
+	private GameObject currentEndRegion;
+	private FreeSpaceDetection freeSpace;
+	private Bounds endBounds;
+	
+	private bool collided;
+	private bool localIsDone;
+	private System.Random random;
+	
+	private float maxX;
+	private float minX;
+	private float maxZ;
+	private float minZ;
+	private Vector3 initialPos;
+	private Rigidbody rigidbody;
+	
+	public bool useNewState = true;
+	
+	public VelocityControl.VelocityControl velocityControl;
 
     public int startRegionIndex = -1; // -1 means do random
     public GameObject[] startRegions;
     public int endRegionIndex = -1; // -1 means do random
 	public GameObject[] endRegions;
+	
+	public float forwardVelocity;
+	public float yawRate; 
+	public float doneDistance;
 
-    private GameObject currStartRegion;
-    private GameObject currEndRegion;
-
-    private FreeSpaceDetection fsd;
-
-	private Bounds endBounds;
-
-	public float FORWARD_VELOCITY;
-	public float YAW_RATE;
-
-    public float DONE_DISTANCE;
-
-    private bool collided = false;
-
-	private bool wait = false;
-
-	private Vector3 initialPos;
-    private Quaternion initialRot;
-
-	private float maxX;
-	private float minX;
-	private float maxZ;
-	private float minZ;
-
-	private System.Random rand;
-
-	private bool local_done = false;
-
-	public override void InitializeAgent() {
-
-        fsd = gameObject.GetComponent<FreeSpaceDetection>();
+	public override void Initialize() 
+	{
+        freeSpace = gameObject.GetComponent<FreeSpaceDetection>();
+        random = new System.Random();
+        rigidbody = gameObject.GetComponent<Rigidbody>();
         
         if (startRegions.Length == 0 || startRegions.GetValue(0) == null)
         {
             startRegions = new GameObject[1];
-            GameObject startRegion = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            var startRegion = GameObject.CreatePrimitive(PrimitiveType.Quad);
             startRegion.transform.Rotate(new Vector3(90, 0, 0));
             startRegion.transform.localScale = new Vector3(3.0f, 3.0f, 1.0f);
             startRegion.transform.localPosition = new Vector3(startRegion.transform.localPosition.x,
@@ -62,7 +57,7 @@ public class DroneAgent: Agent {
         if (endRegions.Length == 0 || endRegions.GetValue(0) == null)
         {
             endRegions = new GameObject[1];
-            GameObject endRegion = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            var endRegion = GameObject.CreatePrimitive(PrimitiveType.Quad);
             endRegion.transform.Rotate(new Vector3(90, 0, 0));
             endRegion.transform.localScale = new Vector3(3.0f, 3.0f, 1.0f);
             endRegion.transform.localPosition = new Vector3(endRegion.transform.localPosition.x, 
@@ -71,228 +66,153 @@ public class DroneAgent: Agent {
             endRegions.SetValue(endRegion, 0);
         }
 
-        rand = new System.Random();
-        defaultOrRandomizeSetStartEnd();
+        DefaultOrRandomizeSetStartEnd();
 
 		Debug.Log ("Start BOUNDS");
-        Renderer rend = currStartRegion.GetComponent<Renderer>();
+        var rend = currentStartRegion.GetComponent<Renderer>();
 		Debug.Log(rend.bounds.max);
 		Debug.Log(rend.bounds.min);
 
 		maxX = rend.bounds.max.x;
 		minX = rend.bounds.min.x;
-
 		maxZ = rend.bounds.max.z;
 		minZ = rend.bounds.min.z;
-
-
+		
         initialPos = new Vector3(transform.position.x, velocityControl.initial_height, transform.position.z);
-        initialRot = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
+        endBounds = currentEndRegion.GetComponent<Renderer>().bounds;
 
-        endBounds = currEndRegion.GetComponent<Renderer> ().bounds;
-
-		// randomness
-		float startX = ((float) rand.NextDouble()) * (maxX - minX) + minX;
-		float startZ = ((float) rand.NextDouble()) * (maxZ - minZ) + minZ;
+		var startX = (float)random.NextDouble() * (maxX - minX) + minX;
+		var startZ = (float)random.NextDouble() * (maxZ - minZ) + minZ;
 
 		transform.position = new Vector3 (startX, initialPos.y, startZ);
 
-		wait = false;
-
         collided = false;
-
-		local_done = false;
-
+		localIsDone = false;
 	}
 
-    private void defaultOrRandomizeSetStartEnd(){
-        int sri = startRegionIndex;
-        int eri = endRegionIndex;
+    private void DefaultOrRandomizeSetStartEnd()
+    {
+	    var sri = startRegionIndex == -1 ? random.Next(startRegions.Length) : startRegionIndex;
+        var eri = endRegionIndex == -1 ? random.Next(endRegions.Length) : endRegionIndex;
 
-        if (sri == -1)
-            sri = rand.Next(startRegions.Length);
-        if (eri == -1)
-            eri = rand.Next(endRegions.Length);
+        if (sri >= startRegions.Length || startRegions[sri] is null)
+            throw new UnityException($"Start Region at index: {sri}, is invalid");
+        if (eri >= endRegions.Length || endRegions[eri] is null)
+            throw new UnityException($"End Region at index: {eri}, is invalid");
 
-        // error check
-        if (sri >= startRegions.Length || startRegions[sri] == null)
-        {
-            throw new UnityException("Start Region at index: " + sri + ", is invalid");
-        }
-        // error check
-        if (eri >= endRegions.Length || endRegions[eri] == null)
-        {
-            throw new UnityException("End Region at index: " + eri + ", is invalid");
-        }
-
-        currStartRegion = startRegions[sri];
-        currEndRegion = endRegions[eri];
+        currentStartRegion = startRegions[sri];
+        currentEndRegion = endRegions[eri];
     }
 
-
-	// gets relative header
-	public float normalizedHeader(Vector3 gpsCurr, Vector3 gpsTarg) {
-		Vector3 normalized = Vector3.Normalize (gpsTarg - gpsCurr);
+    public float NormalizedHeading(Vector3 current, Vector3 target)
+	{
+		var normalized = Vector3.Normalize(target - current);
 		normalized.y = 0.0f;
 
-		Vector3 currentHeading = Quaternion.Euler(new Vector3(0.0f, velocityControl.state.Angles.y, 0.0f)) * Vector3.forward;
+		var currentHeading = Quaternion.Euler(new Vector3(0.0f, velocityControl.state.angles.y, 0.0f)) * Vector3.forward;
 		currentHeading.y = 0.0f;
 
-		float angle = Vector3.SignedAngle (currentHeading, normalized, Vector3.up);
+		var angle = Vector3.SignedAngle(currentHeading, normalized, Vector3.up);
 		return angle;
-			
 	}
-
-
-	// API-3 changes
-	public override void CollectObservations()
+    
+	public override void CollectObservations(VectorSensor sensor) 
 	{
-        //		List<float> state = new List<float>();
-        //Debug.Log("CALLED");
-
-        //NEW STATE
-        //do this in collect state so we make sure we don't miss it
-        local_done = isDone() || collided;
-
-
-        if (use_new_state)
-        {
-            // Header and Magnitude
-            AddVectorObs(normalizedHeader(transform.position, currEndRegion.transform.position) / 180.0f); //-1 to 1
-            AddVectorObs(Vector3.Magnitude(transform.position - currEndRegion.transform.position)); // nonscaled magnitude
-
-            //Velocities (v forward, yaw)
-            //Debug.Log(velocityControl.state.VelocityVector);
-            //Debug.Log(velocityControl.state.AngularVelocityVector);
-            //Debug.Log();
-            AddVectorObs(velocityControl.state.VelocityVector.z / FORWARD_VELOCITY); // VX scaled -1 to 1
-            AddVectorObs(velocityControl.state.AngularVelocityVector.y / YAW_RATE); //Yaw rate scaled -1  to 1
-            //collision
-            AddVectorObs((collided ? 1.0f : 0.0f));
-
-            AddVectorObs(fsd.batchRaycast());
-        }
+        localIsDone = IsDone() || collided;
+        
+        if (useNewState)
+	        CollectNewObservations(sensor);
         else
-        {
-
-            //13 elements
-            AddVectorObs(velocityControl.state.VelocityVector.z / 8.0f); // VX scaled
-            AddVectorObs(velocityControl.state.VelocityVector.x / 8.0f); // VY scaled
-            AddVectorObs(velocityControl.state.AngularVelocityVector.y / 360.0f); //Yaw scaled
-
-            AddVectorObs(velocityControl.transform.position.x);
-            AddVectorObs(velocityControl.transform.position.y);
-            AddVectorObs(velocityControl.transform.position.z);
-
-            AddVectorObs(velocityControl.transform.rotation.x);
-            AddVectorObs(velocityControl.transform.rotation.y);
-            AddVectorObs(velocityControl.transform.rotation.z);
-
-            AddVectorObs(currEndRegion.transform.position.x);
-            AddVectorObs(currEndRegion.transform.position.y);
-            AddVectorObs(currEndRegion.transform.position.z);
-            AddVectorObs((collided ? 1.0f : 0.0f));
-        }
+	        CollectOldObservations(sensor);
         
         if (collided)
         {
             Debug.Log("COLLISION MSG SENT");
             collided = false;
         }
-        
-
 	}
 
+	private void CollectOldObservations(VectorSensor sensor)
+	{
+		//13 elements
+		sensor.AddObservation(velocityControl.state.velocityVector.z / 8.0f);          // VX scaled
+		sensor.AddObservation(velocityControl.state.velocityVector.x / 8.0f);          // VY scaled
+		sensor.AddObservation(velocityControl.state.angularVelocityVector.y / 360.0f); //Yaw scaled
+		
+		sensor.AddObservation(velocityControl.transform.position.x);
+		sensor.AddObservation(velocityControl.transform.position.y);
+		sensor.AddObservation(velocityControl.transform.position.z);
+
+		sensor.AddObservation(velocityControl.transform.rotation.x);
+		sensor.AddObservation(velocityControl.transform.rotation.y);
+		sensor.AddObservation(velocityControl.transform.rotation.z);
+
+		sensor.AddObservation(currentEndRegion.transform.position.x);
+		sensor.AddObservation(currentEndRegion.transform.position.y);
+		sensor.AddObservation(currentEndRegion.transform.position.z);
+		sensor.AddObservation(collided ? 1.0f : 0.0f);
+	}
+
+	private void CollectNewObservations(VectorSensor sensor)
+	{
+		sensor.AddObservation(NormalizedHeading(transform.position, currentEndRegion.transform.position) / 180.0f); //-1 to 1
+		sensor.AddObservation(Vector3.Magnitude(transform.position - currentEndRegion.transform.position));         // nonscaled magnitude
+		//Velocities (v forward, yaw)
+		sensor.AddObservation(velocityControl.state.velocityVector.z / forwardVelocity); // VX scaled -1 to 1
+		sensor.AddObservation(velocityControl.state.angularVelocityVector.y / yawRate);  //Yaw rate scaled -1  to 1
+		//collision
+		sensor.AddObservation(collided ? 1.0f : 0.0f);
+		sensor.AddObservation(freeSpace.BatchRaycast());
+	}
+	
 	// 1 element input
 	// -> -1 : STOP
 	// -> 0 : LEFT + FORWARD
 	// -> 1 : STRAIGHT + FORWARD
 	// -> 2 : RIGHT + FORWARD
-	public override void AgentAction(float[] vectorAction, string textAction)
+	public override void OnActionReceived(ActionBuffers actions)
 	{
-		//only wait initially if we are a non external player
-		if (wait && brain.brainType == BrainType.Player) {
-			return;
-		}
+        if (IsDone())
+	        rigidbody.linearVelocity = Vector3.zero;
 
-        if (isDone()) {
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-        }
-		// add in code logic for drone control
-//		basicControl.Controller.InputAction(0, act[0], act[1], act[2]);
-
-		//Debug.Log (act);
-
-//		float angle = normalizedHeader (transform.position, endRegion.transform.position);
-//		Debug.Log (angle);
-
-		// pitch forward as long as it isn't –1
-        velocityControl.desired_vx = vectorAction[0] >= 0 ? FORWARD_VELOCITY : 0.0f;
+        velocityControl.desired_vx = actions.ContinuousActions[0] >= 0 ? forwardVelocity : 0.0f;
 		velocityControl.desired_vy = 0.0f;
 
-        if (vectorAction[0] < -1 + 1e-8) {
-            //STOP
+        if (actions.ContinuousActions[0] < -1 + 1e-8) 
             velocityControl.desired_yaw = 0.0f;
-        } else if (vectorAction[0] < 1e-8) {  // equals 0
-			//LEFT
-			velocityControl.desired_yaw = -YAW_RATE;
-        } else if (vectorAction[0] < 1 + 1e-8) {  // equals 1
-			//STRAIGHT
+        else if (actions.ContinuousActions[0] < 1e-8) 
+			velocityControl.desired_yaw = -yawRate;
+        else if (actions.ContinuousActions[0] < 1 + 1e-8) 
 			velocityControl.desired_yaw = 0.0f;
-        } else{
-            //RIGHT
-            velocityControl.desired_yaw = YAW_RATE;
-        }
-
-//		velocityControl.desired_vy = act [1] * 8.0f;
-//		velocityControl.desired_yaw = act [2] * 360.0f;
-//		velocityControl.desired_height = velocityControl.desired_height;
-
-
-
-		//increments
-		//AddReward(RewardFunction());
-
-		// done checking
-		//Vector3 currPos = new Vector3 (transform.position.x, endBounds.center.y, transform.position.z);
-//		Debug.Log (currPos);
-//		Debug.Log (endBounds);
-
-        // no state collections being called coming in
-        if (local_done)
-        {
-            //Debug.Log("STOP");
-            Done();
-            //HALT ALL MOTION UNTIL RESET
-            velocityControl.enabled = false;
-            GetComponent<Rigidbody>().isKinematic = true;
-        }
-
+        else
+            velocityControl.desired_yaw = yawRate;
+        
+        if (localIsDone)
+	        rigidbody.isKinematic = true;
 	}
 
-	public bool isDone(){
-        Vector3 currPos = new Vector3(transform.position.x, endBounds.center.y, transform.position.z);
-        //return endBounds.Contains(currPos)
-        return Vector3.Magnitude(currPos - endBounds.center) <= DONE_DISTANCE;
+	public bool IsDone()
+	{
+        return Vector3.Magnitude(transform.position - endBounds.center) <= doneDistance;
     }
 
-	public override void AgentReset()
+	public void Reset()
 	{
         Debug.Log("Resetting");
         
-        local_done = false;
+        localIsDone = false;
 
         //pick new start and end
-        defaultOrRandomizeSetStartEnd();
+        DefaultOrRandomizeSetStartEnd();
 
         //temporary
 		velocityControl.enabled = false;
 		// randomness
-		float startX = ((float) rand.NextDouble()) * (maxX - minX) + minX;
-		float startZ = ((float) rand.NextDouble()) * (maxZ - minZ) + minZ;
+		float startX = ((float) random.NextDouble()) * (maxX - minX) + minX;
+		float startZ = ((float) random.NextDouble()) * (maxZ - minZ) + minZ;
 
 		transform.position = new Vector3 (startX, initialPos.y, startZ);
-        transform.rotation = Quaternion.AngleAxis( (float) (rand.NextDouble()) * 2.0f * 180.0f, Vector3.up );
+        transform.rotation = Quaternion.AngleAxis((float)random.NextDouble() * 2.0f * 180.0f, Vector3.up );
 		//reset, which also re enables
 
 		//StartCoroutine (Waiting (1.0f));
@@ -302,35 +222,10 @@ public class DroneAgent: Agent {
         GetComponent<Rigidbody>().isKinematic = false;
 		velocityControl.Reset ();
 	}
-
-	IEnumerator Waiting(float time) {
-		wait = true;
-		yield return new WaitForSeconds(time);
-		wait = false;
-	}
-
-	public override void AgentOnDone()
+	
+	private void OnCollisionEnter(Collision other)
 	{
-	}
-
-	// super basic reward function
-	//float RewardFunction(){
-		//if (collided) {
-		//	collided = false;
-		//	local_done = true;
-		//	return -1000.0f;
-		//} else {
-		//	//euclidean horizontal plane distance
-		//	float dist = Mathf.Pow(endRegion.transform.position.x - velocityControl.transform.position.x, 2) + Mathf.Pow(endRegion.transform.position.z - velocityControl.transform.position.z, 2);
-		//	dist = Scale * dist;
-		//	return 1.0f / dist;
-		//}
-			
-	//}
-
-	void OnCollisionEnter(Collision other)
-	{
-		Debug.LogWarning ("-- COLLISION --");
+		Debug.Log("-- COLLISION --");
 		collided = true;
 	}
 }
