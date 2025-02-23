@@ -1,10 +1,11 @@
+using System.IO;
 using UnityEngine;
 
 
 namespace Telemetry
 {
     /// <summary>Physics object position and movement data.</summary>
-    public readonly struct ObjectTelemetry
+    public readonly struct ObjectTelemetry : ICsvSerializable
     {
         /// <summary>Object's absolute position.</summary>
         public readonly Vector3 position;
@@ -51,5 +52,48 @@ namespace Telemetry
 
         public override string ToString() => 
             $"[{timestamp:F2}] r:{rotation:F1}, v:{linearVelocity:F1}, ω:{angularVelocity:F1}, a:{linearAcceleration:F1}";
+        
+        public string ToCsvString(char separator = ';') => 
+            $"{timestamp}" +
+            $"{separator}{position.x}{separator}{position.y}{separator}{position.z}" +
+            $"{separator}{rotation.x}{separator}{rotation.y}{separator}{rotation.z}" +
+            $"{separator}{linearVelocity.x}{separator}{linearVelocity.y}{separator}{linearVelocity.z}" +
+            $"{separator}{angularVelocity.x}{separator}{angularVelocity.y}{separator}{angularVelocity.z}" +
+            $"{separator}{linearAcceleration.x}{separator}{linearAcceleration.y}{separator}{linearAcceleration.z}";
+
+        public void ToCsv(TextWriter stream, char separator = ';')
+        {
+            stream.Write(timestamp);
+            stream.Write(separator);
+            stream.Write(position.x);
+            stream.Write(separator);
+            stream.Write(position.y);
+            stream.Write(separator);
+            stream.Write(position.z);
+            stream.Write(separator);
+            stream.Write(rotation.x);
+            stream.Write(separator);
+            stream.Write(rotation.y);
+            stream.Write(separator);
+            stream.Write(rotation.z);
+            stream.Write(separator);
+            stream.Write(linearVelocity.x);
+            stream.Write(separator);
+            stream.Write(linearVelocity.y);
+            stream.Write(separator);
+            stream.Write(linearVelocity.z);
+            stream.Write(separator);
+            stream.Write(angularVelocity.x);
+            stream.Write(separator);
+            stream.Write(angularVelocity.y);
+            stream.Write(separator);
+            stream.Write(angularVelocity.z);
+            stream.Write(separator);
+            stream.Write(linearAcceleration.x);
+            stream.Write(separator);
+            stream.Write(linearAcceleration.y);
+            stream.Write(separator);
+            stream.WriteLine(linearAcceleration.z);
+        }
     }
 }

@@ -1,10 +1,11 @@
+using System.IO;
 using UnityEngine;
 
 
 namespace Telemetry
 {
     /// <summary>Drone control input values record.</summary>
-    public readonly struct DroneInputsTelemetry
+    public readonly struct DroneInputsTelemetry : ICsvSerializable
     {
         /// <summary>Time at which telemetry data was collected. Equals to <see cref="Time"/>.<see cref="Time.realtimeSinceStartup"/>.</summary>
         public readonly float timestamp;
@@ -32,5 +33,21 @@ namespace Telemetry
         
         public override string ToString() => 
             $"[{timestamp:F2}] pitch:{pitch:F3}, yaw:{yaw:F3}, roll:{roll:F3}, throt:{throttle:F3}";
+
+        public string ToCsvString(char separator = ';') => 
+            $"{timestamp}{separator}{pitch}{separator}{yaw}{separator}{roll}{separator}{throttle}";
+
+        public void ToCsv(TextWriter stream, char separator = ';')
+        {
+            stream.Write(timestamp);
+            stream.Write(separator);
+            stream.Write(pitch);
+            stream.Write(separator);
+            stream.Write(yaw);
+            stream.Write(separator);
+            stream.Write(roll);
+            stream.Write(separator);
+            stream.WriteLine(throttle);
+        }
     }
 }
