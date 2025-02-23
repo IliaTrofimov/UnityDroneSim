@@ -10,13 +10,13 @@
                     "type": "Value",
                     "id": "deb46857-f2db-4c85-8320-e906f96fddc4",
                     "expectedControlType": "Axis",
-                    "processors": "",
+                    "processors": "AxisDeadzone",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
                     "name": "Rotation",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "9df7ec8b-e7d7-4171-8a0b-4c23f49bce04",
                     "expectedControlType": "Vector3",
                     "processors": "",
@@ -64,28 +64,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "up",
-                    "id": "20938c4a-3cfc-4b84-b42a-db50d9b68f09",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotation",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "06306337-aee2-45da-8987-06a7f94d7ef5",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotation",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "left",
                     "id": "e47b3696-96e3-4511-8d53-8a3db837366e",
                     "path": "<Keyboard>/w",
@@ -108,9 +86,53 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Forward",
+                    "id": "06306337-aee2-45da-8987-06a7f94d7ef5",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Backward",
+                    "id": "c15fad8a-201f-4147-aedf-eb615a21706b",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "up",
+                    "id": "20938c4a-3cfc-4b84-b42a-db50d9b68f09",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "64477344-c0da-4df1-9754-e3c7d9a71650",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "forward",
                     "id": "628aa39f-6fed-4f0d-bc1b-183ec2c47f2c",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -121,7 +143,7 @@
                 {
                     "name": "backward",
                     "id": "419bfd4d-0749-4302-9542-b79fc87af620",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -133,6 +155,17 @@
                     "name": "",
                     "id": "7226b5c8-d56c-489e-8bba-3b10d382d062",
                     "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StabAltitude",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59dcc983-175e-47c6-b32f-b6c687943684",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
