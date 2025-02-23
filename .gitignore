@@ -37,3 +37,7 @@ sysinfo.txt
 *.unitypackage
 
 # Unity logs
+mono_crash*json
+DebugLogs/*
+UserSettings/*
+Logs/*
