@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace InspectorTools
 {
-    internal class TableDrawer
+    internal class TableDrawer : IDisposable
     {
         private readonly GUIStyle headerStyle, columnHeaderStyle, rowHeaderStyle, cellStyle;
         private readonly string tableHeader;
@@ -12,12 +13,16 @@ namespace InspectorTools
         private readonly List<float[]> cellValues = new();
         private readonly List<string> rowNames = new();
         
+        private bool wasDrawn = false;
+        
         public bool useIndent = true;
         public bool useFloatFields = true;
         public bool useRowLabels = true;
         public bool useColumnHeaders = true;
         public string floatFormat = "{0:F3}";
 
+        public TableDrawer() : this("", Array.Empty<string>()) {}
+        
         public TableDrawer(string tableHeader, string[] columnHeaders,
                            GUIStyle headerStyle = null,
                            GUIStyle columnHeaderStyle = null, 
@@ -54,6 +59,8 @@ namespace InspectorTools
 
         public void Draw()
         {
+            wasDrawn = true;
+            
             if (!string.IsNullOrEmpty(tableHeader))
                 GUILayout.Label(tableHeader, headerStyle);
             
@@ -103,6 +110,12 @@ namespace InspectorTools
             }
 
             GUI.enabled = enabled;
+        }
+
+        public void Dispose()
+        {
+            if (!wasDrawn) Draw();
+            wasDrawn = false;   
         }
     }
 }

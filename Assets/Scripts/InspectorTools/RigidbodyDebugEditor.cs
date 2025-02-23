@@ -1,6 +1,7 @@
-using DebugUtils;
+using System;
 using UnityEditor;
 using UnityEngine;
+using UtilsDebug;
 
 
 namespace InspectorTools
@@ -22,6 +23,8 @@ namespace InspectorTools
             GUI.enabled = false;
             
             GUILayout.Space(10);
+            
+            
             var styleRight = new GUIStyle("label")
             {
                 alignment = TextAnchor.MiddleRight

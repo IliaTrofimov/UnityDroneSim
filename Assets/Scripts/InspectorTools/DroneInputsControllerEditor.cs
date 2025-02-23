@@ -1,4 +1,4 @@
-using RPY_PID_Control;
+using Drone;
 using UnityEditor;
 using UnityEngine;
 using Utils;
@@ -17,7 +17,7 @@ namespace InspectorTools
             var script = (DroneInputsController)target;
             DrawDefaultInspector();
 
-            isVisible = EditorGUILayout.BeginFoldoutHeaderGroup(isVisible, "Input values");
+            isVisible = EditorGUILayout.BeginFoldoutHeaderGroup(isVisible, "Input values (read only)");
             if (!isVisible)
             {
                 EditorGUILayout.EndFoldoutHeaderGroup();
@@ -34,8 +34,6 @@ namespace InspectorTools
                 EditorGUIHelper.VerticalLabel("Roll (Z)", script.roll);
                 EditorGUIHelper.VerticalLabel("Throt.", script.throttle);
             }
-            
-            
             
             GUI.enabled = enabled;
             EditorGUILayout.EndFoldoutHeaderGroup();
