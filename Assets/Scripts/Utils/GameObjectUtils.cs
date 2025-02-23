@@ -5,16 +5,23 @@ namespace Utils
 {
     public static class GameObjectUtils
     {
+        /// <summary>Try to measure GameObject's size using its meshes.</summary>
+        /// <remarks>
+        /// This method searches through any Mesh in this object and its children and sets
+        /// <c>minPoint</c> and <c>maxPoint</c> as vertices with minimal and maximal coordinates in all meshes.
+        /// </remarks>
+        /// <returns>True if object has mesh and size can be calculated, otherwise false.</returns>
         public static bool TryGetDimensions(this GameObject gameObject, out Vector3 minPoint, out Vector3 maxPoint)
         {
-            var meshes = gameObject.GetComponents<MeshRenderer>();
-            var childMeshes = gameObject.GetComponentsInChildren<MeshRenderer>();
-
-            minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-
+            minPoint = maxPoint = Vector3.zero;
+            var meshes = gameObject?.GetComponents<MeshRenderer>();
+            var childMeshes = gameObject?.GetComponentsInChildren<MeshRenderer>();
+            
             if ((meshes == null || meshes.Length == 0) && (childMeshes == null || childMeshes.Length == 0))
                 return false;
+            
+            minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
             
             if (meshes?.Length > 0)
             {
@@ -22,8 +29,9 @@ namespace Utils
                 maxPoint = meshes[0].bounds.max;
                 for (var i = 1; i < meshes.Length; i++)
                 {
-                    minPoint = Vector3.Min(minPoint, meshes[i].bounds.min);
-                    maxPoint = Vector3.Max(maxPoint, meshes[i].bounds.max);
+                    var bounds = meshes[i].bounds;
+                    minPoint = Vector3.Min(minPoint, bounds.min);
+                    maxPoint = Vector3.Max(maxPoint, bounds.max);
                 }
             }
 
@@ -31,17 +39,21 @@ namespace Utils
             {
                 for (var i = 0; i < childMeshes.Length; i++)
                 {
-                    minPoint = Vector3.Min(minPoint, childMeshes[i].bounds.min);
-                    maxPoint = Vector3.Max(maxPoint, childMeshes[i].bounds.max);
-                }
+                    var bounds = childMeshes[i].bounds;
+                    minPoint = Vector3.Min(minPoint, bounds.min);
+                    maxPoint = Vector3.Max(maxPoint, bounds.max);
+                }   
             }
-            
+
             return true;           
         }
 
+        /// <summary>Try to measure GameObject's size using its meshes.</summary>
+        /// <remarks>Resulting vector <c>axis</c> is length of given object in XYZ dimensions.</remarks>
+        /// <returns>True if object has mesh and size can be calculated, otherwise false.</returns>
         public static bool TryGetDimensions(this GameObject gameObject, out Vector3 axis)
         {
-            if (!TryGetDimensions(gameObject, out Vector3 minPoint, out Vector3 maxPoint))
+            if (!TryGetDimensions(gameObject, out var minPoint, out var maxPoint))
             {
                 axis = Vector3.zero;
                 return false;
@@ -50,15 +62,14 @@ namespace Utils
             return true;
         }
         
-        public static bool TryGetDimensions(this GameObject gameObject, out float diagonalLength)
+        /// <summary>Try to measure GameObject's size using its meshes.</summary>
+        /// <remarks>Resulting <c>length</c> is diagonal of box bounding object.</remarks>
+        /// <returns>True if object has mesh and size can be calculated, otherwise false.</returns>
+        public static bool TryGetDimensions(this GameObject gameObject, out float length)
         {
-            if (!TryGetDimensions(gameObject, out Vector3 minPoint, out Vector3 maxPoint))
-            {
-                diagonalLength = float.NaN;
-                return false;
-            }
-            diagonalLength = (maxPoint - minPoint).magnitude;
-            return true;
+            var result = TryGetDimensions(gameObject, out Vector3 axis);
+            length = axis.magnitude;
+            return result;
         }
     }
 }
