@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace RPY_PID_Control
+namespace Drone
 {
     [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class DroneDestruction : MonoBehaviour
     {
         [Range(0.01f, 10f)] public float destructionVelocity;
