@@ -28,7 +28,8 @@ namespace Drone
         public DroneMotor motorFrontLeft, motorFrontRight, motorRearLeft, motorRearRight;
         
         /// <summary>PID stabilizers for each control value.</summary>
-        public PidController pidThrottle, pidPitch, pidRoll, pidYaw;
+        // Can use DebugPidController to show live PID values stats (POOR PERFORMANCE)
+        public PidController pidThrottle, pidPitch, pidRoll, pidYaw; 
        
         /// <summary>Resulting corrected control values.</summary>
         public float pitchCorrection, yawCorrection, rollCorrection, throttleCorrection;
@@ -78,48 +79,58 @@ namespace Drone
                 string.Format(labelFmt, "RR", motorRearRight.ForceVector.magnitude), options);
         }
 
+        private void OnValidate()
+        {
+            // keep PID outputs limited to maxForce values
+            pidThrottle.SetClamping(controlParams.maxLiftForce);
+            pidPitch.SetClamping(controlParams.maxPitchForce);
+            pidYaw.SetClamping(controlParams.maxYawForce);
+            pidRoll.SetClamping(controlParams.maxRollForce);
+        }
+
         private void FixedUpdate()
         {
+            // When using stabilization target values are limited to maxLiftSpeed, maxPitchAngle etc.
+            // Output force will be limited to forceMultiplier, maxPitchForce etc.
+            // This restricts drone vertical speed and tilt angles
+            
+            // Without stabilization forces are directly input * maxForce
+            
             var dt = Time.fixedDeltaTime;
 
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabAltitude))
             {
-                throttleCorrection = pidThrottle.CalcDeriv(
+                throttleCorrection = pidThrottle.Calc(
                     inputController.throttle * controlParams.maxLiftSpeed,
                     rigidBody.linearVelocity.y, 
                     dt);
             }
             else
             {
-                throttleCorrection = inputController.throttle;
+                throttleCorrection = inputController.throttle * controlParams.maxLiftForce;
             }
             
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabPitchRoll))
             { 
                 var rot = transform.WrapEulerRotation180();
-                pitchCorrection = -pidPitch.CalcDeriv(inputController.pitch * controlParams.maxPitchAngle, rot.x, dt);
-                rollCorrection  = -pidRoll.CalcDeriv(inputController.roll * controlParams.maxRollAngle, rot.z, dt);
+                pitchCorrection = -pidPitch.Calc(inputController.pitch * controlParams.maxPitchAngle, rot.x, dt);
+                rollCorrection = -pidRoll.Calc(inputController.roll * controlParams.maxRollAngle, rot.z, dt);
             }
             else
             {
-                pitchCorrection = inputController.pitch;
-                rollCorrection  = inputController.roll;
+                pitchCorrection = inputController.pitch * controlParams.maxRollForce;
+                rollCorrection  = inputController.roll * controlParams.maxRollForce;
             }
 
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabYaw))
             {
-                var yawVelocity = rigidBody.AxialAngularVelocity().y;
-                yawCorrection = pidYaw.CalcDeriv(inputController.yaw * controlParams.maxYawAngle, yawVelocity, dt);
+                var yawSpeed = rigidBody.AxialAngularVelocity().y;
+                yawCorrection = pidYaw.Calc(inputController.yaw * controlParams.maxYawSpeed, yawSpeed, dt);
             }
             else
             {
-                yawCorrection = inputController.yaw;
+                yawCorrection = inputController.yaw * controlParams.maxYawForce;
             }
-
-            throttleCorrection *= controlParams.forceMultiplier;
-            pitchCorrection    *= controlParams.maxPitchForce;
-            yawCorrection      *= controlParams.maxYawForce;
-            rollCorrection     *= controlParams.maxRollForce;
             
             UpdateMotorsManual();
         }
@@ -148,8 +159,7 @@ namespace Drone
             torqueVector = (motorFrontLeft.ForceVector 
                             - motorFrontRight.ForceVector
                             - motorRearLeft.ForceVector
-                            + motorRearRight.ForceVector) 
-                           * controlParams.torqueMultiplier;
+                            + motorRearRight.ForceVector) * controlParams.torqueMultiplier;
             rigidBody.AddTorque(torqueVector, ForceMode.Impulse);
         }
 
