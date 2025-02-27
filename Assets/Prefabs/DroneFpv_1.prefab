@@ -563,8 +563,6 @@ MonoBehaviour:
   animationSpeed: 1
   idleRotationSpeed: 1.5
   propeller: {fileID: 3449964286232013899}
-  propellerAngleDelta: 0
-  propellerSpeedFactor: -59.432095
 --- !u!1 &3529506328328253750
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,8 +694,6 @@ MonoBehaviour:
   animationSpeed: 1
   idleRotationSpeed: 1.5
   propeller: {fileID: 353401238366090109}
-  propellerAngleDelta: 0
-  propellerSpeedFactor: 59.432095
 --- !u!1 &5080202655946929120
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,8 +1043,6 @@ MonoBehaviour:
   animationSpeed: 1
   idleRotationSpeed: 1.5
   propeller: {fileID: 3635813652870192860}
-  propellerAngleDelta: 0
-  propellerSpeedFactor: 59.432095
 --- !u!1 &7181929161792296690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1059,10 +1053,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3687313545292754829}
   - component: {fileID: 8571162416980300483}
-  - component: {fileID: 3133890390888092487}
   - component: {fileID: 310941504761515658}
   - component: {fileID: 1773305771786904982}
-  - component: {fileID: 93640635502015433}
   m_Layer: 9
   m_Name: DroneFpv_1
   m_TagString: DroneBase
@@ -1119,21 +1111,6 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &3133890390888092487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7181929161792296690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40c7e0be900d459b8021ad816f294850, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugType: 0
-  capSize: 0.05
-  vectorSize: 1
 --- !u!114 &310941504761515658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1171,60 +1148,51 @@ MonoBehaviour:
   balanceCenterOfMass: 0
   controlParams:
     maxLiftSpeed: 5
-    forceMultiplier: 5
+    maxLiftForce: 10
     torqueMultiplier: 0.01
     maxPitchAngle: 15
     maxPitchForce: 0.5
-    maxYawAngle: 1
-    maxYawForce: 0.5
-    maxRollAngle: 15
+    maxYawSpeed: 5
+    maxYawForce: 0.1
+    maxRollAngle: 20
     maxRollForce: 0.5
   motorFrontLeft: {fileID: 6800389484240247053}
   motorFrontRight: {fileID: 144923558832222079}
   motorRearLeft: {fileID: 6559836202949606232}
   motorRearRight: {fileID: 8169947174329360047}
   pidThrottle:
-    pFactor: 0.6
-    iFactor: 0.125
-    dFactor: 0.001
-    minOutput: -1
-    maxOutput: 4.52
+    pFactor: 1
+    iFactor: 0.6
+    dFactor: 0.05
+    minOutput: -10
+    maxOutput: 10
+    integralRange: 10
   pidPitch:
-    pFactor: 0.002
+    pFactor: 0.005
     iFactor: 0
     dFactor: 0.0012
-    minOutput: -0.0005
-    maxOutput: 0.0005
+    minOutput: -0.5
+    maxOutput: 0.5
+    integralRange: 0.5
   pidRoll:
-    pFactor: 0.5
-    iFactor: 0
-    dFactor: 0.1
-    minOutput: -0.02
-    maxOutput: 0.02
+    pFactor: 0.005
+    iFactor: 0.0001
+    dFactor: 0.001
+    minOutput: -0.5
+    maxOutput: 0.5
+    integralRange: 0.5
   pidYaw:
-    pFactor: 1
+    pFactor: 0.02
     iFactor: 0
-    dFactor: 0.01
-    minOutput: -1
-    maxOutput: 1
+    dFactor: 0.0001
+    minOutput: -0.1
+    maxOutput: 0.1
+    integralRange: 0.1
   pitchCorrection: 0
   yawCorrection: 0
   rollCorrection: 0
   throttleCorrection: 0
   torqueVector: {x: 0, y: 0, z: 0}
---- !u!114 &93640635502015433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7181929161792296690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c0cf6f3b54340e79947c6fd194a7de3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enterCollisionsCount: 0
 --- !u!1 &7640537058468897458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,8 +1433,6 @@ MonoBehaviour:
   animationSpeed: 1
   idleRotationSpeed: 1.5
   propeller: {fileID: 7012299512993649048}
-  propellerAngleDelta: 0
-  propellerSpeedFactor: -59.432095
 --- !u!1 &8694588208132049211
 GameObject:
   m_ObjectHideFlags: 0

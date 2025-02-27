@@ -2899,11 +2899,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 144923558832222079, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
-        type: 3}
-      propertyPath: propellerSpeedFactor
-      value: -59.432095
-      objectReference: {fileID: 0}
     - target: {fileID: 3687313545292754829, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2954,25 +2949,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6559836202949606232, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
-        type: 3}
-      propertyPath: propellerSpeedFactor
-      value: -59.432095
-      objectReference: {fileID: 0}
-    - target: {fileID: 6800389484240247053, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
-        type: 3}
-      propertyPath: propellerSpeedFactor
-      value: 59.432095
-      objectReference: {fileID: 0}
     - target: {fileID: 7181929161792296690, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
         type: 3}
       propertyPath: m_Name
       value: DroneFpv_1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8169947174329360047, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
-        type: 3}
-      propertyPath: propellerSpeedFactor
-      value: 59.432095
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
