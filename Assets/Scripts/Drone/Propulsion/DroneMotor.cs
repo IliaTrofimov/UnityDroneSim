@@ -1,8 +1,6 @@
-using System;
 using InspectorTools;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 
@@ -35,7 +33,7 @@ namespace Drone.Propulsion
         [Range(-1, 1)] public int rollFactor;
 		
         /// <summary>Total lift force to be applied by this motor.</summary>
-        [ReadOnlyField] public float liftForce;
+        public float liftForce;
         
         /// <summary>Turns on/off propellers animations.</summary>
         [Header("Animations")]
@@ -50,7 +48,7 @@ namespace Drone.Propulsion
         /// <summary>The propeller object. Animation will be done here.</summary>
         public GameObject propeller;
 
-        [SerializeField] private float propellerAngleDelta, propellerSpeedFactor;
+        private float propellerAngleDelta, propellerSpeedFactor;
         
         
         private void Start() => UpdatePropellerSpeedFactor();
@@ -73,7 +71,7 @@ namespace Drone.Propulsion
         }
         
         
-        private void FixedUpdate()
+        protected virtual void Update()
         {
             if (!animatePropellers) return;
 
@@ -82,16 +80,16 @@ namespace Drone.Propulsion
 	            if (liftForce != 0)	 // propeller is accelerating
 	            {
 		            propellerAngleDelta = math.lerp(propellerAngleDelta, idleRotationSpeed, Time.fixedDeltaTime);
-		            propellerAngleDelta += MathExtensions.SignedSqrt(liftForce) * propellerSpeedFactor * Time.fixedDeltaTime;
+		            propellerAngleDelta += MathExtensions.SignedSqrt(liftForce) * propellerSpeedFactor * Time.deltaTime;
 	            }
 	            else				 // propeller is slowing down
 	            {
-		            propellerAngleDelta = math.lerp(propellerAngleDelta, 0, Time.fixedDeltaTime);
+		            propellerAngleDelta = math.lerp(propellerAngleDelta, 0, Time.deltaTime);
 	            }
             }
             else if (liftForce != 0) // propeller starts immediately
             {
-	            propellerAngleDelta = MathExtensions.SignedSqrt(liftForce) * propellerSpeedFactor * Time.fixedDeltaTime;   
+	            propellerAngleDelta = MathExtensions.SignedSqrt(liftForce) * propellerSpeedFactor * Time.deltaTime;   
             }
             else					 // propeller stops immediately
             {
@@ -116,9 +114,12 @@ namespace Drone.Propulsion
         /// <returns>Calculated <c>liftForce</c> value.</returns>
         public float ApplyForceClamp(Rigidbody rigidBody, float throttle, float pitch, float yaw, float roll, ForceMode forceMode = ForceMode.Force)
         {
-	        liftForce = MathExtensions.ClampPositive(throttle + pitchFactor * pitch + rollFactor * roll + yawFactor * yaw);
+	        liftForce = throttle + pitchFactor * pitch + rollFactor * roll + yawFactor * yaw;
+	        MathExtensions.ClampPositive(ref liftForce);
+	        
 	        rigidBody.AddForceAtPosition(ForceVector, transform.position, forceMode);
 	        rigidBody.AddTorque(ForceVector * torqueFactor, forceMode);
+	        
 	        return liftForce;
         }
     }

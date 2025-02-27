@@ -13,16 +13,15 @@ namespace Drone.Propulsion
     public class DebugDroneMotor : DroneMotor
     {
         #if UNITY_EDITOR
-        [Header("Lift force")]
-        [RealtimeCurve] 
-        public AnimationCurve forceCurve = new();
+        [Header("Lift force")] public float forceCurve;
         #endif
 
-        private void Update()
+        protected override void Update()
         {
             #if UNITY_EDITOR
-            forceCurve.AddKeyWrapped(Time.frameCount, liftForce);
+            forceCurve =  liftForce;
             #endif
+            base.Update();
         }
     }
 }

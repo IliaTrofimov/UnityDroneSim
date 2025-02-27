@@ -1,9 +1,6 @@
-using System.Runtime.CompilerServices;
 using InspectorTools;
 using Unity.Mathematics;
 using UnityEngine;
-using Utils;
-
 
 namespace Drone.Stability
 {
@@ -12,111 +9,112 @@ namespace Drone.Stability
     [System.Serializable]
     public class DebugPidController : IPid
     {
+        private const int STATS_BUFFER = 20; // set 10-30
+        private bool errorWasSet;
+        
+        [StatsCurve(STATS_BUFFER), SerializeField] 
+        protected float p;
+        
+        [StatsCurve(STATS_BUFFER), SerializeField] 
+        private float i;
+        
+        [StatsCurve(STATS_BUFFER), SerializeField] 
+        private float d;
+        
+        [StatsCurve(STATS_BUFFER), SerializeField] 
+        private float lastError;
+        
+        [StatsCurve(STATS_BUFFER), SerializeField] 
+        private float lastValue;
+
+        [StatsCurve(STATS_BUFFER), SerializeField] 
+        private float output;
+        
+        
         /// <summary>Proportional factor. Makes output proportionally large/smaller when error is large/small. Can cause output oscillation.</summary>
-        [Min(0)] public float pFactor;
+        public float pFactor;
     
-        /// <summary>Integral factor. Can reduce static noise and cause windup.</summary>
-        [Min(0)] public float iFactor;
+        /// <summary>Integral factor. Can reduce static noise but causee windup.</summary>
+        public float iFactor;
     
         /// <summary>Derivative factor. Makes output proportionally large/smaller when change in error is large/small. Can smooth oscillations.</summary>
-        [Min(0)] public float dFactor;
-    
+        public float dFactor;
+        
         /// <summary>Minimal output value.</summary>
-        public float minOutput = -1f;
-    
+        public float minOutput;
+
         /// <summary>Maximum output value.</summary>
-        public float maxOutput = 1f;
+        public float maxOutput;
         
-        private float p, i, d, lastError, lastValue;
-       
-        #if UNITY_EDITOR
-        [RealtimeCurve] public AnimationCurve actualValueCurve;
-        [RealtimeCurve] public AnimationCurve targetValueCurve;
-        [RealtimeCurve] public AnimationCurve pValueCurve;
-        [RealtimeCurve] public AnimationCurve iValueCurve;
-        [RealtimeCurve] public AnimationCurve dValueCurve;
-        [RealtimeCurve] public AnimationCurve outputCurve;
-        #endif
+        /// <summary>Maximum absolute value integral component can have.</summary>
+        /// <remarks>This value can prevent integral windup.</remarks>
+        public float integralRange;
+
         
+        public bool useValueDerivative;
+        public bool clampIntegralComponent = true;
+        public bool clampOutput = true;
         
         public DebugPidController() : this(1f, 0f, 0.2f) {}
         
-        public DebugPidController(float p, float i, float d)
+        public DebugPidController(float p, float i, float d, float min = -1f, float max = 1f, float intRange = 1f)
         {
             pFactor = p;
             iFactor = i;
             dFactor = d;
+            minOutput = min;
+            maxOutput = max;
+            integralRange = intRange;
         }
         
-        
-        public float CalcNoClamp(float target, float actual, float dt)
-        {
-            p = target - actual; 
-            i = CalcIntegral(i, p, dt, minOutput, maxOutput);
-            d = (p - lastError) / dt;
-            lastError = p;
-            
-            var output = p * pFactor + i * iFactor + d * dFactor;
-            UpdateCurves(p, i, d, actual, target, output);
-            return output;
-        }
         
         public float Calc(float target, float actual, float dt) 
         {
-            p = target - actual; 
-            i = CalcIntegral(i, p, dt, minOutput, maxOutput);
-            d = (p - lastError) / dt;
+            p = target - actual;
+            
+            i = clampIntegralComponent
+                ? math.clamp(i + p * dt, -integralRange, integralRange)
+                : i + p * dt;
+
+            if (!errorWasSet)   // do not calc derivative for the 1st time to avoid kick
+            {
+                d = 0f;
+                errorWasSet = false;
+            }
+            else if (useValueDerivative)
+            {
+                d = (lastValue - actual) / dt; 
+            }
+            else
+            {
+                d = (p - lastError) / dt;
+            }
+            
+            output = clampOutput
+                ? math.clamp(p * pFactor + i * iFactor + d * dFactor, minOutput, maxOutput)
+                : p * pFactor + i * iFactor + d * dFactor;
+            
             lastError = p;
+            lastValue = actual;
             
-            var output = p * pFactor + i * iFactor + d * dFactor;
-            math.clamp(output, minOutput, maxOutput);
-            UpdateCurves(p, i, d, actual, target, output);
             return output;
         } 
         
-        public float CalcDerivNoClamp(float target, float actual, float dt)
+        /// <summary>Reset internal values (error integral and last value).</summary>
+        public virtual void Reset()
         {
-            p = target - actual; 
-            i = CalcIntegral(i, p, dt, minOutput, maxOutput);
-            d = -(actual - lastValue) / dt;
-            lastValue = actual;
-            
-            var output = p * pFactor + i * iFactor + d * dFactor;
-            UpdateCurves(p, i, d, actual, target, output);
-            return output;
+            i = lastError = 0f;
+            errorWasSet = false;
+        }
+
+        /// <summary>Set output and integral clamping values.</summary>
+        public virtual void SetClamping(float minOutput, float maxOutput, float? integralRange = null)
+        {
+            this.minOutput = minOutput;
+            this.maxOutput = maxOutput;
+            this.integralRange = integralRange ?? math.abs(minOutput - maxOutput);
         }
         
-        public float CalcDeriv(float target, float actual, float dt) 
-        {
-            p = target - actual; 
-            i = CalcIntegral(i, p, dt, minOutput, maxOutput);
-            d = -(actual - lastValue) / dt;
-            lastValue = actual;
-            
-            var output = p * pFactor + i * iFactor + d * dFactor;
-            math.clamp(output, minOutput, maxOutput);
-            UpdateCurves(p, i, d, actual, target, output);
-            return output;
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float CalcIntegral(float integral, float error, float dt, float minOutput, float maxOutput)
-        {
-            var range = 2 * math.abs(maxOutput - minOutput);  // clamp integral so it doesn't overwhelm other components
-            return math.clamp(integral + error*dt, -range, range); 
-        } 
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UpdateCurves(float p, float i, float d, float actual, float target, float output)
-        {
-            #if UNITY_EDITOR
-            actualValueCurve.AddKeyWrapped(Time.frameCount, actual);
-            targetValueCurve.AddKeyWrapped(Time.frameCount, target);
-            outputCurve.AddKeyWrapped(Time.frameCount, output);
-            pValueCurve.AddKeyWrapped(Time.frameCount, p);
-            iValueCurve.AddKeyWrapped(Time.frameCount, i);
-            dValueCurve.AddKeyWrapped(Time.frameCount, d);
-            #endif
-        }
+        public void SetClamping(float maxRange) => SetClamping(-maxRange, maxRange, maxRange);
     }
 }
