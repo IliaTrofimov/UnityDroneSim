@@ -35,16 +35,16 @@ namespace Drone
 		/// <summary>Flight stabilization mode.</summary>
 		public DroneStabilizerMode stabilizerMode = DroneStabilizerMode.StabAltitude | DroneStabilizerMode.StabPitchRoll;
 		
-		/// <summary>Desired throttle value.</summary>
+		/// <summary>Desired throttle value. Range [-1, 1].</summary>
 		[HideInInspector] public float throttle;
 		
-		/// <summary>Desired pitch value. Rotation along X (right) axis.</summary>
+		/// <summary>Desired pitch value. Rotation along X (right) axis. Range [-1, 1].</summary>
 		[HideInInspector] public float pitch;
 		
-		/// <summary>Desired yaw value. Rotation along Y (up) axis.</summary>
+		/// <summary>Desired yaw value. Rotation along Y (up) axis. Range [-1, 1].</summary>
 		[HideInInspector] public float yaw;
 		
-		/// <summary>Desired roll value. Rotation along Z (forward) axis.</summary>
+		/// <summary>Desired roll value. Rotation along Z (forward) axis. Range [-1, 1].</summary>
 		[HideInInspector] public float roll;
 		
 		
