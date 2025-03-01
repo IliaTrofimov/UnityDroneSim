@@ -1,89 +1,79 @@
+using System;
 using System.Collections.Generic;
+using Drone.Propulsion;
+using Unity.Collections;
+using UnityEditor;
 using UnityEngine;
+using UtilsDebug;
 
 
 namespace Drone
 {
-    [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(QuadcopterComputer))]
+    [RequireComponent(typeof(Rigidbody))]
     public class DroneDestruction : MonoBehaviour
     {
-        [Range(0.01f, 10f)] public float destructionVelocity;
-        public List<Rigidbody> propellersRigidbodies;
+        private QuadcopterComputer droneComputer;
+        private readonly Dictionary<int, DroneMotor> motorsLookup = new(4);
         
-        private readonly List<Vector3> propellersInitialLocalPositions = new(4);
-        private readonly List<Quaternion> propellersInitialLocalRotations = new(4);
-        private bool wasDestroyed;
+        [Range(0f, 20f)] public float breakSpeed;
+        [Range(0f, 20f)] public float breakImpulse;
+        
+        
+       private void Awake()
+       {
+           droneComputer = GetComponent<QuadcopterComputer>();
+           
+           motorsLookup[droneComputer.motorFrontLeft.gameObject.GetInstanceID()] = droneComputer.motorFrontLeft;
+           motorsLookup[droneComputer.motorFrontRight.gameObject.GetInstanceID()] = droneComputer.motorFrontRight;
+           motorsLookup[droneComputer.motorRearLeft.gameObject.GetInstanceID()] = droneComputer.motorRearLeft;
+           motorsLookup[droneComputer.motorRearRight.gameObject.GetInstanceID()] = droneComputer.motorRearRight;
+       }
 
-        
-        private void Awake() => InitPropellers();
-        
-        private void OnValidate() => InitPropellers();
-        
-        private void InitPropellers()
-        {
-            if (propellersRigidbodies == null || propellersRigidbodies.Count == 0) return;
-            
-            propellersInitialLocalPositions.Clear();
-            propellersInitialLocalRotations.Clear();
-            
-            for (var i = 0; i < propellersRigidbodies.Count; i++)
-            {
-                var propTransform = propellersRigidbodies[i].transform;
-                propellersInitialLocalPositions.Add(propTransform.localPosition);
-                propellersInitialLocalRotations.Add(propTransform.localRotation);
-            }
-        }
+       private void OnCollisionEnter(Collision other)
+       {
+           var spd = other.relativeVelocity.magnitude;
+           var imp = other.impulse.magnitude;
+           if (other.contactCount == 0 || (spd < breakSpeed && imp < breakImpulse)) 
+               return;
 
-        private void Start() => Recover();
-        
-        private void OnApplicationQuit() => Recover();
-        
-        private void OnCollisionEnter(Collision other)
-        {
-            if (!wasDestroyed || 
-                propellersRigidbodies.Count == 0 || 
-                other.relativeVelocity.magnitude < destructionVelocity)
-                return;
-
-            wasDestroyed = true;
-            
-            var parent = transform.parent;
-            for (var i = 0; i < propellersRigidbodies.Count; i++)
-            {
-                var propRigidBody = propellersRigidbodies[i];
-                propRigidBody.isKinematic = false;
-                propRigidBody.useGravity = true;
-                propRigidBody.WakeUp();
-                propRigidBody.gameObject.transform.SetParent(parent, true);
-            }
-            
-            Debug.LogFormat("Drone '{0}' has collided and destroyed", gameObject.name);
-        }
-        
-        public void Recover()
-        {
-            if (!wasDestroyed)
-            {
-                Debug.LogFormat("Drone '{0}' was not destroyed, no need to recover its parts", gameObject.name);
-                return;
-            }
-            
-            wasDestroyed = false;
-            for (var i = 0; i < propellersRigidbodies.Count; i++)
-            {
-                var propRigidBody = propellersRigidbodies[i];
-                propRigidBody.isKinematic = true;
-                propRigidBody.useGravity = false;
-                propRigidBody.Sleep();
-
-                var propTransform = propRigidBody.transform;
-                propTransform.SetParent(gameObject.transform);
-                propTransform.localPosition = propellersInitialLocalPositions[i];
-                propTransform.localRotation = propellersInitialLocalRotations[i];
-            }
-            
-            Debug.LogFormat("Drone '{0}' has recovered its parts", gameObject.name);
-        }
+           var thisCollider = other.GetContact(0).thisCollider;
+           var colliderParent = thisCollider.transform.parent.gameObject;
+          
+           if (!motorsLookup.TryGetValue(colliderParent.GetInstanceID(), out var motor))
+           {
+               Debug.LogFormat("Collision: '{0}' -> '{1}' (v: {2:F3} m/s, i: {3:F3} kg*m/s), motor was not found", 
+                   thisCollider.name, other.gameObject.name, spd, imp);
+               return;
+           }
+          
+           var rotorRigidbody = colliderParent.AddComponent<Rigidbody>();
+           if (rotorRigidbody != null)
+           {
+               rotorRigidbody.mass = 0.01f;
+               rotorRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+               rotorRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+           }
+           
+           colliderParent.transform.parent = null;
+           colliderParent.name = "[X] " + colliderParent.name;
+           
+           motor.enabled = false;
+           rotorRigidbody.AddRelativeForce(Vector3.up * motor.liftForce / 5, ForceMode.Force);
+           rotorRigidbody.AddRelativeTorque(Vector3.up * motor.liftForce, ForceMode.Force);
+           
+           if (motor is DestructibleMotor destructibleMotor)
+           {
+               destructibleMotor.OnMotorCollided();
+           }
+           else
+           {
+               thisCollider.enabled = false;
+           }
+           
+           Debug.LogFormat("Collision: '{0}.{1}' -> '{2}' (v: {3:F3} m/s, i: {4:F3} kg*m/s), motor '{5}' was detached",
+               colliderParent.name, thisCollider.name, other.gameObject.name, spd, imp, motor.name);
+       }
     }
 }
