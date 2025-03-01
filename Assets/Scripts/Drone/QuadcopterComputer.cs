@@ -117,14 +117,15 @@ namespace Drone
                 rollCorrection = -pidRoll.Calc(inputController.roll * controlParams.maxRollAngle, rot.z, dt);
             }
             else
-            {
-                pitchCorrection = inputController.pitch * controlParams.maxRollForce;
-                rollCorrection  = inputController.roll * controlParams.maxRollForce;
+            {  
+                // must be inverted to match stabilized version (don't fix what is working)
+                pitchCorrection = -inputController.pitch * controlParams.maxRollForce;
+                rollCorrection  = -inputController.roll * controlParams.maxRollForce;
             }
 
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabYaw))
             {
-                var yawSpeed = rigidBody.AxialAngularVelocity().y;
+                var yawSpeed = rigidBody.YawVelocity();
                 yawCorrection = pidYaw.Calc(inputController.yaw * controlParams.maxYawSpeed, yawSpeed, dt);
             }
             else

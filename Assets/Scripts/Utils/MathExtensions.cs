@@ -68,6 +68,27 @@ namespace Utils
             );
         }
         
+        /// <summary>Get rotation speed of the Rigidbody in rad/s along X axis.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float PitchVelocity(this Rigidbody rigidBody)
+        {
+            return Vector3.Dot(rigidBody.rotation * Vector3.right, rigidBody.angularVelocity);
+        }
+        
+        /// <summary>Get rotation speed of the Rigidbody in rad/s along Y axis.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float YawVelocity(this Rigidbody rigidBody)
+        {
+            return Vector3.Dot(rigidBody.rotation * Vector3.up, rigidBody.angularVelocity);
+        }
+        
+        /// <summary>Get rotation speed of the Rigidbody in rad/s along Z axis.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float RollVelocity(this Rigidbody rigidBody)
+        {
+            return Vector3.Dot(rigidBody.rotation * Vector3.forward, rigidBody.angularVelocity);
+        }
+        
         /// <summary>Returns new Euler angles of transform with values wrapped between [0, 179] degrees.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 WrapEulerRotation180(this Transform transform)

@@ -5,9 +5,13 @@ using UnityEngine;
 
 namespace InspectorTools
 {
+    /// <summary>
+    /// Marks property or field that it should be stored over time and displayed in the Inspector.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class StatsCurveAttribute : PropertyAttribute
     {
+        /// <summary>Max values count to store and display.</summary>
         public int BufferSize { get; set; }
         public StatsCurveAttribute(int bufferSize = 20)
         {
