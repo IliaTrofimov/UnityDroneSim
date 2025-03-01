@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Drone.Stability;
 using Inputs;
 using Unity.Mathematics;
 using UnityEngine;
@@ -6,13 +6,6 @@ using UnityEngine;
 
 namespace Drone
 {
-	/// <summary>Flight stabilization mode.</summary>
-	[Flags]
-	public enum DroneStabilizerMode
-	{
-		None = 0, StabAltitude = 1, StabPitchRoll = 2, StabYaw = 4
-	}
-	
 	/// <summary>Drone control inputs manager.</summary>
 	/// <remarks>Reads manual inputs with <see cref="DroneControls"/> at Update function, or takes AI inputs from SetInputs on demand.</remarks>
 	[DisallowMultipleComponent]

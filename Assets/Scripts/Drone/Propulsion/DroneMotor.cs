@@ -13,7 +13,7 @@ namespace Drone.Propulsion
     public class DroneMotor : MonoBehaviour 
     {
 	    /// <summary>Get current force vector. Shortcut for <c>transform.up * totalForce</c>.</summary>
-	    public Vector3 ForceVector => transform.up * liftForce;
+	    public virtual Vector3 ForceVector => transform.up * liftForce;
 
         
         /// <summary>A factor to be applied to torque produced by motor.</summary>
@@ -33,7 +33,7 @@ namespace Drone.Propulsion
         [Range(-1, 1)] public int rollFactor;
 		
         /// <summary>Total lift force to be applied by this motor.</summary>
-        public float liftForce;
+        [ReadOnlyField] public float liftForce;
         
         /// <summary>Turns on/off propellers animations.</summary>
         [Header("Animations")]
@@ -48,7 +48,8 @@ namespace Drone.Propulsion
         /// <summary>The propeller object. Animation will be done here.</summary>
         public GameObject propeller;
 
-        private float propellerAngleDelta, propellerSpeedFactor;
+        protected float propellerAngleDelta;
+        private float propellerSpeedFactor;
         
         
         private void Start() => UpdatePropellerSpeedFactor();
@@ -73,7 +74,7 @@ namespace Drone.Propulsion
         
         protected virtual void Update()
         {
-            if (!animatePropellers) return;
+            if (!animatePropellers || !enabled) return;
 
             if (idleRotationSpeed >= 0.1f)
             {

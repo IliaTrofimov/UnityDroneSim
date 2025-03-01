@@ -32,8 +32,8 @@ namespace UtilsDebug
             var lastColor = Gizmos.color;
             Gizmos.color = options.color;
             Gizmos.DrawLine(origin, end);
-            Gizmos.DrawLine(end - q * ((Vector3.forward + Vector3.right).normalized * options.capSize * 2), end);
-            Gizmos.DrawLine(end - q * ((Vector3.forward - Vector3.right).normalized * options.capSize * 2), end);
+            Gizmos.DrawLine(end - q * (Vector3.forward + Vector3.right).normalized * (options.capSize * 2), end);
+            Gizmos.DrawLine(end - q * (Vector3.forward - Vector3.right).normalized * (options.capSize * 2), end);
             
             DrawLineLabel(origin, end, label, options);
             
@@ -107,7 +107,7 @@ namespace UtilsDebug
                         onHover = { textColor = Color.black }, // shadow always black on hovering
                         hover = { textColor = Color.black },
                         onActive = { textColor = Color.black },
-                        contentOffset = new Vector2(3, -5),
+                        contentOffset = new Vector2(0, -8),
                         fontStyle = options.labelStyle
                     });   
                 }

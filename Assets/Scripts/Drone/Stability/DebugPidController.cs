@@ -34,7 +34,7 @@ namespace Drone.Stability
         /// <summary>Proportional factor. Makes output proportionally large/smaller when error is large/small. Can cause output oscillation.</summary>
         public float pFactor;
     
-        /// <summary>Integral factor. Can reduce static noise but causee windup.</summary>
+        /// <summary>Integral factor. Can reduce static noise but cause windup.</summary>
         public float iFactor;
     
         /// <summary>Derivative factor. Makes output proportionally large/smaller when change in error is large/small. Can smooth oscillations.</summary>
