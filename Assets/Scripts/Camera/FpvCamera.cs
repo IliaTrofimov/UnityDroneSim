@@ -4,17 +4,16 @@ using UnityEngine;
 
 namespace Camera
 {
-	public class FpvCameraScript : MonoBehaviour
+	public class FpvCamera : MonoBehaviour
 	{
-		private Transform target = null;
-		
+		public Transform target;
 		public Vector3 offset;
+		
 		[Range(0, 1)] public float temp;
 		[Range(0, 1)] public float rpLimitRatio;
 	
 		private void Awake()
 		{
-			target = GameObject.FindGameObjectWithTag("Player")?.transform;
 			ExceptionHelper.ThrowIfComponentIsMissing(this, target, nameof(target));
 		}
 		
