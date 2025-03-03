@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Drone
 {
     /// <summary>
-    /// Collection of parameters for tuning drone movements and stabilization.
+    /// Collection of parameters for tuning drone's movements and stabilization.
     /// </summary>
     [Serializable]
     public struct DroneControlParams
