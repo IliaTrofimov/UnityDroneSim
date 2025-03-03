@@ -13,11 +13,8 @@ namespace Drone
     /// <summary>Quadcopter drone flight computer. Manages all motors power.</summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(DroneInputsController))]
-    public class QuadcopterComputer : MonoBehaviour
+    public class QuadcopterComputer : DroneComputerBase
     {
-        public Rigidbody rigidBody;
-        private DroneInputsController inputController;
-        
         /// <summary>Settings toggles.</summary>
         public bool showForceVectors, clampNegativeForce, balanceCenterOfMass;
         
@@ -37,15 +34,12 @@ namespace Drone
         public Vector3 torqueVector;
         private Vector3 droneBounds;
 
-        private void Start()
+        private void OnEnable()
         {
-            ExceptionHelper.ThrowIfComponentIsMissing(rigidBody, nameof(rigidBody));
             ExceptionHelper.ThrowIfComponentIsMissing(motorFrontLeft, nameof(motorFrontLeft));
             ExceptionHelper.ThrowIfComponentIsMissing(motorFrontRight, nameof(motorFrontRight));
             ExceptionHelper.ThrowIfComponentIsMissing(motorRearLeft, nameof(motorRearLeft));
             ExceptionHelper.ThrowIfComponentIsMissing(motorRearRight, nameof(motorRearRight));
-         
-            inputController = GetComponent<DroneInputsController>();
             
             if (balanceCenterOfMass && rigidBody != null) ResetCenterOfMass();
             
@@ -189,6 +183,15 @@ namespace Drone
                 Debug.LogFormat("Drone '{0}' center of mass set as midpoint of its motors: {1:F3} [local], {2:F3} [world]",
                                 gameObject.name, rigidBody.centerOfMass, cm);   
             }
+        }
+
+
+        public override DroneMotor[] GetAllMotors()
+        {
+            return new []
+            {
+                motorFrontLeft, motorFrontRight, motorRearLeft, motorRearRight
+            };
         }
     }
 }

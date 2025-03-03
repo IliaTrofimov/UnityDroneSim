@@ -48,7 +48,7 @@ namespace Drone.Propulsion
         /// <summary>The propeller object. Animation will be done here.</summary>
         public GameObject propeller;
 
-        protected float propellerAngleDelta;
+        [SerializeField, ReadOnlyField] protected float propellerAngleDelta;
         private float propellerSpeedFactor;
         
         
@@ -63,8 +63,7 @@ namespace Drone.Propulsion
         private void UpdatePropellerSpeedFactor()
         {
 	        var propDiameter = 1f;
-	        if (propeller != null)
-		        propeller.TryGetDimensions(out propDiameter);
+	        if (propeller != null) propeller.TryGetDimensions(out propDiameter);
 	        
 	        // Force ~ 0.5*k*w^2*R^4 => w ~ R^(-2)*(2Force/k)^0.5 = sqrt(Force)*C
 	        // C = R^(-2) * animationSpeed
@@ -81,7 +80,7 @@ namespace Drone.Propulsion
 	            if (liftForce != 0)	 // propeller is accelerating
 	            {
 		            propellerAngleDelta = math.lerp(propellerAngleDelta, idleRotationSpeed, Time.fixedDeltaTime);
-		            propellerAngleDelta += MathExtensions.SignedSqrt(liftForce) * propellerSpeedFactor * Time.deltaTime;
+		            propellerAngleDelta += MathExtensions.AbsSqrt(liftForce) * propellerSpeedFactor * Time.deltaTime;
 	            }
 	            else				 // propeller is slowing down
 	            {
