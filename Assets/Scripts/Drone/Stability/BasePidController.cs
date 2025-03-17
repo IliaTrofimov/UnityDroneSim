@@ -1,55 +1,43 @@
 using System;
-using Unity.Mathematics;
+using UnityEngine;
 
 
 namespace Drone.Stability
 {
-    /// <summary>Base clas for all PID controllers. Defines basic variables.</summary>
+    /// <summary>Base class for all PID controllers. Defines basic variables.</summary>
     [Serializable]
-    public abstract class BasePidController : IPid
+    public abstract class BasePidController
     {
-        protected float p, i, d, lastError = float.NaN;
-        protected bool errorWasSet = false;
-
+        protected bool errorWasSet;
         
-        /// <summary>Proportional factor. Makes output proportionally large/smaller when error is large/small. Can cause output oscillation.</summary>
-        public float pFactor;
-    
-        /// <summary>Integral factor. Can reduce static noise but causee windup.</summary>
-        public float iFactor;
-    
-        /// <summary>Derivative factor. Makes output proportionally large/smaller when change in error is large/small. Can smooth oscillations.</summary>
-        public float dFactor;
-        
-        /// <summary>Minimal output value.</summary>
-        public float minOutput;
-
-        /// <summary>Maximum output value.</summary>
-        public float maxOutput;
-        
-        /// <summary>Maximum absolute value integral component can have.</summary>
-        /// <remarks>This value can prevent integral windup.</remarks>
-        public float integralRange;
-        
+        /// <summary>Static PID parameters (P, I, D factors and output clamping).</summary>
+        [HideInInspector] public PidParameters parameters;
         
         /// <summary>Calculate output value.</summary>
         public abstract float Calc(float actual, float target, float dt);
 
         /// <summary>Reset internal values (error integral and last value).</summary>
-        public virtual void Reset()
+        public abstract void Reset();
+
+        /// <summary>Update static parameters values.</summary>
+        public void ResetParameters(PidParameters pidParameters)
         {
-            i = lastError = 0f;
-            errorWasSet = false;
+            parameters = pidParameters;
         }
 
-        /// <summary>Set output and integral clamping values.</summary>
-        public virtual void SetClamping(float minOutput, float maxOutput, float? integralRange = null)
+        public override string ToString() => parameters.ToString();
+    }
+
+
+    public static class BasePidControllerExtensions
+    {
+        /// <summary>Update static PID parameters or create new PID controller with given parameters if controller does not exist.</summary>
+        public static TPid Init<TPid>(this TPid pid, PidParameters pidParameters) 
+            where TPid : BasePidController, new()
         {
-            this.minOutput = minOutput;
-            this.maxOutput = maxOutput;
-            this.integralRange = integralRange ?? math.abs(minOutput - maxOutput);
+            pid ??= new TPid();
+            pid.ResetParameters(pidParameters);
+            return pid;
         }
-        
-        public void SetClamping(float maxRange) => SetClamping(-maxRange, maxRange, maxRange);
     }
 }
