@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1140054232825268730}
   serializedVersion: 2
   m_LocalRotation: {x: 0.043619405, y: 0, z: 0, w: 0.9990483}
-  m_LocalPosition: {x: 0, y: 0.422, z: -0.847}
+  m_LocalPosition: {x: 0, y: 0.45, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -753,55 +753,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8571162416980300483}
   showForceVectors: 1
-  clampNegativeForce: 0
-  balanceCenterOfMass: 0
-  controlParams:
-    maxLiftSpeed: 5
-    maxLiftForce: 30
-    torqueMultiplier: 0.01
-    maxPitchAngle: 25
-    maxPitchForce: 0.2
-    maxYawSpeed: 5
-    maxYawForce: 0.1
-    maxRollAngle: 10
-    maxRollForce: 0.2
+  clampNegativeForce: 1
+  controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
   motorFrontLeft: {fileID: 735657432093211137}
   motorFrontRight: {fileID: 7021292104955613104}
   motorRearLeft: {fileID: 8522830723373279982}
   motorRearRight: {fileID: 3686769251859082997}
-  pidThrottle:
-    pFactor: 1
-    iFactor: 0.6
-    dFactor: 0.05
-    minOutput: -30
-    maxOutput: 30
-    integralRange: 30
-  pidPitch:
-    pFactor: 0.009
-    iFactor: 0
-    dFactor: 0.0012
-    minOutput: -0.2
-    maxOutput: 0.2
-    integralRange: 0.2
-  pidRoll:
-    pFactor: 0.009
-    iFactor: 0.0001
-    dFactor: 0.001
-    minOutput: -0.2
-    maxOutput: 0.2
-    integralRange: 0.2
-  pidYaw:
-    pFactor: 0.5
-    iFactor: 0
-    dFactor: 0.0001
-    minOutput: -0.1
-    maxOutput: 0.1
-    integralRange: 0.1
-  pitchCorrection: 0
-  yawCorrection: 0
-  rollCorrection: 0
-  throttleCorrection: 0
-  torqueVector: {x: 0, y: 0, z: 0}
 --- !u!114 &3071880003872577166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -939,7 +896,6 @@ GameObject:
   - component: {fileID: 4846712609616613426}
   - component: {fileID: 6688608788927151849}
   - component: {fileID: 5207636791667659809}
-  - component: {fileID: 2468155220848953925}
   m_Layer: 9
   m_Name: FPV
   m_TagString: DroneBase
@@ -955,8 +911,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8694588208132049211}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0106, z: 0.1035}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.010599971, z: 0.10349989}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1057,22 +1013,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &2468155220848953925
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8694588208132049211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e7180f8755fb45e493bc495c64b62ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 3687313545292754829}
-  offset: {x: 0, y: 0, z: 0}
-  temp: 0
-  rpLimitRatio: 0
 --- !u!1001 &704149469932317213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1115,6 +1055,11 @@ PrefabInstance:
         type: 3}
       propertyPath: pitchFactor
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1247,6 +1192,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: D_MotorFL
       objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -1377,6 +1327,11 @@ PrefabInstance:
         type: 3}
       propertyPath: pitchFactor
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1652,6 +1607,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rollFactor
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}

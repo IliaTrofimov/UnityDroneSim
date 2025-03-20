@@ -130,15 +130,15 @@ MonoBehaviour:
   liftForce: 0
   animatePropellers: 1
   animationSpeed: 1
-  idleRotationSpeed: 5
+  idleRotationSpeed: 3
   propeller: {fileID: 3615590271140427342}
   propellerAngleDelta: 0
   dynamicRotorCollider: {fileID: 6159405709828979613}
   staticRotorCollider: {fileID: 6208319376346212162}
-  staticColliderSpeed: 10
+  staticColliderSpeed: 2
   trailMaterial: {fileID: 2100000, guid: 75b4448808e754cbb893b0d41011cee0, type: 2}
-  trailColor: {r: 1, g: 1, b: 1, a: 1}
-  trailTime: 10
+  trailColor: {r: 1, g: 1, b: 1, a: 0.47058824}
+  trailTime: 3
 --- !u!1 &5696176478744647066
 GameObject:
   m_ObjectHideFlags: 0
