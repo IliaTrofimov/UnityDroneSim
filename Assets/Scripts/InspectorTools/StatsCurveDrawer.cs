@@ -42,26 +42,18 @@ namespace InspectorTools
             {
                 x = position.x,
                 y = position.y + EditorGUIUtility.singleLineHeight / 2,
-                width = EditorGUIUtility.labelWidth * 0.6f,
-                height = EditorGUIUtility.singleLineHeight
-            };
-            var valueRect = new Rect
-            {
-                x = labelRect.xMax + 1,
-                y = position.y + EditorGUIUtility.singleLineHeight / 2,
-                width = EditorGUIUtility.labelWidth * 0.4f,
+                width = EditorGUIUtility.labelWidth,
                 height = EditorGUIUtility.singleLineHeight
             };
             var curveRect = new Rect
             {
-                x = valueRect.xMax,
+                x = labelRect.xMax,
                 y = labelRect.y,
-                width = EditorGUIUtility.currentViewWidth - valueRect.xMax - 18,
+                width = EditorGUIUtility.currentViewWidth - labelRect.xMax - 18,
                 height = EditorGUIUtility.singleLineHeight * 1.5f
             };
             
-            EditorGUI.LabelField(labelRect, InitCurveShortName(property));
-            EditorGUI.LabelField(valueRect, $"{property.floatValue:F3}");
+            EditorGUI.LabelField(labelRect, InitCurveShortName(property) + ": " + property.floatValue);
             EditorGUI.CurveField(curveRect, plotCurve);
             
             EditorGUIUtility.wideMode = wide;

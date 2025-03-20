@@ -11,13 +11,10 @@ namespace Drone.Propulsion
     /// </summary>
     /// <remarks>
     /// This script manages only motor's own colliders and visual effects.
-    /// All collision logic is executed in <see cref="DroneDestruction"/> script.
+    /// All collision logic is executed in <see cref="DroneDestruction"/> script or in any component attached to drone Rigidbody.
     /// </remarks>
     public class DestructibleMotor : DroneMotor
     {
-        public override Vector3 ForceVector => enabled ? transform.up * liftForce : Vector3.zero;
-        
-        
         /// <summary>Collider that will be active while propeller speed is slow.</summary>
 		[Header("Collisions")]
         public Collider dynamicRotorCollider;

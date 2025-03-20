@@ -1,3 +1,4 @@
+using System;
 using Drone;
 using UnityEditor;
 using UnityEngine;
@@ -12,63 +13,58 @@ namespace InspectorTools
         private bool areInternalValuesVisible;
         private bool areMotorsVisible;
         private bool areControlMultipliersVisible;
-        private bool isStabilizationVisible;
-        
-        private const int GROUPS_SPACING = 3;
-        
-        public override void OnInspectorGUI() 
-        {
-            EditorGUILayout.LabelField("Physics settings", EditorGUIHelper.Bold);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.rigidBody)));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.clampNegativeForce)));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.balanceCenterOfMass)));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.showForceVectors)));
 
-            EditorGUILayout.Space(GROUPS_SPACING);
-            
-            DrawForceMultipliers();
-            DrawPidControllers();
+        private float GROUPS_SPACING = 8;
+
+        private void OnEnable()
+        {
+            GROUPS_SPACING = EditorGUIUtility.standardVerticalSpacing * 3;
+        }
+
+        public override void OnInspectorGUI()
+        {
+            DrawBaseSettings();
             DrawMotors();
             DrawInternalValues((QuadcopterComputer)target);
             
-            serializedObject.ApplyModifiedProperties();
+                serializedObject.ApplyModifiedProperties();
         }
-        
-        private void DrawForceMultipliers()
+
+        private void DrawBaseSettings()
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.controlParams)));
-            EditorGUILayout.Space(GROUPS_SPACING);
-        }
-        
-        private void DrawPidControllers()
-        {
-            isStabilizationVisible = EditorGUILayout.BeginFoldoutHeaderGroup(isStabilizationVisible, "Stabilization");
+            EditorGUILayout.LabelField("Main settings", EditorGUIHelper.Bold);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.rigidBody)));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.controlSettings)));
+
+            EditorGUILayout.Space(GROUPS_SPACING * 2);
             
-            if (isStabilizationVisible)
-            {
-                var indent = EditorGUI.indentLevel;
-                EditorGUI.indentLevel++;
-                
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.pidThrottle)));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.pidPitch)));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.pidYaw)));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.pidRoll)));
-                
-                EditorGUI.indentLevel = indent;
-                EditorGUILayout.Space(GROUPS_SPACING);
-            }
-            EditorGUILayout.EndFoldoutHeaderGroup();
+            EditorGUILayout.LabelField("Features", EditorGUIHelper.Bold);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.clampNegativeForce)));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.showForceVectors)));
+
+            EditorGUILayout.Space(GROUPS_SPACING);
         }
 
         private void DrawMotors()
         {
-            areMotorsVisible = EditorGUILayout.BeginFoldoutHeaderGroup(areMotorsVisible, "Motors");
+            var motorFL = serializedObject.FindProperty(nameof(QuadcopterComputer.motorFrontLeft));
+            var motorFR = serializedObject.FindProperty(nameof(QuadcopterComputer.motorFrontRight));
+            var motorRL = serializedObject.FindProperty(nameof(QuadcopterComputer.motorRearLeft));
+            var motorRR = serializedObject.FindProperty(nameof(QuadcopterComputer.motorRearRight));
+           
+            var assignedMotors = 0;
+            if (motorFL.objectReferenceInstanceIDValue != 0) assignedMotors++;
+            if (motorFR.objectReferenceInstanceIDValue != 0) assignedMotors++;
+            if (motorRL.objectReferenceInstanceIDValue != 0) assignedMotors++;
+            if (motorRR.objectReferenceInstanceIDValue != 0) assignedMotors++;
+
+            areMotorsVisible = EditorGUILayout.BeginFoldoutHeaderGroup(areMotorsVisible, $"Motors ({assignedMotors}/4)");
             if (areMotorsVisible)
             {
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.motorFrontLeft)));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.motorFrontRight)));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.motorRearLeft)));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(QuadcopterComputer.motorRearRight)));
+                EditorGUILayout.PropertyField(motorFL);
+                EditorGUILayout.PropertyField(motorFR);
+                EditorGUILayout.PropertyField(motorRL);
+                EditorGUILayout.PropertyField(motorRR);
                 EditorGUILayout.Space(GROUPS_SPACING);
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
@@ -78,7 +74,7 @@ namespace InspectorTools
         {
             EditorGUILayout.Space(GROUPS_SPACING);
             
-            areInternalValuesVisible = EditorGUILayout.BeginFoldoutHeaderGroup(areInternalValuesVisible, "Internal values (read only)");
+            areInternalValuesVisible = EditorGUILayout.BeginFoldoutHeaderGroup(areInternalValuesVisible, "Internal Values (read only)");
             if (!areInternalValuesVisible)
             {
                 EditorGUILayout.EndFoldoutHeaderGroup();
@@ -87,17 +83,6 @@ namespace InspectorTools
             
             var enabled = GUI.enabled;
             GUI.enabled = false;
-            
-            EditorGUILayout.LabelField("Correction values", EditorGUIHelper.Bold);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                EditorGUIHelper.VerticalLabel("Throt. corr.", script.throttleCorrection);
-                EditorGUIHelper.VerticalLabel("Pitch corr.", script.pitchCorrection);
-                EditorGUIHelper.VerticalLabel("Yaw corr.", script.yawCorrection);
-                EditorGUIHelper.VerticalLabel("Roll corr.", script.rollCorrection);
-            }   
-            
-            EditorGUILayout.Vector3Field($"Result torque {script.torqueVector.magnitude:F3}", script.torqueVector);
             
             var front = script.motorFrontLeft.liftForce + script.motorFrontRight.liftForce;
             var rear = script.motorRearLeft.liftForce + script.motorRearRight.liftForce;

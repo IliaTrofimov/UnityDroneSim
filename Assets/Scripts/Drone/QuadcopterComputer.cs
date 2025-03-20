@@ -1,7 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Drone.Propulsion;
 using Drone.Stability;
-using Exceptions;
 using Unity.Mathematics;
 using UnityEngine;
 using Utils;
@@ -10,78 +11,46 @@ using UtilsDebug;
 
 namespace Drone
 {
-    /// <summary>Quadcopter drone flight computer. Manages all motors power.</summary>
+    /// <summary>
+    /// Quadcopter flight computer.
+    /// Reads control values from <see cref="DroneInputsController"/> and manages motors' power and stabilization.
+    /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(DroneInputsController))]
     public class QuadcopterComputer : DroneComputerBase
     {
-        /// <summary>Settings toggles.</summary>
-        public bool showForceVectors, clampNegativeForce, balanceCenterOfMass;
+        private Vector3 droneSizes;
+        private DroneInputsController inputController;
+
+        /// <summary>Rigidbody of the drone.</summary>
+        public Rigidbody rigidBody;
         
-        /// <summary>Internal parameters for</summary>
-        public DroneControlParams controlParams = DroneControlParams.Default;
+        /// <summary>Settings toggles.</summary>
+        public bool showForceVectors, clampNegativeForce, useVelocityStab;
+
+        /// <summary>Movement and stabilization settings.</summary>
+        public DroneControlSettings controlSettings;
 
         /// <summary>Quadcopter motors.</summary>
         public DroneMotor motorFrontLeft, motorFrontRight, motorRearLeft, motorRearRight;
-        
+
         /// <summary>PID stabilizers for each control value.</summary>
-        // Can use DebugPidController to show live PID values stats (POOR PERFORMANCE)
-        public PidController pidThrottle, pidPitch, pidRoll, pidYaw; 
-       
-        /// <summary>Resulting corrected control values.</summary>
-        public float pitchCorrection, yawCorrection, rollCorrection, throttleCorrection;
-       
-        public Vector3 torqueVector;
-        private Vector3 droneBounds;
-
-        private void OnEnable()
+        [HideInInspector] 
+        public BasePidController pidThrottle, pidPitch, pidRoll, pidYaw; 
+        
+        
+        private void Awake()
         {
-            ExceptionHelper.ThrowIfComponentIsMissing(motorFrontLeft, nameof(motorFrontLeft));
-            ExceptionHelper.ThrowIfComponentIsMissing(motorFrontRight, nameof(motorFrontRight));
-            ExceptionHelper.ThrowIfComponentIsMissing(motorRearLeft, nameof(motorRearLeft));
-            ExceptionHelper.ThrowIfComponentIsMissing(motorRearRight, nameof(motorRearRight));
-            
-            if (balanceCenterOfMass && rigidBody != null) ResetCenterOfMass();
-            
-            gameObject.TryGetDimensions(out droneBounds);
+            inputController = GetComponent<DroneInputsController>();
+
+            pidThrottle = new ValueDerivativePidController(controlSettings.pidThrottle);
+            pidPitch = new ValueDerivativePidController(controlSettings.pidPitch);
+            pidRoll = new ValueDerivativePidController(controlSettings.pidRoll);
+            pidYaw = new ValueDerivativePidController(controlSettings.pidYaw);
+
+            gameObject.TryGetDimensions(out droneSizes);
         }
-
-        private void OnDrawGizmos()
-        {
-            if (!showForceVectors) return;
-
-            var options = new GizmoOptions(Color.red, 
-                capSize: math.cmin(droneBounds) / 3,
-                vectSize: math.cmax(droneBounds));
-
-            const string labelFmt = "motor_{0} ({1:F2})";
-            
-            VectorDrawer.DrawDirection(motorFrontLeft.transform.position, 
-                motorFrontLeft.ForceVector,
-                string.Format(labelFmt, "FL", motorFrontLeft.ForceVector.magnitude), options);
-            
-            VectorDrawer.DrawDirection(motorFrontRight.transform.position, 
-                motorFrontRight.ForceVector,
-                string.Format(labelFmt, "FR", motorFrontRight.ForceVector.magnitude), options);
-            
-            VectorDrawer.DrawDirection(motorRearLeft.transform.position, 
-                motorRearLeft.ForceVector,
-                string.Format(labelFmt, "RL", motorRearLeft.ForceVector.magnitude), options);
-           
-            VectorDrawer.DrawDirection(motorRearRight.transform.position, 
-                motorRearRight.ForceVector,
-                string.Format(labelFmt, "RR", motorRearRight.ForceVector.magnitude), options);
-        }
-
-        private void OnValidate()
-        {
-            // keep PID outputs limited to maxForce values
-            pidThrottle.SetClamping(controlParams.maxLiftForce);
-            pidPitch.SetClamping(controlParams.maxPitchForce);
-            pidYaw.SetClamping(controlParams.maxYawForce);
-            pidRoll.SetClamping(controlParams.maxRollForce);
-        }
-
+        
         private void FixedUpdate()
         {
             // When using stabilization target values are limited to maxLiftSpeed, maxPitchAngle etc.
@@ -89,54 +58,81 @@ namespace Drone
             // This restricts drone vertical speed and tilt angles
             
             // Without stabilization forces are directly input * maxForce
-            
             var dt = Time.fixedDeltaTime;
-
+            float throttleOutput, pitchOutput, rollOutput, yawOutput;
+            
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabAltitude))
             {
-                throttleCorrection = pidThrottle.Calc(
-                    inputController.throttle * controlParams.maxLiftSpeed,
+                throttleOutput = pidThrottle.Calc(
+                    inputController.throttle * controlSettings.maxLiftSpeed,
                     rigidBody.linearVelocity.y, 
                     dt);
             }
             else
             {
-                throttleCorrection = inputController.throttle * controlParams.maxLiftForce;
-            }
+                throttleOutput = inputController.throttle * controlSettings.maxLiftForce;
+            }    
             
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabPitchRoll))
             { 
                 var rot = transform.WrapEulerRotation180();
-                pitchCorrection = -pidPitch.Calc(inputController.pitch * controlParams.maxPitchAngle, rot.x, dt);
-                rollCorrection = -pidRoll.Calc(inputController.roll * controlParams.maxRollAngle, rot.z, dt);
+                pitchOutput = -pidPitch.Calc(inputController.pitch * controlSettings.maxPitchAngle, rot.x, dt);
+                rollOutput = -pidRoll.Calc(inputController.roll * controlSettings.maxRollAngle, rot.z, dt);
             }
             else
             {  
                 // must be inverted to match stabilized version (don't fix what is working)
-                pitchCorrection = -inputController.pitch * controlParams.maxRollForce;
-                rollCorrection  = -inputController.roll * controlParams.maxRollForce;
+                pitchOutput = -inputController.pitch * controlSettings.maxRollForce;
+                rollOutput  = -inputController.roll * controlSettings.maxRollForce;
             }
-
+            
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabYaw))
             {
                 var yawSpeed = rigidBody.YawVelocity();
-                yawCorrection = pidYaw.Calc(inputController.yaw * controlParams.maxYawSpeed, yawSpeed, dt);
+                yawOutput = pidYaw.Calc(inputController.yaw * controlSettings.maxYawSpeed, yawSpeed, dt);
             }
             else
             {
-                yawCorrection = inputController.yaw * controlParams.maxYawForce;
+                yawOutput = inputController.yaw * controlSettings.maxYawForce;
             }
             
-            UpdateMotorsManual();
+            CalculateMotorsForces(throttleOutput, pitchOutput, yawOutput, rollOutput);
         }
-        
-        
-        private void UpdateMotorsManual()
+
+        private void OnDrawGizmos()
         {
-            motorFrontLeft.liftForce  = throttleCorrection + pitchCorrection + rollCorrection + yawCorrection;
-            motorFrontRight.liftForce = throttleCorrection + pitchCorrection - rollCorrection - yawCorrection;
-            motorRearLeft.liftForce   = throttleCorrection - pitchCorrection + rollCorrection - yawCorrection;
-            motorRearRight.liftForce  = throttleCorrection - pitchCorrection - rollCorrection + yawCorrection;
+            if (!showForceVectors || !enabled) return;
+            
+            var labelFmt = $"motor_{{0}} ({{1:F2}} | {controlSettings.maxLiftForce:F0})";
+            var vectMult = math.cmax(droneSizes) / controlSettings.maxLiftForce;
+            var opts = new GizmoOptions(Color.red,
+                capSize: math.cmin(droneSizes) / 3,
+                vectSize: math.cmax(droneSizes));
+            
+            VectorDrawer.DrawDirection(motorFrontLeft.transform.position, 
+                motorFrontLeft.ForceVector * vectMult,
+                string.Format(labelFmt, "FL", motorFrontLeft.ForceVector.magnitude), opts);
+            
+            VectorDrawer.DrawDirection(motorFrontRight.transform.position, 
+                motorFrontRight.ForceVector * vectMult,
+                string.Format(labelFmt, "FR", motorFrontRight.ForceVector.magnitude), opts);
+            
+            VectorDrawer.DrawDirection(motorRearLeft.transform.position, 
+                motorRearLeft.ForceVector * vectMult,
+                string.Format(labelFmt, "RL", motorRearLeft.ForceVector.magnitude), opts);
+           
+            VectorDrawer.DrawDirection(motorRearRight.transform.position, 
+                motorRearRight.ForceVector * vectMult,
+                string.Format(labelFmt, "RR", motorRearRight.ForceVector.magnitude), opts);
+        }
+
+        
+        private void CalculateMotorsForces(float throttleOutput, float pitchOutput, float yawOutput, float rollOutput)
+        {
+            motorFrontLeft.liftForce  = throttleOutput + pitchOutput + rollOutput + yawOutput;
+            motorFrontRight.liftForce = throttleOutput + pitchOutput - rollOutput - yawOutput;
+            motorRearLeft.liftForce   = throttleOutput - pitchOutput + rollOutput - yawOutput;
+            motorRearRight.liftForce  = throttleOutput - pitchOutput - rollOutput + yawOutput;
 
             if (clampNegativeForce)
             {
@@ -151,10 +147,10 @@ namespace Drone
             ApplyMotorForce(motorRearLeft);
             ApplyMotorForce(motorRearRight);
 
-            torqueVector = (motorFrontLeft.ForceVector 
+            var torqueVector = (motorFrontLeft.ForceVector 
                             - motorFrontRight.ForceVector
                             - motorRearLeft.ForceVector
-                            + motorRearRight.ForceVector) * controlParams.torqueMultiplier;
+                            + motorRearRight.ForceVector) * controlSettings.torqueMultiplier;
             rigidBody.AddTorque(torqueVector, ForceMode.Impulse);
         }
 
@@ -164,34 +160,13 @@ namespace Drone
             // ForceMode.Force so it is more stable
             rigidBody.AddForceAtPosition(motor.ForceVector, motor.transform.position, ForceMode.Force);
         }
-
-        private void ResetCenterOfMass()
+        
+        public override IEnumerable<DroneMotor> GetAllMotors()
         {
-            if (motorFrontLeft == null || motorFrontRight == null || motorRearLeft == null || motorRearRight == null)
-                return;
-            
-            var cm = (motorFrontLeft.transform.position + 
-                      motorFrontRight.transform.position +
-                      motorRearLeft.transform.position + 
-                      motorRearRight.transform.position) / 4f;
-
-            cm = rigidBody.transform.InverseTransformPoint(cm);
-
-            if (rigidBody.centerOfMass != cm)
-            {
-                rigidBody.centerOfMass = cm;
-                Debug.LogFormat("Drone '{0}' center of mass set as midpoint of its motors: {1:F3} [local], {2:F3} [world]",
-                                gameObject.name, rigidBody.centerOfMass, cm);   
-            }
-        }
-
-
-        public override DroneMotor[] GetAllMotors()
-        {
-            return new []
-            {
-                motorFrontLeft, motorFrontRight, motorRearLeft, motorRearRight
-            };
+            yield return motorFrontLeft;
+            yield return motorFrontRight;
+            yield return motorRearLeft;
+            yield return motorRearRight;
         }
     }
 }

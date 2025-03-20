@@ -7,23 +7,23 @@ namespace Drone
     /// <summary>Object that contains information to destroy/repair drone motor.</summary>
     internal class MotorDestructionInfo
     {
-        public bool isDestroyed;
-        public Vector3 initialLocalPosition;
-        public Vector3 initialLocalScale;
-        public Quaternion initialLocalRotation;
-        public Transform initialParent;
-        public DroneMotor motor;
-        public Rigidbody attachedRigidbody;
+        public bool IsDestroyed { get; set; }
+        public Rigidbody AttachedRigidbody{ get; set; }
+        public Vector3 InitialLocalPosition { get; }
+        public Vector3 InitialLocalScale { get; }
+        public Quaternion InitialLocalRotation { get; }
+        public Transform InitialParent { get; }
+        public DroneMotor Motor { get; }
 
         public MotorDestructionInfo(DroneMotor motor)
         {
-            isDestroyed = false;
-            initialLocalPosition = motor.transform.localPosition;
-            initialLocalScale = motor.transform.localScale;
-            initialLocalRotation = motor.transform.localRotation;
-            initialParent = motor.transform.parent;
-            this.motor = motor;
-            attachedRigidbody = null;
+            IsDestroyed = false;
+            InitialLocalPosition = motor.transform.localPosition;
+            InitialLocalScale = motor.transform.localScale;
+            InitialLocalRotation = motor.transform.localRotation;
+            InitialParent = motor.transform.parent;
+            Motor = motor;
+            AttachedRigidbody = null;
         }
     }
 }

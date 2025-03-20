@@ -1,24 +1,18 @@
+using System.Collections.Generic;
 using Drone.Propulsion;
-using Exceptions;
 using UnityEngine;
+using UtilsDebug;
 
 
 namespace Drone
 {
+    /// <summary>Abstract drone flight computer.</summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(DroneInputsController))]
     public abstract class DroneComputerBase : MonoBehaviour
     {
-        public Rigidbody rigidBody;
-        protected DroneInputsController inputController;
+        /// <summary>Enumerate all drone motors. </summary>
+        public abstract IEnumerable<DroneMotor> GetAllMotors();
         
-        private void Awake()
-        {
-            ExceptionHelper.ThrowIfComponentIsMissing(rigidBody, nameof(rigidBody));
-            inputController = GetComponent<DroneInputsController>();
-        }
-
-        /// <summary>Get array with all drone motors. </summary>
-        public abstract DroneMotor[] GetAllMotors();
     }
 }

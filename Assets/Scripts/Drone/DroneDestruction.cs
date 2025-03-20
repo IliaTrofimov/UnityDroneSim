@@ -12,19 +12,19 @@ namespace Drone
     /// Although <see cref="DestructibleMotor"/> provides collider for its propeller and special FX after breaking.
     /// </remarks>
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(QuadcopterComputer))]
     [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(DroneComputerBase))]
     public class DroneDestruction : MonoBehaviour
     {
         private bool isAnyMotorDestroyed;
-        private readonly Dictionary<int, MotorDestructionInfo> motorsLookup = new(4);
         private DroneComputerBase droneComputer;
+        private readonly Dictionary<int, MotorDestructionInfo> motorsLookup = new(4);
         
         
-        /// <summary>Maximal collision speed that motor can survive.</summary>
+        /// <summary>Maximal collision speed (m/s) that motor can survive.</summary>
         [Range(0f, 20f)] public float breakSpeed = 5f;
         
-        /// <summary>Maximal collision impulse that motor can survive.</summary>
+        /// <summary>Maximal collision impulse (kg*m/s) that motor can survive.</summary>
         [Range(0f, 20f)] public float breakImpulse = 5f;
         
         /// <summary>Each broken motor will have a Rigidbody attached with such mass (kg).</summary>
@@ -47,9 +47,7 @@ namespace Drone
             foreach (var motor in droneComputer.GetAllMotors())
                 motorsLookup[motor.gameObject.GetInstanceID()] = new MotorDestructionInfo(motor);
         }
-       
-        private void OnDisable() => RepairAllMotors();
-       
+        
         private void OnCollisionEnter(Collision other)
         {
             if (!enabled) return;
@@ -62,79 +60,75 @@ namespace Drone
             var thisCollider = other.GetContact(0).thisCollider;
             var colliderParent = thisCollider.transform.parent?.gameObject;
 
-            if (colliderParent is not null && motorsLookup.TryGetValue(colliderParent.GetInstanceID(), out var motorInfo))
+            if (colliderParent is not null && 
+                (motorsLookup.TryGetValue(colliderParent.GetInstanceID(), out var motorInfo) || 
+                 motorsLookup.TryGetValue(thisCollider.gameObject.GetInstanceID(), out motorInfo)))
             {
                 OnMotorCollided(motorInfo);
                 Debug.LogFormat("Collision (Motor) [{0}.{1}] -> [{2}]: vel={3:F2} m/s, imp={4:F2} kg*m/s",
                     colliderParent.name, thisCollider.name, other.gameObject.name, spd, imp);
-            }
-            else
-            {
-                Debug.LogFormat("Collision [{0}] -> [{1}]: vel={2:F2} m/s, imp={3:F2} kg*m/s",
-                    thisCollider.name, other.gameObject.name, spd, imp);
             }
         }
         
         
         private void OnMotorCollided(MotorDestructionInfo motorInfo)
         {
-            if (motorInfo.isDestroyed) return;
+            if (motorInfo.IsDestroyed) return;
             
-            motorInfo.attachedRigidbody = motorInfo.motor.AddComponent<Rigidbody>();
-            if (motorInfo.attachedRigidbody is not null)
+            motorInfo.AttachedRigidbody = motorInfo.Motor.AddComponent<Rigidbody>();
+            if (motorInfo.AttachedRigidbody is not null)
             {
-                motorInfo.attachedRigidbody.mass = brokenMotorMass;
-                motorInfo.attachedRigidbody.interpolation = brokenMotorInterpolation;
-                motorInfo.attachedRigidbody.collisionDetectionMode = brokenMotorCollisions;
-                motorInfo.attachedRigidbody.linearDamping = 0.2f;
-                motorInfo.attachedRigidbody.angularDamping = 0.1f;
-                motorInfo.attachedRigidbody.AddRelativeForce(Vector3.up * motorInfo.motor.liftForce / 5, ForceMode.Force);
-                motorInfo.attachedRigidbody.AddRelativeTorque(Vector3.up * motorInfo.motor.liftForce / 5, ForceMode.VelocityChange);
+                motorInfo.AttachedRigidbody.mass = brokenMotorMass;
+                motorInfo.AttachedRigidbody.interpolation = brokenMotorInterpolation;
+                motorInfo.AttachedRigidbody.collisionDetectionMode = brokenMotorCollisions;
+                motorInfo.AttachedRigidbody.linearDamping = 0.2f;
+                motorInfo.AttachedRigidbody.angularDamping = 0.1f;
+                motorInfo.AttachedRigidbody.AddRelativeForce(Vector3.up * motorInfo.Motor.liftForce / 5, ForceMode.Force);
+                motorInfo.AttachedRigidbody.AddRelativeTorque(Vector3.up * motorInfo.Motor.liftForce / 5, ForceMode.VelocityChange);
             }
-
-            Debug.LogFormat("Motor [{0}] was broken and detached from drone [{1}]", motorInfo.motor.name, gameObject.name);
-
-            motorInfo.motor.name = "[X] " + motorInfo.motor.name;
-            motorInfo.motor.enabled = false;
-            motorInfo.motor.transform.parent = null;
-            motorInfo.isDestroyed = true;
+            
+            motorInfo.Motor.name = "[X] " + motorInfo.Motor.name;
+            motorInfo.Motor.enabled = false;
+            motorInfo.Motor.transform.parent = null;
+            motorInfo.IsDestroyed = true;
             isAnyMotorDestroyed = true;
            
-            if (motorInfo.motor is DestructibleMotor destructibleMotor)
+            if (motorInfo.Motor is DestructibleMotor destructibleMotor)
                 destructibleMotor.OnMotorBroken();
         }
         
         private void RepairMotor(MotorDestructionInfo motorInfo)
         {
-            if (!motorInfo.isDestroyed) return;
+            if (!motorInfo.IsDestroyed) return;
                
-            motorInfo.motor.transform.SetParent(motorInfo.initialParent);
-            motorInfo.motor.transform.localPosition = motorInfo.initialLocalPosition;
-            motorInfo.motor.transform.localScale = motorInfo.initialLocalScale;
-            motorInfo.motor.transform.localRotation = motorInfo.initialLocalRotation;
-            motorInfo.motor.name = motorInfo.motor.name.Replace("[X] ", "");
-            motorInfo.motor.enabled = true;
-            motorInfo.isDestroyed = false;
+            motorInfo.Motor.transform.SetParent(motorInfo.InitialParent);
+            motorInfo.Motor.transform.localPosition = motorInfo.InitialLocalPosition;
+            motorInfo.Motor.transform.localScale = motorInfo.InitialLocalScale;
+            motorInfo.Motor.transform.localRotation = motorInfo.InitialLocalRotation;
+            motorInfo.Motor.name = motorInfo.Motor.name.Replace("[X] ", "");
+            motorInfo.Motor.enabled = true;
+            motorInfo.IsDestroyed = false;
             
-            if (motorInfo.attachedRigidbody is not null)
-                Destroy(motorInfo.attachedRigidbody);
+            if (motorInfo.AttachedRigidbody is not null)
+                Destroy(motorInfo.AttachedRigidbody);
            
-            if (motorInfo.motor is DestructibleMotor destructibleMotor)
+            if (motorInfo.Motor is DestructibleMotor destructibleMotor)
                 destructibleMotor.OnMotorRepaired();
             
-            Debug.LogFormat("Motor [{0}] was repaired and reattached to drone [{1}]", motorInfo.motor.name, gameObject.name);
+            Debug.LogFormat("Motor [{0}] was repaired and reattached to drone [{1}]", motorInfo.Motor.name, gameObject.name);
         }
 
+        [ContextMenu("Repair All Motors")]
         public void RepairAllMotors()
         {
             if (!isAnyMotorDestroyed) return;
            
             isAnyMotorDestroyed = false;
-           
             foreach (var motorInfo in motorsLookup.Values)
                 RepairMotor(motorInfo);
         }
         
+        [ContextMenu("Break All Motors")]
         public void BreakAllMotors()
         {
             foreach (var motorInfo in motorsLookup.Values)
