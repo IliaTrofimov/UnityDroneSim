@@ -5,39 +5,43 @@ using Unity.Mathematics;
 namespace Drone.Stability
 {
     /// <summary>Proportional–integral–derivative (PID) controller with output and integral component clamping.</summary>
+    /// <remarks>
+    /// Calculates D component using error derivative: <i>D = (error - lastError) / dt</i>.
+    /// </remarks>
     [Serializable]
-    public sealed class PidController : BasePidController
+    public class PidController : BasePidController
     {
-        // inherits pFactor, iFactor, dFactor, p, i, d, lastError
+        private float integral, lastError; 
         
-        public PidController() : this(1f, 0.5f, 0.01f) {}
+        public PidController() : this(new PidParameters(1, 0.5f, 0.1f)) {}
     
-        public PidController(float p, float i, float d, float min = -1f, float max = 1f, float intRange = 1f)
+        public PidController(PidParameters parameters) => this.parameters = parameters;
+
+        
+        public override float Calc(float target, float actual, float dt)
         {
-            pFactor = p;
-            iFactor = i;
-            dFactor = d;
-            minOutput = min;
-            maxOutput = max;
-            integralRange = intRange;
+            var error = target - actual;
+            
+            integral += error * dt;
+            var i = math.clamp(integral * parameters.iFactor, 
+                parameters.minIntegral, 
+                parameters.maxIntegral);
+
+            var derivative = 0f;
+            if (errorWasSet) derivative = (error - lastError) / dt;
+            else errorWasSet = true;
+            
+            lastError = error;
+            
+            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor, 
+                parameters.minOutput,
+                parameters.maxOutput);
         }
-        
-        
-        public override float Calc(float target, float actual, float dt) 
+
+        public override void Reset() 
         {
-            p = target - actual;
-            i = math.clamp(i + p * dt, -integralRange, integralRange);
-            if (errorWasSet)
-            {
-                d = (p - lastError) / dt;
-            }
-            else // check if last error was set (not first call) to prevent initial derivative kick
-            {
-                d = 0f;
-                errorWasSet = true;
-            }
-            lastError = p;
-            return math.clamp(p * pFactor + i * iFactor + d * dFactor, minOutput, maxOutput);
+            integral = lastError = 0f;
+            errorWasSet = false;
         }
     }
 }

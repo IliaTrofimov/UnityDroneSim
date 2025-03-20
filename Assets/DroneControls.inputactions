@@ -86,7 +86,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Forward",
+                    "name": "Down",
                     "id": "06306337-aee2-45da-8987-06a7f94d7ef5",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
@@ -97,7 +97,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Backward",
+                    "name": "Up",
                     "id": "c15fad8a-201f-4147-aedf-eb615a21706b",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",

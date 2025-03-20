@@ -1,7 +1,6 @@
 using Drone;
 using UnityEditor;
 using UnityEngine;
-using Utils;
 
 
 namespace InspectorTools
@@ -17,7 +16,7 @@ namespace InspectorTools
             var script = (DroneInputsController)target;
             DrawDefaultInspector();
 
-            isVisible = EditorGUILayout.BeginFoldoutHeaderGroup(isVisible, "Input values (read only)");
+            isVisible = EditorGUILayout.BeginFoldoutHeaderGroup(isVisible, "Input Values (read only)");
             if (!isVisible)
             {
                 EditorGUILayout.EndFoldoutHeaderGroup();

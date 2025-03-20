@@ -5296,26 +5296,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 962422540}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &971523047 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7181929161792296690, guid: 081f81782f8434689b3115a1caa1ece4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1681747726}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &971523052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 971523047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5341c4bb9b3c4ef18ed722003aa8e936, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  breakSpeed: 5
-  breakImpulse: 5
 --- !u!1 &995102758
 GameObject:
   m_ObjectHideFlags: 0
@@ -7361,6 +7341,27 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 310941504761515658, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: stabilizerMode
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1725768722656801156, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: animatePropellers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1773305771786904982, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: controlSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 63cf60b2c2a1d446082d6bfd6e192c66,
+        type: 2}
+    - target: {fileID: 1773305771786904982, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: clampNegativeForce
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3687313545292754829, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7411,6 +7412,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4253113104010533377, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: animatePropellers
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7181929161792296690, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
         type: 3}
       propertyPath: m_Name
@@ -7421,10 +7427,29 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7812853191682752105, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8052625019029874053, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: animatePropellers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8571162416980300483, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7181929161792296690, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1721931357}
   m_SourcePrefab: {fileID: 100100000, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20, type: 3}
 --- !u!1 &1414336189
 GameObject:
@@ -9643,95 +9668,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
+    - target: {fileID: 735657432093211137, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
-      propertyPath: pidYaw.pFactor
-      value: 0.5
+      propertyPath: staticColliderSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
-      propertyPath: pidRoll.pFactor
-      value: 0.009
-      objectReference: {fileID: 0}
+      propertyPath: controlSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6,
+        type: 2}
     - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
-      propertyPath: pidPitch.pFactor
-      value: 0.009
+      propertyPath: useVelocityStab
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
+    - target: {fileID: 3686769251859082997, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
-      propertyPath: pidRoll.maxOutput
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidRoll.minOutput
-      value: -0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidPitch.maxOutput
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidPitch.minOutput
-      value: -0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidRoll.integralRange
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidThrottle.maxOutput
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidThrottle.minOutput
-      value: -30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidPitch.integralRange
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: pidThrottle.integralRange
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: controlParams.maxLiftForce
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: controlParams.maxLiftSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: controlParams.maxRollAngle
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: controlParams.maxRollForce
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: controlParams.maxPitchAngle
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1773305771786904982, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: controlParams.maxPitchForce
-      value: 0.2
+      propertyPath: staticColliderSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3687313545292754829, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
@@ -9783,19 +9739,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7021292104955613104, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7181929161792296690, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_Name
       value: DroneFpv_2
       objectReference: {fileID: 0}
+    - target: {fileID: 8522830723373279982, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7181929161792296690, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 971523052}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 081f81782f8434689b3115a1caa1ece4, type: 3}
 --- !u!1001 &1688741613
 PrefabInstance:
@@ -9905,6 +9867,29 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d6892a877c0a664cb5a53eb2dd13c88, type: 3}
+--- !u!1 &1721931352 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7181929161792296690, guid: 1fc7e26dfc54b4dbb94547dc32e3ff20,
+    type: 3}
+  m_PrefabInstance: {fileID: 1350778760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1721931357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721931352}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5341c4bb9b3c4ef18ed722003aa8e936, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  breakSpeed: 5
+  breakImpulse: 5
+  brokenMotorMass: 0.1
+  brokenMotorInterpolation: 0
+  brokenMotorCollisions: 1
 --- !u!1 &1740798476
 GameObject:
   m_ObjectHideFlags: 0

@@ -64,10 +64,10 @@ namespace Drone
 		private void ReadInputs()
 		{
 			var rotation = controls.Default.Rotation.ReadValue<Vector3>();
-			pitch = rotation.x;                                      // w(negative)       | s(positive)
-			yaw = rotation.y;                                        // q(negative)       | e(positive)
-			roll = rotation.z;                                       // d/right(negative) | e/left(positive)
-			throttle = controls.Default.Throttle.ReadValue<float>(); // up(negative)      | down(positive)
+			pitch = rotation.x;
+			yaw = rotation.y;
+			roll = rotation.z;
+			throttle = controls.Default.Throttle.ReadValue<float>();
 			
 			var lastStab = stabilizerMode;
 			if (controls.Default.StabAltitude.WasPressedThisFrame())
@@ -81,10 +81,10 @@ namespace Drone
 
 		private void ReadLegacyInputs()
 		{
-			pitch = Input.GetAxis("Pitch");       // w(negative)       | s(positive)
-			yaw = Input.GetAxis("Yaw");           // q(negative)       | e(positive)
-			roll = Input.GetAxis("Roll");         // d/right(negative) | e/left(positive)
-			throttle = Input.GetAxis("Throttle"); // up(negative)      | down(positive)
+			pitch = Input.GetAxis("Pitch");
+			yaw = Input.GetAxis("Yaw");
+			roll = Input.GetAxis("Roll");
+			throttle = Input.GetAxis("Throttle");
 			
 			var lastStab = stabilizerMode;
 			if (Input.GetKey(KeyCode.LeftShift))
