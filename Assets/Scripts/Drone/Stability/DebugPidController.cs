@@ -6,10 +6,13 @@ using UnityEngine;
 namespace Drone.Stability
 {
     /// <summary>Version of PID controller that can display its internal values in time.</summary>
-    /// <remarks>Use only for debugging purposes. Thi implementation has extra memory and performance cost.</remarks>
+    /// <remarks>Use only for debugging purposes. This implementation has extra memory and performance cost.</remarks>
     [Serializable]
     public class DebugPidController : BasePidController
     {
+        /// <summary>
+        /// Integral sum clamping mode: no clamping, clamp before after applying I factor.
+        /// </summary>
         public enum IntegralClamping
         {
             None, PreClamping, PostClamping
@@ -52,7 +55,7 @@ namespace Drone.Stability
         
         public override float Calc(float target, float actual, float dt)
         {
-            output = CalcP(target, actual) + CalcI(target, actual, dt) + CalcD(target, actual, dt);
+            output = CalcP(target, actual) + CalcI(dt) + CalcD(actual, dt);
             if (clampOutput)
                 output = math.clamp(output, parameters.minOutput, parameters.maxOutput);
             return output;
@@ -73,9 +76,10 @@ namespace Drone.Stability
             return p;
         }
 
-        private float CalcI(float target, float actual, float dt)
+        private float CalcI(float dt)
         {
             integral += error * dt;
+            
             switch (integralClamping)
             {
                 case IntegralClamping.PreClamping:
@@ -95,7 +99,7 @@ namespace Drone.Stability
             return i;
         }
 
-        private float CalcD(float target, float actual, float dt)
+        private float CalcD(float actual, float dt)
         {
             if (!errorWasSet)   // do not calc derivative for the 1st time to avoid kick
             {

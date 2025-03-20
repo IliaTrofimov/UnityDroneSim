@@ -5,7 +5,9 @@ using Unity.Mathematics;
 namespace Drone.Stability
 {
     /// <summary>Proportional–integral–derivative (PID) controller with output and integral component clamping.</summary>
-    /// <remarks></remarks>
+    /// <remarks>
+    /// Calculates D component using error derivative: <i>D = (error - lastError) / dt</i>.
+    /// </remarks>
     [Serializable]
     public class PidController : BasePidController
     {
@@ -16,25 +18,22 @@ namespace Drone.Stability
         public PidController(PidParameters parameters) => this.parameters = parameters;
 
         
-        public override float Calc(float target, float actual, float dt) 
+        public override float Calc(float target, float actual, float dt)
         {
-            var err = target - actual;
-            integral += err * dt;
-            var deriv = 0f;
+            var error = target - actual;
             
-            if (errorWasSet)
-            {
-                deriv = (err - lastError) / dt;
-            }
-            else // check if last error was set (not first call) to prevent initial derivative kick
-            {
-                errorWasSet = true;
-            }
+            integral += error * dt;
+            var i = math.clamp(integral * parameters.iFactor, 
+                parameters.minIntegral, 
+                parameters.maxIntegral);
 
-            var i = math.clamp(integral * parameters.iFactor, parameters.minIntegral, parameters.maxIntegral);
-            lastError = err;
+            var derivative = 0f;
+            if (errorWasSet) derivative = (error - lastError) / dt;
+            else errorWasSet = true;
             
-            return math.clamp(err*parameters.pFactor + i*parameters.iFactor + deriv*parameters.dFactor, 
+            lastError = error;
+            
+            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor, 
                 parameters.minOutput,
                 parameters.maxOutput);
         }

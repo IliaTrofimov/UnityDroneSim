@@ -1,11 +1,16 @@
 using System;
 using Unity.Mathematics;
+using UnityEngine;
+
 
 namespace Drone.Stability
 {
-    /// <summary>Proportional–integral–derivative (PID) controller with output and integral component clamping.</summary>
+    /// <summary>
+    /// Proportional–integral–derivative (PID) controller with output and integral component clamping.
+    /// Useful when target values can change fast.
+    /// </summary>
     /// <remarks>
-    /// Calculates derivative component using actual value derivative: <i>D = -(actual - last) / dt</i>.
+    /// Calculates D component using actual value derivative: <i>D = -(actual - last) / dt</i>.
     /// </remarks>
     [Serializable]
     public sealed class ValueDerivativePidController : BasePidController
@@ -19,23 +24,20 @@ namespace Drone.Stability
         
         public override float Calc(float target, float actual, float dt) 
         {
-            var err = target - actual;
-            integral += err * dt;
-            var deriv = 0f;
+            var error = target - actual;
             
-            if (errorWasSet)
-            {
-                deriv = (lastValue - actual) / dt; // simplify for -(actual - lastError) / dt
-            }
-            else // check if last error was set (not first call) to prevent initial derivative kick
-            {
-                errorWasSet = true;
-            }
+            integral += error * dt;
+            var i = math.clamp(integral * parameters.iFactor, 
+                parameters.minIntegral,
+                parameters.maxIntegral);
 
-            var i = math.clamp(integral * parameters.iFactor, parameters.minIntegral, parameters.maxIntegral);
+            var derivative = 0f;
+            if (errorWasSet) derivative = (lastValue - actual) / dt;
+            else errorWasSet = true;
+
             lastValue = actual;
             
-            return math.clamp(err*parameters.pFactor + i*parameters.iFactor + deriv*parameters.dFactor, 
+            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor, 
                 parameters.minOutput,
                 parameters.maxOutput);
         }

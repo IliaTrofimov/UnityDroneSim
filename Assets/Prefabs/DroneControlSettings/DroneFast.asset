@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38de94429acf4a0d856a4503d09c3125, type: 3}
-  m_Name: DroneSlowNew
+  m_Name: DroneFast
   m_EditorClassIdentifier: 
-  maxLiftSpeed: 6
+  maxLiftSpeed: 7
   maxLiftForce: 10
   torqueMultiplier: 0.005
   pidThrottle:
@@ -24,32 +24,32 @@ MonoBehaviour:
     minIntegral: -5
     maxIntegral: 10
   maxPitchAngle: 40
-  maxPitchForce: 0.3
+  maxPitchForce: 0.5
   pidPitch:
-    pFactor: 0.2
+    pFactor: 0.1
     iFactor: 0
-    dFactor: 0.02
-    minOutput: -0.3
-    maxOutput: 0.3
-    minIntegral: -0.3
-    maxIntegral: 0.3
-  maxYawSpeed: 6
-  maxYawForce: 0.2
-  pidYaw:
-    pFactor: 0.7
-    iFactor: 0
-    dFactor: 0
-    minOutput: -0.2
-    maxOutput: 0.2
-    minIntegral: -0.2
-    maxIntegral: 0.2
-  maxRollAngle: 25
-  maxRollForce: 0.1
-  pidRoll:
-    pFactor: 0.09
-    iFactor: 0.01
     dFactor: 0.01
-    minOutput: -0.1
-    maxOutput: 0.1
-    minIntegral: -0.1
-    maxIntegral: 0.1
+    minOutput: -0.5
+    maxOutput: 0.5
+    minIntegral: -0.5
+    maxIntegral: 0.5
+  maxYawSpeed: 6
+  maxYawForce: 0.5
+  pidYaw:
+    pFactor: 0.3
+    iFactor: 0
+    dFactor: 0.01
+    minOutput: -0.5
+    maxOutput: 0.5
+    minIntegral: -0.5
+    maxIntegral: 0.5
+  maxRollAngle: 25
+  maxRollForce: 0.5
+  pidRoll:
+    pFactor: 0.1
+    iFactor: 0
+    dFactor: 0.01
+    minOutput: -0.5
+    maxOutput: 0.5
+    minIntegral: -0.5
+    maxIntegral: 0.5

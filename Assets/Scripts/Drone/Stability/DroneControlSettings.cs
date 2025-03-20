@@ -9,7 +9,7 @@ namespace Drone.Stability
     [CreateAssetMenu(menuName = "Drone Settings/Drone Control Settings", fileName = "DroneControlSettings")]
     public class DroneControlSettings : ScriptableObject
     {
-        /// <summary>Max vertical speed of the drone when using stabilization (meters per second).</summary>
+        /// <summary>Max target vertical speed of the drone when using stabilization (meters per second).</summary>
         [Header("Throttle and Torque")]
         [Range(0f, 10f)] public float maxLiftSpeed = 5;
         
@@ -67,7 +67,6 @@ namespace Drone.Stability
             pidThrottle.minOutput = -maxLiftForce;
             pidThrottle.maxOutput = maxLiftForce;
 
-            //pidThrottle.SetClamping(maxLiftForce, maxLiftSpeed);
             pidPitch.SetClamping(maxPitchForce);
             pidYaw.SetClamping(maxYawForce);
             pidRoll.SetClamping(maxRollForce);

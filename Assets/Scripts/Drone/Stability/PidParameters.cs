@@ -9,7 +9,7 @@ namespace Drone.Stability
     public sealed class PidParameters
     {
         /// <summary>Proportional factor. Main value to play with.</summary>
-        /// <remarks>Compensates static errors (e.g. gravity) but can cause windup.</remarks>
+        /// <remarks>Large values create faster reaction but also cause self-oscillations.</remarks>
         public float pFactor;
     
         /// <summary>Integral factor.</summary>
@@ -48,10 +48,10 @@ namespace Drone.Stability
             pFactor = p;
             iFactor = i;
             dFactor = d;
-            this.minOutput = minOutput;
-            this.maxOutput = maxOutput;
-            this.minIntegral = minIntegral;
-            this.maxIntegral = maxIntegral;
+            this.minOutput = math.min(minOutput, maxOutput);
+            this.maxOutput = math.max(minOutput, maxOutput);
+            this.minIntegral = math.min(minIntegral, maxIntegral);
+            this.maxIntegral = math.max(minIntegral, maxIntegral);
         }
         
         
@@ -64,22 +64,6 @@ namespace Drone.Stability
             maxOutput = pidParameters.maxOutput;
             minIntegral = pidParameters.minIntegral;
             maxIntegral = pidParameters.maxIntegral;
-        }
-
-        public void Reset(float p, float i, float d)
-        {
-            pFactor = p;
-            iFactor = i;
-            dFactor = d;
-        }
-        
-        public void Reset(float p, float i, float d, float min, float max)
-        {
-            pFactor = p;
-            iFactor = i;
-            dFactor = d;
-            minOutput = min;
-            maxOutput = max;
         }
         
         public void Reset(float p, float i, float d, float min, float max, float integralRange)
@@ -112,8 +96,11 @@ namespace Drone.Stability
             maxIntegral = integralRange;
         }
 
-        public override string ToString() 
-            => string.Format("P:{0:F3}, I:{1:F3}, D:{2:F3},  int:[{3:F1}, {4:F1}], out:[{5:F1}, {6:F1}]",
-                             pFactor, iFactor, dFactor, minIntegral, maxIntegral, minOutput, maxOutput);
+        public override string ToString()
+        {
+            return string.Format("P:{0:F3}, I:{1:F3}, D:{2:F3}, int:[{3:F1}, {4:F1}], out:[{5:F1}, {6:F1}]",
+                pFactor, iFactor, dFactor, minIntegral, maxIntegral,
+                minOutput, maxOutput);
+        }
     }
 }
