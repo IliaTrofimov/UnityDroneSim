@@ -114,5 +114,9 @@ namespace Utils
         /// <returns>√(abs(value))</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AbsSqrt(float value) => math.sqrt(math.abs(value));
+
+        /// <summary>Returns 1 if value greater than or equal to zero, otherwise -1.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float NonZeroSign(float value) => value >= 0f ? 1f : -1f;
     }
 }
