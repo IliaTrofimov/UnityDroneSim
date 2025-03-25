@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 using UtilsDebug;
 using Random = UnityEngine.Random;
@@ -29,7 +27,7 @@ namespace Noise
         [Header("Wind target objects")] 
         public string targetTags;
         private string previousTargetTags;
-        private List<Rigidbody> targetsRigidbodies;
+        private List<Rigidbody> targets;
         
         [Header("Wind force settings")]
         public Quaternion windDirection; 
@@ -74,18 +72,23 @@ namespace Noise
                 WindMotion();
             
             var windForce = strength * currentStrength * (transform.rotation * Vector3.forward);
-            for (var i = 0; i < targetsRigidbodies?.Count; i++)
-                targetsRigidbodies[i].AddForce(windForce, ForceMode.Impulse);
+            for (var i = 0; i < targets?.Count; i++)
+                targets[i].AddForce(windForce, ForceMode.Impulse);
         }
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawIcon(transform.position, "WindZone Icon", true);
             if (!showForceVector) return;
             
-            var gizmoOptions = new GizmoOptions(Color.blue, 0.3f, labelStyle: FontStyle.BoldAndItalic);
+            var gizmoMain = new GizmoOptions(Color.blue, 0.3f, labelStyle: FontStyle.BoldAndItalic);
+            var gizmoSmall = new GizmoOptions(Color.blue, 0.05f, labelStyle: FontStyle.Italic, labelPlacement: GizmoLabelPlacement.Start);
+
             var windForce = strength * currentStrength * (transform.rotation * Vector3.forward);
-            VectorDrawer.DrawDirection(transform.position, windForce, name, gizmoOptions);
+            VectorDrawer.DrawDirection(transform.position, windForce, name, gizmoMain);
+
+            var windLabel = $"Wind {windForce.magnitude:F3}";
+            foreach (var target in targets)
+                VectorDrawer.DrawDirection(target.position, windForce, windLabel, gizmoSmall);
         }
 
         private void OnDrawGizmosSelected()
@@ -96,22 +99,30 @@ namespace Noise
 
         private void ResetTargetRigidBodies()
         {
-            previousTargetTags = targetTags;
-            
             if (string.IsNullOrEmpty(targetTags)) return;
 
-            GameObject[] targets = GameObject.FindGameObjectsWithTag(targetTags);
+            GameObject[] targetObjects;
+            try
+            {
+                targetObjects = GameObject.FindGameObjectsWithTag(targetTags);
+            }
+            catch
+            {
+                return;
+            }
             
-            if (targetsRigidbodies == null)
-                targetsRigidbodies = new List<Rigidbody>(targets.Length);
+            if (targets == null)
+                targets = new List<Rigidbody>(targetObjects.Length);
             else 
-                targetsRigidbodies.Clear();
+                targets.Clear();
 
-            foreach (var target in targets)
+            foreach (var target in targetObjects)
             {
                 if (target.TryGetComponent<Rigidbody>(out var targetRb))
-                    targetsRigidbodies.Add(targetRb);
+                    targets.Add(targetRb);
             }
+            
+            previousTargetTags = targetTags;
         }
 
         private void InitWindPulsing()
