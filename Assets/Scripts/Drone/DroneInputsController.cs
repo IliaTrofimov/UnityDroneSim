@@ -71,14 +71,12 @@ namespace Drone
 			
 			var lastStab = stabilizerMode;
 			if (controls.Default.StabAltitude.WasPressedThisFrame())
-				stabilizerMode ^= DroneStabilizerMode.StabAltitude;
-			if (controls.Default.StabRotation.WasPressedThisFrame())
-				stabilizerMode ^= DroneStabilizerMode.StabPitchRoll;
+				ToggleStabilization();
 			
 			if (lastStab != stabilizerMode) 
 				Debug.LogFormat("Drone {0} stabilizer mode: {1}", name, stabilizerMode);
 		}
-
+		
 		private void ReadLegacyInputs()
 		{
 			pitch = Input.GetAxis("Pitch");
@@ -87,15 +85,24 @@ namespace Drone
 			throttle = Input.GetAxis("Throttle");
 			
 			var lastStab = stabilizerMode;
-			if (Input.GetKey(KeyCode.LeftShift))
-				stabilizerMode ^= DroneStabilizerMode.StabAltitude;
 			if (Input.GetKey(KeyCode.Space))
-				stabilizerMode ^= DroneStabilizerMode.StabPitchRoll;
+				ToggleStabilization();
 			
 			if (lastStab != stabilizerMode) 
 				Debug.LogFormat("Drone {0} stabilizer mode: {1}", name, stabilizerMode);
 		}
 
+		private void ToggleStabilization()
+		{
+			if (stabilizerMode.HasFlag(DroneStabilizerMode.StabAltitude))
+			{
+				stabilizerMode = DroneStabilizerMode.None;
+			}
+			else
+			{
+				stabilizerMode = DroneStabilizerMode.StabAltitude | DroneStabilizerMode.StabPitchRoll | DroneStabilizerMode.StabYaw;		
+			}
+		}
 		
 		/// <summary>Set control inputs manually.</summary>
 		/// <remarks>Values will always be clamped in [-1, 1] range.</remarks>
