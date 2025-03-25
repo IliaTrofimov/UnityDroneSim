@@ -10,7 +10,7 @@ namespace Navigation
     [ExecuteInEditMode]
     public class DroneHud : MonoBehaviour
     {
-        private float collapsedHeight = 32;
+        private float collapsedHeight = 34;
         private float screenOffset = 2;
         
         private float movementPanel_WRatio = 0.48f;
@@ -198,7 +198,7 @@ namespace Navigation
             
             if (!inputsController)
             {
-                GUILayout.Label($"{nameof(QuadcopterComputer)} with {nameof(DroneInputsController)} is not attached", italicTextStyle);
+                GUILayout.Label($"{nameof(QuadcopterComputer)} with {nameof(DroneInputsController)} are not attached", italicTextStyle);
                 GUILayout.EndArea();
                 return;
             }
