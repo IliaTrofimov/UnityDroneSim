@@ -2,19 +2,16 @@
 using Unity.Collections;
 using UnityEngine;
 
-
-namespace FreeSpace
+namespace Navigation
 {
     public class FreeSpaceDetection : MonoBehaviour
     {
         private NativeArray<RaycastCommand> commands;
-
+        private float[] rayDistances;
+        
         [Range(100, 5000)] public int numHorizontalPoints = 100;
-
         [Range(10, 1000)] public int numBins = 50;
-
         [Range(45, 360)] public float fovDegrees = 90f;
-
         [Range(1, 1000)] public float maxDist = 100f;
         
         public bool showRays = false;
@@ -23,7 +20,7 @@ namespace FreeSpace
         public void Start() 
         {
             if (Mathf.Abs(fovDegrees) < 1e-8)
-                fovDegrees = UnityEngine.Camera.main!.fieldOfView;
+                fovDegrees = Camera.main!.fieldOfView;
         
             if (numBins > numHorizontalPoints)
                 throw new UnityException("More bins than points!");
@@ -52,34 +49,36 @@ namespace FreeSpace
             }
       
             var handle = RaycastCommand.ScheduleBatch(commands, results, 1);
+            
+            if (rayDistances == null) 
+                rayDistances = new float[numBins + 1];
+            else
+                Array.Fill(rayDistances, 0);
+            
             handle.Complete();
-        
-            //set to zero
-            var output = new float[numBins];
-            for (var i = 0; i < numBins; i++)
-                output[i] = 0.0f;
-        
+            
             //normalize and place in buckets
             var elsPerBin = results.Length / numBins;
             for (var i = 0; i < results.Length; i++)
             {
                 var bin = i / elsPerBin;
-                output[bin] += results[i].distance / elsPerBin; // average each bin over entries
+                rayDistances[bin] += results[i].distance / elsPerBin;
             }
+            
+            results.Dispose();
 
             var totalSum = 0.0f;
-            for (var i = 0; i < output.Length; i++)
-                totalSum += output[i];
-
-            var normOutput = new float[numBins + 1];
-            for (var i = 0; i < output.Length; i++)
-                normOutput[i] = output[i] / totalSum;
+            for (var i = 0; i < rayDistances.Length; i++)
+                totalSum += rayDistances[i];
             
-            normOutput[numBins] = totalSum;
-            results.Dispose();
-            return normOutput;
+            for (var i = 0; i < rayDistances.Length; i++)
+                rayDistances[i] /= totalSum;
+            
+            rayDistances[numBins] = totalSum;
+            return rayDistances;
         }
         
+
         private void OnDestroy()
         {
             commands.Dispose();
