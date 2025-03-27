@@ -1,14 +1,15 @@
 using System;
 using Drone;
 using Drone.Stability;
+using Navigation;
 using UnityEngine;
 using Utils;
 
 
-namespace Navigation
+namespace UI
 {
     [ExecuteInEditMode]
-    public class DroneHud : MonoBehaviour
+    public class FlightHudLegacy : MonoBehaviour
     {
         private float collapsedHeight = 34;
         private float screenOffset = 2;
@@ -25,14 +26,13 @@ namespace Navigation
         
         private float navigationPanel_WRatio = 0.5f;
         private float navigationPanel_HRatio = 0.15f;
-        private float navigationPanel_MaxW = 600f;
+        private float navigationPanel_MaxW = 700f;
         private float navigationPanel_MaxH = 200f;
 
         private int lastScreenWidth = 0;
         private int lastScreenHeight = 0;
         
         private bool isMovementVisible, isNavigationVisible, isControlsVisible;
-        private bool isFirstPerson;
         private bool stylesInitialized;
         
         private GUIStyle textStyle, boldTextStyle, italicTextStyle, sliderStyle, checkBoxStyle;
@@ -50,16 +50,21 @@ namespace Navigation
         public bool enableMovementPanel = true;
 
         [Header("Cameras")]
-        public Camera fpvCamera;
-        public Camera tpvCamera;
+        public bool isFirstPersonView;
+        public Camera cameraFPV;
+        public Camera camera3PV;
         
         
-        private void Awake()
+        private void OnEnable()
         {
             isMovementVisible = isNavigationVisible = isControlsVisible = initialExpanded;
             if (drone) inputsController = drone.GetComponent<DroneInputsController>();
             
-            isFirstPerson = fpvCamera?.enabled ?? false;
+            if (cameraFPV && camera3PV)
+            {
+                cameraFPV.enabled = isFirstPersonView;
+                camera3PV.enabled = !isFirstPersonView;
+            }
         }
 
         private void OnValidate()
@@ -104,7 +109,7 @@ namespace Navigation
             {
                 movementPanel_MaxW = 600;
                 movementPanel_MaxH = 400;
-                navigationPanel_MaxW = 800;
+                navigationPanel_MaxW = 900;
                 navigationPanel_MaxH = 350;
                 controlsPanel_MaxW = 600;
                 controlsPanel_MaxH = 400;
@@ -113,7 +118,7 @@ namespace Navigation
             {
                 movementPanel_MaxW = 450;
                 movementPanel_MaxH = 300;
-                navigationPanel_MaxW = 600;
+                navigationPanel_MaxW = 700;
                 navigationPanel_MaxH = 200;
                 controlsPanel_MaxW = 450;
                 controlsPanel_MaxH = 300;
@@ -153,25 +158,10 @@ namespace Navigation
             {
                 isControlsVisible = !isControlsVisible;
             }
-            if (Input.GetKeyDown(KeyCode.V) && fpvCamera && tpvCamera)
+            if (Input.GetKeyDown(KeyCode.V) && cameraFPV && camera3PV)
             {
-                isFirstPerson = !isFirstPerson;
-                if (isFirstPerson)
-                {
-                    tpvCamera.targetDisplay = 3;
-                    fpvCamera.targetDisplay = 1;
-                    tpvCamera.targetDisplay = 2;
-                    fpvCamera.enabled = true;
-                    tpvCamera.enabled = false;
-                }
-                else
-                {
-                    fpvCamera.targetDisplay = 3;
-                    tpvCamera.targetDisplay = 1;
-                    fpvCamera.targetDisplay = 2;
-                    fpvCamera.enabled = false;
-                    tpvCamera.enabled = true;
-                }
+                cameraFPV.enabled = !cameraFPV.enabled;
+                camera3PV.enabled = !camera3PV.enabled;
             }
         }
 
@@ -206,7 +196,7 @@ namespace Navigation
             using (new GUILayout.HorizontalScope())
             {
                 var hasStab = inputsController.stabilizerMode.HasFlag(DroneStabilizerMode.StabAltitude);
-                if (GUILayout.Toggle(hasStab, "Stabilization (press 'space')", checkBoxStyle))
+                if (GUILayout.Toggle(hasStab, "Stabilization (press SPACE)", checkBoxStyle))
                 {
                     inputsController.stabilizerMode = DroneStabilizerMode.StabAltitude | 
                                                       DroneStabilizerMode.StabPitchRoll |
@@ -347,7 +337,7 @@ namespace Navigation
                     using (new GUILayout.VerticalScope())
                     {
                         GUILayout.Label("Waypoint", textStyle);
-                        GUILayout.Label("NONE", italicTextStyle);
+                        GUILayout.Label("FINISHED", italicTextStyle);
                     }
                 }
                 else
@@ -360,15 +350,30 @@ namespace Navigation
                     using (new GUILayout.VerticalScope())
                     {
                         GUILayout.Label("Distance", textStyle);
-                        if (navigator.IsFinished)
-                            GUILayout.Label("NONE", italicTextStyle);
-                        else
-                            GUILayout.Label($"{(navigator.transform.position - navigator.CurrentWaypoint.position).magnitude:F3}", textStyle);
+                        GUILayout.Label($"{(navigator.transform.position - navigator.CurrentWaypoint.position).magnitude:F3}", textStyle);
+                    }   
+                    using (new GUILayout.VerticalScope())
+                    {
+                        GUILayout.Label("Direction", textStyle);
+                        GUILayout.Label(GetDirectionString(navigator.CurrentWaypoint.position - drone.transform.position), textStyle);
                     }   
                 }
             }
             GUILayout.EndArea();
         }
 
+        private static string GetDirectionString(Vector3 direction)
+        {
+            var xStr = direction.x < 0 
+                ? "left" 
+                : (direction.x > 0 ? "right" : "");
+            var yStr = direction.y < 0 
+                ? "up" 
+                : (direction.y > 0 ? "down" : "");
+            var zStr = direction.z < 0 
+                ? "fwd" 
+                : (direction.z > 0 ? "back" : "");
+            return $"{xStr}/{yStr}/{zStr}";
+        }
     }
 }
