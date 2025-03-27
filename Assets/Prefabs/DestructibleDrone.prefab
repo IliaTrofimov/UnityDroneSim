@@ -26,12 +26,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1140054232825268730}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.043619405, y: 0, z: 0, w: 0.9990483}
-  m_LocalPosition: {x: 0, y: 0.45, z: -1}
+  m_LocalRotation: {x: 0.043619405, y: -0, z: -0, w: 0.9990483}
+  m_LocalPosition: {x: 0, y: 0.44999993, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3687313545292754829}
+  m_Father: {fileID: 5105738793918560498}
   m_LocalEulerAnglesHint: {x: 5, y: 0, z: 0}
 --- !u!20 &774949004541268088
 Camera:
@@ -441,9 +441,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5105738793918560498}
-  - component: {fileID: 5116030534503492274}
+  - component: {fileID: 7083853030385943622}
+  - component: {fileID: 4446898096664653340}
+  - component: {fileID: 3303624880022921160}
   m_Layer: 9
-  m_Name: HUD
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -461,10 +463,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4846712609616613426}
+  - {fileID: 7772937291198410666}
   m_Father: {fileID: 3687313545292754829}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5116030534503492274
+--- !u!114 &7083853030385943622
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -473,17 +477,60 @@ MonoBehaviour:
   m_GameObject: {fileID: 2934984586082925994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6668280897cf4cbfa901f10cb32b9e68, type: 3}
+  m_Script: {fileID: 11500000, guid: 284cb89a9c414a21a728c166f4c4a260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   drone: {fileID: 1773305771786904982}
-  navigator: {fileID: 585619674084590170}
-  initialExpanded: 1
-  enableControlPanel: 1
-  enableNavigationPanel: 1
+  path: {fileID: 0}
+  isLoopPath: 0
+  waypointPrefab: {fileID: 2956973809340232748, guid: c6967e99bc191400daa256d17b1dfa28,
+    type: 3}
+  pathMaterial: {fileID: 2100000, guid: ef486a50aa3354878bf6d8875cd8576e, type: 2}
+  pathWidth: 0.5
+  showPreviousWaypoints: 0
+  showNextWaypoints: 2
+--- !u!114 &4446898096664653340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2934984586082925994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1d3c90ce5b4c5bafd3d33a20050933, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hudUIDocument: {fileID: 3303624880022921160}
+  startExpanded: 1
   enableMovementPanel: 1
-  fpvCamera: {fileID: 6688608788927151849}
-  tpvCamera: {fileID: 774949004541268088}
+  enableControlsPanel: 1
+  enableNavigationPanel: 1
+  isFirstPersonView: 0
+  cameraFpv: {fileID: 6688608788927151849}
+  cameraTpv: {fileID: 774949004541268088}
+  drone: {fileID: 1773305771786904982}
+  navigator: {fileID: 7083853030385943622}
+--- !u!114 &3303624880022921160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2934984586082925994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 7c2244890f43a40c2a7ff2709209e975, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: c8d80f7fd50e1410bbd738eb9a49ccee,
+    type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
 --- !u!1 &5080202655946929120
 GameObject:
   m_ObjectHideFlags: 0
@@ -715,7 +762,6 @@ GameObject:
   - component: {fileID: 310941504761515658}
   - component: {fileID: 1773305771786904982}
   - component: {fileID: 3071880003872577166}
-  - component: {fileID: 585619674084590170}
   m_Layer: 9
   m_Name: DestructibleDrone
   m_TagString: DroneBase
@@ -741,8 +787,6 @@ Transform:
   - {fileID: 2856420060480209259}
   - {fileID: 5430812581514463880}
   - {fileID: 5975426702893930758}
-  - {fileID: 4846712609616613426}
-  - {fileID: 7772937291198410666}
   - {fileID: 5105738793918560498}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -830,19 +874,6 @@ MonoBehaviour:
   brokenMotorMass: 0.1
   brokenMotorInterpolation: 0
   brokenMotorCollisions: 1
---- !u!114 &585619674084590170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7181929161792296690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 284cb89a9c414a21a728c166f4c4a260, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  path: {fileID: 0}
 --- !u!1 &7640537058468897458
 GameObject:
   m_ObjectHideFlags: 0
@@ -983,7 +1014,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3687313545292754829}
+  m_Father: {fileID: 5105738793918560498}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6688608788927151849
 Camera:
@@ -992,7 +1023,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8694588208132049211}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}

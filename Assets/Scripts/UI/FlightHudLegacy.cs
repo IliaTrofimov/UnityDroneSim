@@ -8,7 +8,7 @@ using Utils;
 
 namespace UI
 {
-    [ExecuteInEditMode]
+    [DisallowMultipleComponent]
     public class FlightHudLegacy : MonoBehaviour
     {
         private float collapsedHeight = 34;

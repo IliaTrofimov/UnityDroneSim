@@ -12,6 +12,7 @@ using Utils;
 
 namespace UI
 {
+    [DisallowMultipleComponent]
     public class FlightHud : MonoBehaviour
     {
         #region UI Elements
@@ -226,24 +227,25 @@ namespace UI
 
         private bool UpdateNavigationPanel()
         {
-            if (navigator)
+            if (navigator && navigator.enabled)
             {
                 fold_Navigation.enabledSelf = true;
                 if (controls.Default.NavigationPanel.WasPressedThisFrame())
                     fold_Navigation.value = !fold_Navigation.value;
                 
                 val_position.Value = drone.transform.position;
-                val_waypointNumber.Value = navigator.CurrentWaypointIndex + 1;
                 val_waypointsCount.Value = navigator.WaypointsCount;
                 
-                if (navigator.IsFinished)
+                if (navigator.IsFinished || navigator.WaypointsCount == 0)
                 {
+                    val_waypointNumber.Value = 0;
                     val_waypointPos.Value = Vector3.zero;
                     val_waypointDist.Value = float.NaN;
                     val_waypointDirection.Value = Vector3.zero;
                 }
                 else
                 {
+                    val_waypointNumber.Value = navigator.CurrentWaypointIndex + 1;
                     val_waypointPos.Value  = navigator.CurrentWaypoint.position;
                     val_waypointDist.Value = (drone.transform.position - navigator.CurrentWaypoint.position).magnitude;
                     val_waypointDirection.Value = GetWaypointDirection();

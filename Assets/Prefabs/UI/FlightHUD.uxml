@@ -21,7 +21,7 @@
                 </engine:VisualElement>
                 <engine:VisualElement style="flex-grow: 1;">
                     <engine:Label text="Direction" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" parse-escape-sequences="true" style="-unity-text-align: upper-center; height: 28px;" />
-                    <engine:Label text="R | U | F" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointDirection" style="-unity-text-align: upper-center; min-width: 90px;" />
+                    <engine:Label text="R | U | F" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointDirection" style="-unity-text-align: lower-left;" />
                 </engine:VisualElement>
             </engine:VisualElement>
         </engine:Foldout>

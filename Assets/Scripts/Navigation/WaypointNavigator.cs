@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Drone;
 using Exceptions;
-using InspectorTools;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -10,14 +8,15 @@ using UnityEngine;
 namespace Navigation
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(DroneComputerBase))]
     public class WaypointNavigator : MonoBehaviour
     {
-        private DroneComputerBase drone;
         private List<GameObject> waypointsObjects = new();
         private GameObject waypointsParent;
         private LineRenderer pathRenderer;
         private int currentWaypointIndex;
+
+        [Header("Target")]
+        public DroneComputerBase drone;
 
         [Header("Path Options")]
         [SerializeField] private WaypointPath path;
@@ -39,15 +38,14 @@ namespace Navigation
         
         public Waypoint CurrentWaypoint => path[currentWaypointIndex];
         public int CurrentWaypointIndex => currentWaypointIndex;
-        public int WaypointsCount => path.WaypointsCount;
+        public int WaypointsCount => path?.WaypointsCount ?? 0;
         public bool IsLoopPath => isLoopPath;
         public bool IsFinished => currentWaypointIndex >= WaypointsCount;
         
         
         private void Awake()
         {
-            drone = GetComponent<DroneComputerBase>();
-            ExceptionHelper.ThrowIfComponentIsMissing(this, path, nameof(path));
+            ExceptionHelper.ThrowIfComponentIsMissing(this, drone, nameof(drone));
         }
 
         private void OnEnable()
