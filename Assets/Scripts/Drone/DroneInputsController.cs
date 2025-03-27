@@ -11,6 +11,11 @@ namespace Drone
 	[DisallowMultipleComponent]
 	public class DroneInputsController : MonoBehaviour 
 	{
+		public const DroneStabilizerMode FULL_STAB =
+			DroneStabilizerMode.StabAltitude | 
+			DroneStabilizerMode.StabPitchRoll |
+			DroneStabilizerMode.StabYaw;
+		
 		/* y (yaw)
 		   |
 		   |  z|fwd (roll)
@@ -70,7 +75,7 @@ namespace Drone
 			throttle = controls.Default.Throttle.ReadValue<float>();
 			
 			var lastStab = stabilizerMode;
-			if (controls.Default.StabAltitude.WasPressedThisFrame())
+			if (controls.Default.FullStabilization.WasPressedThisFrame())
 				ToggleStabilization();
 			
 			if (lastStab != stabilizerMode) 
@@ -112,6 +117,16 @@ namespace Drone
 			this.pitch = math.clamp(pitch, -1, 1);
 			this.yaw = math.clamp(yaw, -1, 1);
 			this.roll =  math.clamp(roll, -1, 1);
+		}
+
+		public bool IsFullStabilization()
+		{
+			return stabilizerMode == FULL_STAB;
+		}
+		
+		public void SetFullStabilization()
+		{
+			stabilizerMode = FULL_STAB;
 		}
 	}
 }

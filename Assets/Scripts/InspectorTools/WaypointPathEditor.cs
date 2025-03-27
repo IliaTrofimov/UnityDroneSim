@@ -1,8 +1,9 @@
+using Navigation;
 using UnityEditor;
 using UnityEngine;
 
 
-namespace Navigation
+namespace InspectorTools
 {
     [CustomEditor(typeof(WaypointPath))]
     public class WaypointPathEditor : Editor

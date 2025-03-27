@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "StabAltitude",
+                    "name": "FullStabilization",
                     "type": "Button",
                     "id": "17074d39-bec0-47cf-9afd-4b471da24090",
                     "expectedControlType": "",
@@ -33,18 +33,36 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "StabRotation",
+                    "name": "CameraMode",
                     "type": "Button",
-                    "id": "2a17aeb1-314a-44e8-aec8-c055f0edd882",
+                    "id": "22e3676f-bf05-4b15-aeeb-70c3ca69982c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MouseMode",
+                    "name": "ControlsPanel",
                     "type": "Button",
-                    "id": "c93054bb-2c6d-422c-adeb-d61f2dc31e25",
+                    "id": "4de994df-a8ba-440f-9e42-e10e2927d234",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MovementPanel",
+                    "type": "Button",
+                    "id": "6f670368-e3b1-4d27-82f7-ce9317ccd27d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NavigationPanel",
+                    "type": "Button",
+                    "id": "d0080f43-f41b-4b0e-99f0-ad8404552ef4",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -153,45 +171,12 @@
                 },
                 {
                     "name": "",
-                    "id": "7226b5c8-d56c-489e-8bba-3b10d382d062",
-                    "path": "<Keyboard>/h",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StabAltitude",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "59dcc983-175e-47c6-b32f-b6c687943684",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "StabAltitude",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "175779f6-bb31-4a37-9831-ca230a680212",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseMode",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1e143509-2c28-4535-a0e2-87169b6bf322",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StabRotation",
+                    "action": "FullStabilization",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -227,6 +212,50 @@
                     "action": "Throttle",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "cc3ad2ae-cd41-4b56-a9a7-b31b9df7d87f",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6610e55-cd8d-4339-9c61-8413d388288b",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ControlsPanel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f19620c0-4494-4837-8cbf-7d235b7bb505",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MovementPanel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07a0ef8a-df02-4464-9846-2e597d0381c2",
+                    "path": "<Keyboard>/n",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NavigationPanel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -48,7 +48,7 @@ namespace Inputs
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""StabAltitude"",
+                    ""name"": ""FullStabilization"",
                     ""type"": ""Button"",
                     ""id"": ""17074d39-bec0-47cf-9afd-4b471da24090"",
                     ""expectedControlType"": """",
@@ -57,18 +57,36 @@ namespace Inputs
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""StabRotation"",
+                    ""name"": ""CameraMode"",
                     ""type"": ""Button"",
-                    ""id"": ""2a17aeb1-314a-44e8-aec8-c055f0edd882"",
+                    ""id"": ""22e3676f-bf05-4b15-aeeb-70c3ca69982c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""MouseMode"",
+                    ""name"": ""ControlsPanel"",
                     ""type"": ""Button"",
-                    ""id"": ""c93054bb-2c6d-422c-adeb-d61f2dc31e25"",
+                    ""id"": ""4de994df-a8ba-440f-9e42-e10e2927d234"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MovementPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""6f670368-e3b1-4d27-82f7-ce9317ccd27d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NavigationPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0080f43-f41b-4b0e-99f0-ad8404552ef4"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -177,45 +195,12 @@ namespace Inputs
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7226b5c8-d56c-489e-8bba-3b10d382d062"",
-                    ""path"": ""<Keyboard>/h"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""StabAltitude"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""59dcc983-175e-47c6-b32f-b6c687943684"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""StabAltitude"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""175779f6-bb31-4a37-9831-ca230a680212"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
-                    ""interactions"": ""Hold"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MouseMode"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1e143509-2c28-4535-a0e2-87169b6bf322"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""StabRotation"",
+                    ""action"": ""FullStabilization"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -251,6 +236,50 @@ namespace Inputs
                     ""action"": ""Throttle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc3ad2ae-cd41-4b56-a9a7-b31b9df7d87f"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e6610e55-cd8d-4339-9c61-8413d388288b"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ControlsPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f19620c0-4494-4837-8cbf-7d235b7bb505"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MovementPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""07a0ef8a-df02-4464-9846-2e597d0381c2"",
+                    ""path"": ""<Keyboard>/n"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NavigationPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -261,9 +290,11 @@ namespace Inputs
             m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
             m_Default_Throttle = m_Default.FindAction("Throttle", throwIfNotFound: true);
             m_Default_Rotation = m_Default.FindAction("Rotation", throwIfNotFound: true);
-            m_Default_StabAltitude = m_Default.FindAction("StabAltitude", throwIfNotFound: true);
-            m_Default_StabRotation = m_Default.FindAction("StabRotation", throwIfNotFound: true);
-            m_Default_MouseMode = m_Default.FindAction("MouseMode", throwIfNotFound: true);
+            m_Default_FullStabilization = m_Default.FindAction("FullStabilization", throwIfNotFound: true);
+            m_Default_CameraMode = m_Default.FindAction("CameraMode", throwIfNotFound: true);
+            m_Default_ControlsPanel = m_Default.FindAction("ControlsPanel", throwIfNotFound: true);
+            m_Default_MovementPanel = m_Default.FindAction("MovementPanel", throwIfNotFound: true);
+            m_Default_NavigationPanel = m_Default.FindAction("NavigationPanel", throwIfNotFound: true);
         }
 
         ~@DroneControls()
@@ -332,18 +363,22 @@ namespace Inputs
         private List<IDefaultActions> m_DefaultActionsCallbackInterfaces = new List<IDefaultActions>();
         private readonly InputAction m_Default_Throttle;
         private readonly InputAction m_Default_Rotation;
-        private readonly InputAction m_Default_StabAltitude;
-        private readonly InputAction m_Default_StabRotation;
-        private readonly InputAction m_Default_MouseMode;
+        private readonly InputAction m_Default_FullStabilization;
+        private readonly InputAction m_Default_CameraMode;
+        private readonly InputAction m_Default_ControlsPanel;
+        private readonly InputAction m_Default_MovementPanel;
+        private readonly InputAction m_Default_NavigationPanel;
         public struct DefaultActions
         {
             private @DroneControls m_Wrapper;
             public DefaultActions(@DroneControls wrapper) { m_Wrapper = wrapper; }
             public InputAction @Throttle => m_Wrapper.m_Default_Throttle;
             public InputAction @Rotation => m_Wrapper.m_Default_Rotation;
-            public InputAction @StabAltitude => m_Wrapper.m_Default_StabAltitude;
-            public InputAction @StabRotation => m_Wrapper.m_Default_StabRotation;
-            public InputAction @MouseMode => m_Wrapper.m_Default_MouseMode;
+            public InputAction @FullStabilization => m_Wrapper.m_Default_FullStabilization;
+            public InputAction @CameraMode => m_Wrapper.m_Default_CameraMode;
+            public InputAction @ControlsPanel => m_Wrapper.m_Default_ControlsPanel;
+            public InputAction @MovementPanel => m_Wrapper.m_Default_MovementPanel;
+            public InputAction @NavigationPanel => m_Wrapper.m_Default_NavigationPanel;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -359,15 +394,21 @@ namespace Inputs
                 @Rotation.started += instance.OnRotation;
                 @Rotation.performed += instance.OnRotation;
                 @Rotation.canceled += instance.OnRotation;
-                @StabAltitude.started += instance.OnStabAltitude;
-                @StabAltitude.performed += instance.OnStabAltitude;
-                @StabAltitude.canceled += instance.OnStabAltitude;
-                @StabRotation.started += instance.OnStabRotation;
-                @StabRotation.performed += instance.OnStabRotation;
-                @StabRotation.canceled += instance.OnStabRotation;
-                @MouseMode.started += instance.OnMouseMode;
-                @MouseMode.performed += instance.OnMouseMode;
-                @MouseMode.canceled += instance.OnMouseMode;
+                @FullStabilization.started += instance.OnFullStabilization;
+                @FullStabilization.performed += instance.OnFullStabilization;
+                @FullStabilization.canceled += instance.OnFullStabilization;
+                @CameraMode.started += instance.OnCameraMode;
+                @CameraMode.performed += instance.OnCameraMode;
+                @CameraMode.canceled += instance.OnCameraMode;
+                @ControlsPanel.started += instance.OnControlsPanel;
+                @ControlsPanel.performed += instance.OnControlsPanel;
+                @ControlsPanel.canceled += instance.OnControlsPanel;
+                @MovementPanel.started += instance.OnMovementPanel;
+                @MovementPanel.performed += instance.OnMovementPanel;
+                @MovementPanel.canceled += instance.OnMovementPanel;
+                @NavigationPanel.started += instance.OnNavigationPanel;
+                @NavigationPanel.performed += instance.OnNavigationPanel;
+                @NavigationPanel.canceled += instance.OnNavigationPanel;
             }
 
             private void UnregisterCallbacks(IDefaultActions instance)
@@ -378,15 +419,21 @@ namespace Inputs
                 @Rotation.started -= instance.OnRotation;
                 @Rotation.performed -= instance.OnRotation;
                 @Rotation.canceled -= instance.OnRotation;
-                @StabAltitude.started -= instance.OnStabAltitude;
-                @StabAltitude.performed -= instance.OnStabAltitude;
-                @StabAltitude.canceled -= instance.OnStabAltitude;
-                @StabRotation.started -= instance.OnStabRotation;
-                @StabRotation.performed -= instance.OnStabRotation;
-                @StabRotation.canceled -= instance.OnStabRotation;
-                @MouseMode.started -= instance.OnMouseMode;
-                @MouseMode.performed -= instance.OnMouseMode;
-                @MouseMode.canceled -= instance.OnMouseMode;
+                @FullStabilization.started -= instance.OnFullStabilization;
+                @FullStabilization.performed -= instance.OnFullStabilization;
+                @FullStabilization.canceled -= instance.OnFullStabilization;
+                @CameraMode.started -= instance.OnCameraMode;
+                @CameraMode.performed -= instance.OnCameraMode;
+                @CameraMode.canceled -= instance.OnCameraMode;
+                @ControlsPanel.started -= instance.OnControlsPanel;
+                @ControlsPanel.performed -= instance.OnControlsPanel;
+                @ControlsPanel.canceled -= instance.OnControlsPanel;
+                @MovementPanel.started -= instance.OnMovementPanel;
+                @MovementPanel.performed -= instance.OnMovementPanel;
+                @MovementPanel.canceled -= instance.OnMovementPanel;
+                @NavigationPanel.started -= instance.OnNavigationPanel;
+                @NavigationPanel.performed -= instance.OnNavigationPanel;
+                @NavigationPanel.canceled -= instance.OnNavigationPanel;
             }
 
             public void RemoveCallbacks(IDefaultActions instance)
@@ -408,9 +455,11 @@ namespace Inputs
         {
             void OnThrottle(InputAction.CallbackContext context);
             void OnRotation(InputAction.CallbackContext context);
-            void OnStabAltitude(InputAction.CallbackContext context);
-            void OnStabRotation(InputAction.CallbackContext context);
-            void OnMouseMode(InputAction.CallbackContext context);
+            void OnFullStabilization(InputAction.CallbackContext context);
+            void OnCameraMode(InputAction.CallbackContext context);
+            void OnControlsPanel(InputAction.CallbackContext context);
+            void OnMovementPanel(InputAction.CallbackContext context);
+            void OnNavigationPanel(InputAction.CallbackContext context);
         }
     }
 }
