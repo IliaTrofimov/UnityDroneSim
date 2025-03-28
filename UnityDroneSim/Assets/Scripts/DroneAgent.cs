@@ -1,47 +1,47 @@
-﻿using FreeSpace;
+﻿/*
+using FreeSpace;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 
-
-public class DroneAgent: Agent 
+public class DroneAgent: Agent
 {
 	private GameObject currentStartRegion;
 	private GameObject currentEndRegion;
 	private FreeSpaceDetection freeSpace;
 	private Bounds endBounds;
-	
+
 	private bool collided;
 	private bool localIsDone;
 	private System.Random random;
-	
+
 	private float maxX;
 	private float minX;
 	private float maxZ;
 	private float minZ;
 	private Vector3 initialPos;
 	private Rigidbody rigidbody;
-	
+
 	public bool useNewState = true;
-	
+
 	public VelocityControl.VelocityControl velocityControl;
 
     public int startRegionIndex = -1; // -1 means do random
     public GameObject[] startRegions;
     public int endRegionIndex = -1; // -1 means do random
 	public GameObject[] endRegions;
-	
+
 	public float forwardVelocity;
-	public float yawRate; 
+	public float yawRate;
 	public float doneDistance;
 
-	public override void Initialize() 
+	public override void Initialize()
 	{
         freeSpace = gameObject.GetComponent<FreeSpaceDetection>();
         random = new System.Random();
         rigidbody = gameObject.GetComponent<Rigidbody>();
-        
+
         if (startRegions.Length == 0 || startRegions.GetValue(0) == null)
         {
             startRegions = new GameObject[1];
@@ -60,8 +60,8 @@ public class DroneAgent: Agent
             var endRegion = GameObject.CreatePrimitive(PrimitiveType.Quad);
             endRegion.transform.Rotate(new Vector3(90, 0, 0));
             endRegion.transform.localScale = new Vector3(3.0f, 3.0f, 1.0f);
-            endRegion.transform.localPosition = new Vector3(endRegion.transform.localPosition.x, 
-                                                            endRegion.transform.localPosition.y - 1, 
+            endRegion.transform.localPosition = new Vector3(endRegion.transform.localPosition.x,
+                                                            endRegion.transform.localPosition.y - 1,
                                                             endRegion.transform.localPosition.z + 100);
             endRegions.SetValue(endRegion, 0);
         }
@@ -77,7 +77,7 @@ public class DroneAgent: Agent
 		minX = rend.bounds.min.x;
 		maxZ = rend.bounds.max.z;
 		minZ = rend.bounds.min.z;
-		
+
         initialPos = new Vector3(transform.position.x, velocityControl.initial_height, transform.position.z);
         endBounds = currentEndRegion.GetComponent<Renderer>().bounds;
 
@@ -115,16 +115,16 @@ public class DroneAgent: Agent
 		var angle = Vector3.SignedAngle(currentHeading, normalized, Vector3.up);
 		return angle;
 	}
-    
-	public override void CollectObservations(VectorSensor sensor) 
+
+	public override void CollectObservations(VectorSensor sensor)
 	{
         localIsDone = IsDone() || collided;
-        
+
         if (useNewState)
 	        CollectNewObservations(sensor);
         else
 	        CollectOldObservations(sensor);
-        
+
         if (collided)
         {
             Debug.Log("COLLISION MSG SENT");
@@ -138,7 +138,7 @@ public class DroneAgent: Agent
 		sensor.AddObservation(velocityControl.state.velocityVector.z / 8.0f);          // VX scaled
 		sensor.AddObservation(velocityControl.state.velocityVector.x / 8.0f);          // VY scaled
 		sensor.AddObservation(velocityControl.state.angularVelocityVector.y / 360.0f); //Yaw scaled
-		
+
 		sensor.AddObservation(velocityControl.transform.position.x);
 		sensor.AddObservation(velocityControl.transform.position.y);
 		sensor.AddObservation(velocityControl.transform.position.z);
@@ -164,7 +164,7 @@ public class DroneAgent: Agent
 		sensor.AddObservation(collided ? 1.0f : 0.0f);
 		sensor.AddObservation(freeSpace.BatchRaycast());
 	}
-	
+
 	// 1 element input
 	// -> -1 : STOP
 	// -> 0 : LEFT + FORWARD
@@ -178,15 +178,15 @@ public class DroneAgent: Agent
         velocityControl.desired_vx = actions.ContinuousActions[0] >= 0 ? forwardVelocity : 0.0f;
 		velocityControl.desired_vy = 0.0f;
 
-        if (actions.ContinuousActions[0] < -1 + 1e-8) 
+        if (actions.ContinuousActions[0] < -1 + 1e-8)
             velocityControl.desired_yaw = 0.0f;
-        else if (actions.ContinuousActions[0] < 1e-8) 
+        else if (actions.ContinuousActions[0] < 1e-8)
 			velocityControl.desired_yaw = -yawRate;
-        else if (actions.ContinuousActions[0] < 1 + 1e-8) 
+        else if (actions.ContinuousActions[0] < 1 + 1e-8)
 			velocityControl.desired_yaw = 0.0f;
         else
             velocityControl.desired_yaw = yawRate;
-        
+
         if (localIsDone)
 	        rigidbody.isKinematic = true;
 	}
@@ -199,7 +199,7 @@ public class DroneAgent: Agent
 	public void Reset()
 	{
         Debug.Log("Resetting");
-        
+
         localIsDone = false;
 
         //pick new start and end
@@ -222,10 +222,11 @@ public class DroneAgent: Agent
         GetComponent<Rigidbody>().isKinematic = false;
 		velocityControl.Reset ();
 	}
-	
+
 	private void OnCollisionEnter(Collision other)
 	{
 		Debug.Log("-- COLLISION --");
 		collided = true;
 	}
 }
+*/

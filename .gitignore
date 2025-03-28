@@ -41,3 +41,6 @@ mono_crash*json
 DebugLogs/*
 UserSettings/*
 Logs/*
+
+# Python
+.ipynb_checkpoints
