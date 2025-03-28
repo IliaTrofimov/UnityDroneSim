@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Drone.Propulsion;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -75,7 +74,7 @@ namespace Drone
         {
             if (motorInfo.IsDestroyed) return;
             
-            motorInfo.AttachedRigidbody = motorInfo.Motor.AddComponent<Rigidbody>();
+            motorInfo.AttachedRigidbody = motorInfo.Motor.gameObject.AddComponent<Rigidbody>();
             if (motorInfo.AttachedRigidbody is not null)
             {
                 motorInfo.AttachedRigidbody.mass = brokenMotorMass;
