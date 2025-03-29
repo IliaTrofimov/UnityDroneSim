@@ -1,6 +1,6 @@
 namespace UI
 {
-    public delegate void ValueChangedEventHandler<T>(ValueChangedEventArgs<T> e);
+    public delegate void ValueChangedEventHandler<in T>(T newValue, T previousValue);
 
     
     public class TrackedObject<T>
@@ -16,6 +16,12 @@ namespace UI
         
         public void SetValueWithoutNotify(T newValue) => currentValue = newValue;
 
+        public void SetValueWithNotify(T newValue)
+        {
+            ValueChanged?.Invoke(newValue, currentValue);
+            currentValue = newValue;
+        }
+        
         public T Value
         {
             get => currentValue;
@@ -23,7 +29,7 @@ namespace UI
             {
                 if (!ValuesEqual(currentValue, value))
                 {
-                    ValueChanged?.Invoke(new ValueChangedEventArgs<T>(currentValue, value));
+                    ValueChanged?.Invoke(value, currentValue);
                     currentValue = value;
                 }
             }

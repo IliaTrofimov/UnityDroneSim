@@ -27,6 +27,7 @@ namespace UI
         private Foldout fold_Controls;
 
         private Label lbl_Position;
+        private Label lbl_WaypointIndex;
         private Label lbl_WaypointPosition;
         private Label lbl_WaypointDistance;
         private Label lbl_WaypointDirection;
@@ -49,16 +50,18 @@ namespace UI
         #endregion
 
         #region Tracked UI values
-        private const float FLOAT_CHANGE_EPS = 0.001f;
-        
-        private readonly TrackedVector3         val_position = new(FLOAT_CHANGE_EPS);
-        private readonly TrackedVector3         val_waypointPos = new(FLOAT_CHANGE_EPS);
+        private const float MIN_DIRECTION_CHANGE = 0.1F;
+        private const float FLOAT_CHANGE_EPS_PRECISE = 0.001f;
+        private const float FLOAT_CHANGE_EPS = 0.01f;
+
+        private readonly TrackedVector3         val_position = new(FLOAT_CHANGE_EPS_PRECISE);
+        private readonly TrackedVector3         val_waypointPos = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedObject<int>     val_waypointNumber = new();
         private readonly TrackedObject<int>     val_waypointsCount = new();
         private readonly TrackedFloat           val_waypointDist = new(FLOAT_CHANGE_EPS);
         private readonly TrackedObject<Vector3> val_waypointDirection = new();
 
-        private readonly TrackedVector3 val_velocity = new(FLOAT_CHANGE_EPS);
+        private readonly TrackedVector3 val_velocity = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedFloat   val_ySpdTarget = new(FLOAT_CHANGE_EPS);
         private readonly TrackedFloat   val_ySpdActual = new(FLOAT_CHANGE_EPS);
         private readonly TrackedFloat   val_pitchTarget = new(FLOAT_CHANGE_EPS);
@@ -264,9 +267,9 @@ namespace UI
         private Vector3 GetWaypointDirection()
         {
             var dr = drone.transform.InverseTransformPoint(navigator.CurrentWaypoint.position);
-            var x = dr.x > 0.1f ? 1f : (dr.x < 0.1f ? -1f : 0f); 
-            var y = dr.y > 0.1f ? 1f : (dr.y < 0.1f ? -1f : 0f); 
-            var z = dr.z > 0.1f ? 1f : (dr.z < 0.1f ? -1f : 0f); 
+            var x = dr.x > MIN_DIRECTION_CHANGE ? 1f : (dr.x < -MIN_DIRECTION_CHANGE ? -1f : 0f); 
+            var y = dr.y > MIN_DIRECTION_CHANGE ? 1f : (dr.y < -MIN_DIRECTION_CHANGE ? -1f : 0f); 
+            var z = dr.z > MIN_DIRECTION_CHANGE ? 1f : (dr.z < -MIN_DIRECTION_CHANGE ? -1f : 0f); 
             return new Vector3(x, y, z);
         }
 
@@ -278,6 +281,7 @@ namespace UI
             fold_Controls = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Controls");
             
             lbl_Position = hudUIDocument.rootVisualElement.Q<Label>("lbl_Position");
+            lbl_WaypointIndex = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointIndex");
             lbl_WaypointPosition = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointPosition");
             lbl_WaypointDistance = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDistance");
             lbl_WaypointDirection = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDirection");
@@ -365,70 +369,70 @@ namespace UI
             targetSlider.value = value;
         }
         
-        private void PositionChangeHandler(ValueChangedEventArgs<Vector3> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_Position, "F3");
+        private void PositionChangeHandler(Vector3 newValue, Vector3 oldValue) 
+            => UpdateNumericLabel(newValue, lbl_Position, "F3");
         
-        private void WaypointPositionChangeHandler(ValueChangedEventArgs<Vector3> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_WaypointPosition, "F3");
+        private void WaypointPositionChangeHandler(Vector3 newValue, Vector3 oldValue) 
+            => UpdateNumericLabel(newValue, lbl_WaypointPosition, "F3");
         
-        private void WaypointDistanceChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_WaypointDistance, "F3");
+        private void WaypointDistanceChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_WaypointDistance);
         
-        private void WaypointNumberChangeHandler(ValueChangedEventArgs<int> e) 
-            => lbl_WaypointPosition.text = $"{e.NewValue}/{val_waypointsCount.Value}";
+        private void WaypointNumberChangeHandler(int newValue, int oldValue) 
+            => lbl_WaypointIndex.text = $"{newValue}/{val_waypointsCount.Value}";
 
-        private void WaypointsCountChangeHandler(ValueChangedEventArgs<int> e) 
-            => lbl_WaypointPosition.text = $"{val_waypointNumber.Value}/{e.NewValue}";
+        private void WaypointsCountChangeHandler(int newValue, int oldValue) 
+            => lbl_WaypointIndex.text = $"{val_waypointNumber.Value}/{newValue}";
         
-        private void WaypointDirectionChangeHandler(ValueChangedEventArgs<Vector3> e)
+        private void WaypointDirectionChangeHandler(Vector3 newValue, Vector3 oldValue)
         {
             var sb = new List<char>(3);
-            if (e.NewValue.x != 0) sb.Add(e.NewValue.x > 0 ? 'R' : 'L');
-            if (e.NewValue.y != 0) sb.Add(e.NewValue.y > 0 ? 'U' : 'D');
-            if (e.NewValue.z != 0) sb.Add(e.NewValue.z > 0 ? 'F' : 'B');
+            if (newValue.x != 0) sb.Add(newValue.x > 0 ? 'R' : 'L');
+            if (newValue.y != 0) sb.Add(newValue.y > 0 ? 'U' : 'D');
+            if (newValue.z != 0) sb.Add(newValue.z > 0 ? 'F' : 'B');
             lbl_WaypointDirection.text = string.Join("|", sb);
         }
         
-        private void VelocityChangeHandler(ValueChangedEventArgs<Vector3> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_Velocity);
+        private void VelocityChangeHandler(Vector3 newValue, Vector3 oldValue) 
+            => UpdateNumericLabel(newValue, lbl_Velocity, "F3");
         
-        private void YSpdTargetChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_YSpdTarget);
+        private void YSpdTargetChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_YSpdTarget);
         
-        private void YSpdActualChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_YSpdActual);
+        private void YSpdActualChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_YSpdActual);
         
-        private void PitchTargetChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_PitchTarget);
+        private void PitchTargetChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_PitchTarget);
         
-        private void PitchActualChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_PitchActual);
+        private void PitchActualChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_PitchActual);
         
-        private void YawTargetChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_YawTarget);
+        private void YawTargetChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_YawTarget);
         
-        private void YawActualChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_YawActual);
+        private void YawActualChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_YawActual);
         
-        private void RollTargetChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_RollTarget);
+        private void RollTargetChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_RollTarget);
         
-        private void RollActualChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateNumericLabel(e.NewValue, lbl_RollActual);
+        private void RollActualChangeHandler(float newValue, float oldValue) 
+            => UpdateNumericLabel(newValue, lbl_RollActual);
         
-        private void ThrottleChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateSlider(e.NewValue, sld_Throttle);
+        private void ThrottleChangeHandler(float newValue, float oldValue) 
+            => UpdateSlider(newValue, sld_Throttle);
         
-        private void PitchChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateSlider(e.NewValue, sld_Pitch);
+        private void PitchChangeHandler(float newValue, float oldValue) 
+            => UpdateSlider(newValue, sld_Pitch);
         
-        private void YawChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateSlider(e.NewValue, sld_Yaw);
+        private void YawChangeHandler(float newValue, float oldValue) 
+            => UpdateSlider(newValue, sld_Yaw);
         
-        private void RollChangeHandler(ValueChangedEventArgs<float> e) 
-            => UpdateSlider(e.NewValue, sld_Roll);
+        private void RollChangeHandler(float newValue, float oldValue) 
+            => UpdateSlider(newValue, sld_Roll);
         
-        private void StabilizationChangeHandler(ValueChangedEventArgs<bool> e)
-            => tgl_Stabilization.value = e.NewValue;
+        private void StabilizationChangeHandler(bool newValue, bool oldValue)
+            => tgl_Stabilization.value = newValue;
     }
 }
