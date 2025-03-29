@@ -6,7 +6,6 @@ using UtilsDebug;
 
 namespace Navigation
 {
-    [ExecuteAlways]
     public class WaypointPath : MonoBehaviour
     {
         [SerializeField]

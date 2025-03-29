@@ -42,43 +42,14 @@ namespace Navigation
         public bool IsLoopPath => isLoopPath;
         public bool IsFinished => currentWaypointIndex >= WaypointsCount;
         
-        
-        private void Awake()
-        {
-            ExceptionHelper.ThrowIfComponentIsMissing(this, drone, nameof(drone));
-        }
 
-        private void OnEnable()
+        private void Start()
         {
+            DestroyWaypointObjects();
             InstantiateWaypointObjects();
             UpdateWaypointObjects();
         }
-
-        private void OnValidate()
-        {
-            if (waypointsObjects.Count == 0)
-            {
-                if (path && drone && waypointPrefab)
-                {
-                    InstantiateWaypointObjects();
-                    UpdateWaypointObjects();
-                }
-            }
-            else
-            {
-                if (waypointsObjects.Count != path?.WaypointsCount)
-                {
-                    DestroyWaypointObjects();
-                    if (path) InstantiateWaypointObjects();
-                }
-                if (path && waypointsObjects.Count != path.WaypointsCount)
-                {
-                    InstantiateWaypointObjects();
-                }
-                if (path) UpdateWaypointObjects();
-            }
-        }
-
+        
         private void OnDisable() => DestroyWaypointObjects();
 
         private void FixedUpdate()
