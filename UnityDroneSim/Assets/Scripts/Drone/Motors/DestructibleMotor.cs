@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 using Utils;
 
 
-namespace Drone.Propulsion
+namespace Drone.Motors
 {
     /// <summary>
     /// Motor that have propeller with collider and can be destroyed after heavy impact.

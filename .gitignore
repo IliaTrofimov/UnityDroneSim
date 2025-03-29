@@ -44,3 +44,4 @@ Logs/*
 
 # Python
 .ipynb_checkpoints
+*/.DS_STORE

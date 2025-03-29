@@ -1,6 +1,8 @@
 using System.Collections.Generic;
-using Drone.Propulsion;
+using Drone.Motors;
+using InspectorTools;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace Drone
@@ -15,16 +17,14 @@ namespace Drone
     [RequireComponent(typeof(DroneComputerBase))]
     public class DroneDestruction : MonoBehaviour
     {
-        private bool isAnyMotorDestroyed;
+        [SerializeField, ReadOnlyField] private bool anyMotorsDestroyed;
         private DroneComputerBase droneComputer;
         private readonly Dictionary<int, MotorDestructionInfo> motorsLookup = new(4);
         
+        public bool MotorsDestroyed => anyMotorsDestroyed; 
         
         /// <summary>Maximal collision speed (m/s) that motor can survive.</summary>
         [Range(0f, 20f)] public float breakSpeed = 5f;
-        
-        /// <summary>Maximal collision impulse (kg*m/s) that motor can survive.</summary>
-        [Range(0f, 20f)] public float breakImpulse = 5f;
         
         /// <summary>Each broken motor will have a Rigidbody attached with such mass (kg).</summary>
         [Range(0f, 5f)] public float brokenMotorMass = 0.1f;
@@ -51,24 +51,35 @@ namespace Drone
         {
             if (!enabled) return;
             
-            var spd = other.relativeVelocity.magnitude;
-            var imp = other.impulse.magnitude;
-            if (other.contactCount == 0 || (spd < breakSpeed && imp < breakImpulse)) 
+            if (other.contactCount == 0) 
                 return;
-
+            
             var thisCollider = other.GetContact(0).thisCollider;
             var colliderParent = thisCollider.transform.parent?.gameObject;
 
-            if (colliderParent is not null && 
-                (motorsLookup.TryGetValue(colliderParent.GetInstanceID(), out var motorInfo) || 
-                 motorsLookup.TryGetValue(thisCollider.gameObject.GetInstanceID(), out motorInfo)))
+            if (colliderParent == null) return;
+
+            var spd = other.relativeVelocity.magnitude;
+
+            if (motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
             {
+                if (motorInfo.Motor.PropellerLinearSpeed + spd < breakSpeed) return;
+
+                Debug.LogFormat("Collision (Propeller) [{0}.{1}] -> [{2}]: vel={3:F2} m/s",
+                    colliderParent.name, thisCollider.name, other.gameObject.name, spd);
+
                 OnMotorCollided(motorInfo);
-                Debug.LogFormat("Collision (Motor) [{0}.{1}] -> [{2}]: vel={3:F2} m/s, imp={4:F2} kg*m/s",
-                    colliderParent.name, thisCollider.name, other.gameObject.name, spd, imp);
+            }
+            else if (motorsLookup.TryGetValue(thisCollider.GetInstanceID(), out motorInfo))
+            {
+                if (spd < breakSpeed) return;
+
+                Debug.LogFormat("Collision (Motor) [{0}.{1}] -> [{2}]: vel={3:F2} m/s",
+                    colliderParent.name, thisCollider.name, other.gameObject.name, spd);
+
+                OnMotorCollided(motorInfo);
             }
         }
-        
         
         private void OnMotorCollided(MotorDestructionInfo motorInfo)
         {
@@ -90,7 +101,7 @@ namespace Drone
             motorInfo.Motor.enabled = false;
             motorInfo.Motor.transform.parent = null;
             motorInfo.IsDestroyed = true;
-            isAnyMotorDestroyed = true;
+            anyMotorsDestroyed = true;
            
             if (motorInfo.Motor is DestructibleMotor destructibleMotor)
                 destructibleMotor.OnMotorBroken();
@@ -120,9 +131,9 @@ namespace Drone
         [ContextMenu("Repair All Motors")]
         public void RepairAllMotors()
         {
-            if (!isAnyMotorDestroyed) return;
+            if (!anyMotorsDestroyed) return;
            
-            isAnyMotorDestroyed = false;
+            anyMotorsDestroyed = false;
             foreach (var motorInfo in motorsLookup.Values)
                 RepairMotor(motorInfo);
         }

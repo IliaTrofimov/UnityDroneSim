@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Drone.Propulsion;
+using Drone.Motors;
 using Drone.Stability;
 using Unity.Mathematics;
 using UnityEngine;

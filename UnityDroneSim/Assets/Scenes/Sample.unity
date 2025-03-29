@@ -9720,17 +9720,32 @@ PrefabInstance:
     - target: {fileID: 6688608788927151849, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6688608788927151849, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_TargetDisplay
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6912398303587077471, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083853030385943622, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: path
+      value: 
+      objectReference: {fileID: 2145504484}
     - target: {fileID: 7083853030385943622, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083853030385943622, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: pathWidth
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7181929161792296690, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}

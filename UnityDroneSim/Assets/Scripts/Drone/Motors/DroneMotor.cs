@@ -4,7 +4,7 @@ using UnityEngine;
 using Utils;
 
 
-namespace Drone.Propulsion
+namespace Drone.Motors
 {
 	/// <summary>Script that calculates propeller speed and animates it.</summary>
 	/// <remarks>
@@ -14,8 +14,11 @@ namespace Drone.Propulsion
     {
 	    /// <summary>Get current force vector. Shortcut for <c>transform.up * totalForce</c>.</summary>
 	    public virtual Vector3 ForceVector => enabled ? transform.up * liftForce : Vector3.zero;
-
+	    public float PropellerAngularSpeed => propellerAngleDelta;
+	    public float PropellerLinearSpeed => propellerAngleDelta * propellerAngleDelta;
+        public float PropellerRadius { get; private set; }
         
+	    
         /// <summary>A factor to be applied to torque produced by motor.</summary>
         [Header("Force values"), Range(0f, 5f)]
         public float torqueFactor = 1f;
@@ -63,12 +66,15 @@ namespace Drone.Propulsion
 
         private void UpdatePropellerSpeedFactor()
         {
-	        var propDiameter = 0.5f;
-	        if (propeller != null) propeller.TryGetDimensions(out propDiameter);
+	        var radius = 0.5f;
+	        if (propeller != null &&  propeller.TryGetDimensions(out float diameter))
+	        {
+		        PropellerRadius = radius = diameter / 2; 
+	        }
 	        
 	        // Force ~ 0.5*k*w^2*R^4 => w ~ R^(-2)*(2Force/k)^0.5 = sqrt(Force)*C
 	        // C = R^(-2) * animationSpeed
-	        propellerSpeedFactor = math.pow(propDiameter / 2f, -2) * math.sqrt(animationSpeed);
+	        propellerSpeedFactor = math.pow(radius, -2) * math.sqrt(animationSpeed);
         }
         
         protected virtual void Update()

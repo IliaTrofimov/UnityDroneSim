@@ -99,7 +99,7 @@ Material:
     - _AlphaDstBlend: 0
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
-    - _Blend: 0
+    - _Blend: 2
     - _BlendMode: 0
     - _BlendModePreserveSpecular: 0
     - _BlendOp: 0
@@ -118,9 +118,9 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
-    - _DstBlend: 10
+    - _DstBlend: 1
     - _DstBlend2: 0
-    - _DstBlendAlpha: 10
+    - _DstBlendAlpha: 1
     - _EnableBlendModePreserveSpecularLighting: 0
     - _EnableFogOnTransparent: 1
     - _EnvironmentReflections: 0

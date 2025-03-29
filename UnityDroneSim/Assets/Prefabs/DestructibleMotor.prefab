@@ -129,13 +129,13 @@ MonoBehaviour:
   rollFactor: 1
   liftForce: 0
   animatePropellers: 1
-  animationSpeed: 1
-  idleRotationSpeed: 3
+  animationSpeed: 1.7
+  idleRotationSpeed: 4
   propeller: {fileID: 3615590271140427342}
   propellerAngleDelta: 0
   dynamicRotorCollider: {fileID: 6159405709828979613}
-  staticRotorCollider: {fileID: 6208319376346212162}
-  staticColliderSpeed: 2
+  staticRotorCollider: {fileID: 7811529818146510885}
+  staticColliderSpeed: 3
   trailMaterial: {fileID: 2100000, guid: 75b4448808e754cbb893b0d41011cee0, type: 2}
   trailColor: {r: 1, g: 1, b: 1, a: 0.47058824}
   trailTime: 3
@@ -148,7 +148,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7613226305075882443}
-  - component: {fileID: 6208319376346212162}
+  - component: {fileID: 7811529818146510885}
   m_Layer: 7
   m_Name: RotorStatic
   m_TagString: Rotor
@@ -171,8 +171,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5223203428073453654}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &6208319376346212162
-MeshCollider:
+--- !u!65 &7811529818146510885
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -189,10 +189,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  serializedVersion: 3
+  m_Size: {x: 0.71, y: 1, z: 0.71}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &7503187583041297331
 PrefabInstance:
   m_ObjectHideFlags: 0

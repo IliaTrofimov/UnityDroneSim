@@ -1156,8 +1156,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
-      propertyPath: staticColliderSpeed
+      propertyPath: idleRotationSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1292,8 +1297,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
-      propertyPath: staticColliderSpeed
+      propertyPath: idleRotationSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1428,8 +1438,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
-      propertyPath: staticColliderSpeed
+      propertyPath: idleRotationSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1574,8 +1589,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
-      propertyPath: staticColliderSpeed
+      propertyPath: idleRotationSpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: staticColliderSpeed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5223203428073453654, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}

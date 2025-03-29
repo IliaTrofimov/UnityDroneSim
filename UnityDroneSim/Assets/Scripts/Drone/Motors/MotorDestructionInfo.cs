@@ -1,8 +1,7 @@
-using Drone.Propulsion;
 using UnityEngine;
 
 
-namespace Drone
+namespace Drone.Motors
 {
     /// <summary>Object that contains information to destroy/repair drone motor.</summary>
     internal class MotorDestructionInfo
@@ -24,6 +23,11 @@ namespace Drone
             InitialParent = motor.transform.parent;
             Motor = motor;
             AttachedRigidbody = null;
+        }
+
+        public override string ToString()
+        {
+            return $"{(Motor is DestructibleMotor ? "dMotor" : "Motor")} '{InitialParent.name}'.'{Motor.name}' ({(IsDestroyed ? "broken" : "ok")})";
         }
     }
 }
