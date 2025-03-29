@@ -11,7 +11,7 @@
                 <engine:VisualElement style="flex-grow: 1;">
                     <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
                         <engine:Label text="Waypoint" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
-                        <engine:Label text="1/6" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="Label_Waypoint" parse-escape-sequences="true" style="background-color: rgba(137, 137, 137, 0.5);" />
+                        <engine:Label text="1/6" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointIndex" parse-escape-sequences="true" style="background-color: rgba(137, 137, 137, 0.5);" />
                     </engine:VisualElement>
                     <engine:Label text="(0.00, 0.00, 0.00)" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointPosition" style="min-width: 250px;" />
                 </engine:VisualElement>
