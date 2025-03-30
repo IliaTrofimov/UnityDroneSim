@@ -143,8 +143,8 @@ namespace UtilsDebug
                 linVel = rigidBody.linearVelocity;
                 angVel = rigidBody.angularVelocity;
                 linAcc = linearAcceleration;
-                centerOfMass = rigidBody.transform.TransformPoint(rigidBody.centerOfMass);   
-                cmError = rigidBody.position - centerOfMass;
+                centerOfMass = rigidBody.centerOfMass;   
+                cmError = rigidBody.centerOfMass;
             }
             else
             {
