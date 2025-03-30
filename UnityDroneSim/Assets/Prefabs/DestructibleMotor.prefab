@@ -135,10 +135,7 @@ MonoBehaviour:
   propellerAngleDelta: 0
   dynamicRotorCollider: {fileID: 6159405709828979613}
   staticRotorCollider: {fileID: 7811529818146510885}
-  staticColliderSpeed: 3
-  trailMaterial: {fileID: 2100000, guid: 75b4448808e754cbb893b0d41011cee0, type: 2}
-  trailColor: {r: 1, g: 1, b: 1, a: 0.47058824}
-  trailTime: 3
+  staticColliderSpeed: 2
 --- !u!1 &5696176478744647066
 GameObject:
   m_ObjectHideFlags: 0

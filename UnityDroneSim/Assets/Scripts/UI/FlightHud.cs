@@ -18,10 +18,9 @@ namespace UI
         #region UI Elements
         private bool elementsAreInitialized;
         
-        private Label lbl_MovementFallback;
-        private Label lbl_ControlsFallback;
-        private Label lbl_NavigationFallback;
-
+        private Label lbl_DroneEnabled;
+        private Button btn_SwitchView;
+        
         private Foldout fold_Navigation;
         private Foldout fold_Movement;
         private Foldout fold_Controls;
@@ -43,6 +42,7 @@ namespace UI
         private Label lbl_RollActual;
 
         private Toggle tgl_Stabilization;
+        private Label lbl_Status;
         private Slider sld_Throttle;
         private Slider sld_Pitch;
         private Slider sld_Yaw;
@@ -51,15 +51,17 @@ namespace UI
 
         #region Tracked UI values
         private const float MIN_DIRECTION_CHANGE = 0.1F;
-        private const float FLOAT_CHANGE_EPS_PRECISE = 0.001f;
-        private const float FLOAT_CHANGE_EPS = 0.01f;
+        private const float FLOAT_CHANGE_EPS_PRECISE = 0.0009f;
+        private const float FLOAT_CHANGE_EPS = 0.009f;
 
-        private readonly TrackedVector3         val_position = new(FLOAT_CHANGE_EPS_PRECISE);
-        private readonly TrackedVector3         val_waypointPos = new(FLOAT_CHANGE_EPS_PRECISE);
-        private readonly TrackedObject<int>     val_waypointNumber = new();
-        private readonly TrackedObject<int>     val_waypointsCount = new();
-        private readonly TrackedFloat           val_waypointDist = new(FLOAT_CHANGE_EPS);
-        private readonly TrackedObject<Vector3> val_waypointDirection = new();
+        private readonly TrackedVector3            val_position = new(FLOAT_CHANGE_EPS_PRECISE);
+        private readonly TrackedVector3            val_waypointPos = new(FLOAT_CHANGE_EPS_PRECISE);
+        private readonly TrackedObject<int>        val_waypointNumber = new();
+        private readonly TrackedObject<int>        val_waypointsCount = new();
+        private readonly TrackedFloat              val_waypointDist = new(FLOAT_CHANGE_EPS);
+        private readonly TrackedObject<Vector3Int> val_waypointDirection = new();
+        private readonly TrackedObject<bool>       val_droneFailure = new(false);
+        private readonly TrackedObject<bool>       val_droneEnabled = new(false);
 
         private readonly TrackedVector3 val_velocity = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedFloat   val_ySpdTarget = new(FLOAT_CHANGE_EPS);
@@ -71,10 +73,10 @@ namespace UI
         private readonly TrackedFloat   val_rollTarget = new(FLOAT_CHANGE_EPS);
         private readonly TrackedFloat   val_rollActual = new(FLOAT_CHANGE_EPS);
 
-        private readonly TrackedFloat val_throttle = new(FLOAT_CHANGE_EPS);
-        private readonly TrackedFloat val_pitch = new(FLOAT_CHANGE_EPS);
-        private readonly TrackedFloat val_yaw = new(FLOAT_CHANGE_EPS);
-        private readonly TrackedFloat val_roll = new(FLOAT_CHANGE_EPS);
+        private readonly TrackedFloat        val_throttle = new(FLOAT_CHANGE_EPS);
+        private readonly TrackedFloat        val_pitch = new(FLOAT_CHANGE_EPS);
+        private readonly TrackedFloat        val_yaw = new(FLOAT_CHANGE_EPS);
+        private readonly TrackedFloat        val_roll = new(FLOAT_CHANGE_EPS);
         private readonly TrackedObject<bool> val_stabilization = new();
         #endregion
 
@@ -98,6 +100,7 @@ namespace UI
         public WaypointNavigator navigator;
         private DroneInputsController inputsController;
         private Rigidbody droneRigidbody;
+        private DroneDestruction droneDestruction;
         
         #endregion
 
@@ -111,6 +114,8 @@ namespace UI
             
             inputsController = drone.GetComponent<DroneInputsController>();
             droneRigidbody = drone.rigidBody;
+            droneDestruction = drone.gameObject.GetComponent<DroneDestruction>();
+            
             if (!navigator) navigator = GetComponent<WaypointNavigator>();
 
             if (cameraFpv && cameraTpv)
@@ -137,6 +142,7 @@ namespace UI
             fold_Controls.value = startExpanded;
             fold_Movement.value = startExpanded;
             fold_Navigation.value = startExpanded;
+            val_droneEnabled.Value = drone?.enabled ?? false;
         }
 
         private void OnValidate()
@@ -157,7 +163,13 @@ namespace UI
         private void Update()
         {
             if (!enabled) return;
-
+            
+            if (drone && controls.Default.EnableDrone.WasPressedThisFrame())
+            {
+                drone.enabled = !drone.enabled;
+                val_droneEnabled.Value = drone.enabled;
+            }
+            
             if (controls.Default.CameraMode.WasPressedThisFrame() && cameraFpv && cameraTpv)
             {
                 cameraFpv.enabled = !cameraFpv.enabled;
@@ -197,6 +209,13 @@ namespace UI
             val_roll.Value = inputsController.roll;
             val_stabilization.Value = inputsController.IsFullStabilization();
 
+            if (droneDestruction)
+            {
+                val_droneFailure.Value = droneDestruction.AnyMotorsDestroyed;
+                if (droneDestruction.AnyMotorsDestroyed && controls.Default.Repair.WasPressedThisFrame())
+                    droneDestruction.RepairAllMotors();
+            }
+            
             return true;
         }
         
@@ -244,7 +263,7 @@ namespace UI
                     val_waypointNumber.Value = 0;
                     val_waypointPos.Value = Vector3.zero;
                     val_waypointDist.Value = float.NaN;
-                    val_waypointDirection.Value = Vector3.zero;
+                    val_waypointDirection.Value = Vector3Int.zero;
                 }
                 else
                 {
@@ -264,46 +283,69 @@ namespace UI
             }
         }
         
-        private Vector3 GetWaypointDirection()
+        private Vector3Int GetWaypointDirection()
         {
             var dr = drone.transform.InverseTransformPoint(navigator.CurrentWaypoint.position);
-            var x = dr.x > MIN_DIRECTION_CHANGE ? 1f : (dr.x < -MIN_DIRECTION_CHANGE ? -1f : 0f); 
-            var y = dr.y > MIN_DIRECTION_CHANGE ? 1f : (dr.y < -MIN_DIRECTION_CHANGE ? -1f : 0f); 
-            var z = dr.z > MIN_DIRECTION_CHANGE ? 1f : (dr.z < -MIN_DIRECTION_CHANGE ? -1f : 0f); 
-            return new Vector3(x, y, z);
+            var x = dr.x > MIN_DIRECTION_CHANGE ? 1 : (dr.x < -MIN_DIRECTION_CHANGE ? -1 : 0); 
+            var y = dr.y > MIN_DIRECTION_CHANGE ? 1 : (dr.y < -MIN_DIRECTION_CHANGE ? -1 : 0); 
+            var z = dr.z > MIN_DIRECTION_CHANGE ? 1 : (dr.z < -MIN_DIRECTION_CHANGE ? -1 : 0); 
+            return new Vector3Int(x, y, z);
         }
 
 
         private void InitializeElements()
         {
-            fold_Navigation = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Navigation");
-            fold_Movement = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Movement");
-            fold_Controls = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Controls");
+            fold_Navigation = hudUIDocument.rootVisualElement.Q<Foldout>(nameof(fold_Navigation));
+            fold_Movement = hudUIDocument.rootVisualElement.Q<Foldout>(nameof(fold_Movement));
+            fold_Controls = hudUIDocument.rootVisualElement.Q<Foldout>(nameof(fold_Controls));
+            lbl_DroneEnabled = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_DroneEnabled));
+            btn_SwitchView = hudUIDocument.rootVisualElement.Q<Button>(nameof(btn_SwitchView));
             
-            lbl_Position = hudUIDocument.rootVisualElement.Q<Label>("lbl_Position");
-            lbl_WaypointIndex = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointIndex");
-            lbl_WaypointPosition = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointPosition");
-            lbl_WaypointDistance = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDistance");
-            lbl_WaypointDirection = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDirection");
+            lbl_Position = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_Position));
+            lbl_WaypointIndex = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_WaypointIndex));
+            lbl_WaypointPosition = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_WaypointPosition));
+            lbl_WaypointDistance = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_WaypointDistance));
+            lbl_WaypointDirection = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_WaypointDirection));
             
-            lbl_Velocity = hudUIDocument.rootVisualElement.Q<Label>("lbl_Velocity");
-            lbl_YSpdTarget = hudUIDocument.rootVisualElement.Q<Label>("lbl_YSpdTarget");
-            lbl_YSpdActual = hudUIDocument.rootVisualElement.Q<Label>("lbl_YSpdActual");
-            lbl_PitchTarget = hudUIDocument.rootVisualElement.Q<Label>("lbl_PitchTarget");
-            lbl_PitchActual = hudUIDocument.rootVisualElement.Q<Label>("lbl_PitchActual");
-            lbl_YawTarget = hudUIDocument.rootVisualElement.Q<Label>("lbl_YawTarget");
-            lbl_YawActual = hudUIDocument.rootVisualElement.Q<Label>("lbl_YawActual");
-            lbl_RollTarget = hudUIDocument.rootVisualElement.Q<Label>("lbl_RollTarget");
-            lbl_RollActual = hudUIDocument.rootVisualElement.Q<Label>("lbl_RollActual");
+            lbl_Velocity = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_Velocity));
+            lbl_YSpdTarget = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_YSpdTarget));
+            lbl_YSpdActual = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_YSpdActual));
+            lbl_PitchTarget = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_PitchTarget));
+            lbl_PitchActual = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_PitchActual));
+            lbl_YawTarget = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_YawTarget));
+            lbl_YawActual = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_YawActual));
+            lbl_RollTarget = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_RollTarget));
+            lbl_RollActual = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_RollActual));
             
-            tgl_Stabilization = hudUIDocument.rootVisualElement.Q<Toggle>("tgl_Stabilization");
-            sld_Throttle = hudUIDocument.rootVisualElement.Q<Slider>("sld_Throttle");
-            sld_Pitch = hudUIDocument.rootVisualElement.Q<Slider>("sld_Pitch");
-            sld_Yaw = hudUIDocument.rootVisualElement.Q<Slider>("sld_Yaw");
-            sld_Roll = hudUIDocument.rootVisualElement.Q<Slider>("sld_Roll");
+            tgl_Stabilization = hudUIDocument.rootVisualElement.Q<Toggle>(nameof(tgl_Stabilization));
+            lbl_Status = hudUIDocument.rootVisualElement.Q<Label>(nameof(lbl_Status));
+            sld_Throttle = hudUIDocument.rootVisualElement.Q<Slider>(nameof(sld_Throttle));
+            sld_Pitch = hudUIDocument.rootVisualElement.Q<Slider>(nameof(sld_Pitch));
+            sld_Yaw = hudUIDocument.rootVisualElement.Q<Slider>(nameof(sld_Yaw));
+            sld_Roll = hudUIDocument.rootVisualElement.Q<Slider>(nameof(sld_Roll));
 
             InitializeValuesChangedEventHandlers();
+            SetTemplatedLabels();
+            
             elementsAreInitialized = true;
+        }
+
+        private void SetTemplatedLabels()
+        {
+            try
+            {
+                fold_Controls.text = string.Format(fold_Controls.text, controls.Default.ControlsPanel.controls[0].displayName);
+                fold_Navigation.text = string.Format(fold_Navigation.text, controls.Default.NavigationPanel.controls[0].displayName);
+                fold_Movement.text = string.Format(fold_Movement.text, controls.Default.MovementPanel.controls[0].displayName);
+                tgl_Stabilization.text = string.Format(tgl_Stabilization.text, controls.Default.FullStabilization.controls[0].displayName);
+                lbl_DroneEnabled.text = string.Format(lbl_DroneEnabled.text, controls.Default.EnableDrone.controls[0].displayName);
+                lbl_Status.text = string.Format(lbl_Status.text, controls.Default.Repair.controls[0].displayName);
+                btn_SwitchView.text = string.Format(btn_SwitchView.text, controls.Default.CameraMode.controls[0].displayName);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarningFormat("Cannot update templated label: {0}", ex);
+            }
         }
 
         private void InitializeValuesChangedEventHandlers()
@@ -318,18 +360,20 @@ namespace UI
             val_velocity.ValueChanged += VelocityChangeHandler;
             val_ySpdActual.ValueChanged += YSpdActualChangeHandler;
             val_ySpdTarget.ValueChanged += YSpdTargetChangeHandler;
-            val_pitchActual.ValueChanged += PitchTargetChangeHandler;
-            val_pitchTarget.ValueChanged += PitchActualChangeHandler;
+            val_pitchActual.ValueChanged += PitchActualChangeHandler;
+            val_pitchTarget.ValueChanged += PitchTargetChangeHandler;
             val_yawActual.ValueChanged += YawActualChangeHandler;
             val_yawTarget.ValueChanged += YawTargetChangeHandler;
-            val_rollActual.ValueChanged += RollTargetChangeHandler;
-            val_rollTarget.ValueChanged += RollActualChangeHandler;
+            val_rollActual.ValueChanged += RollActualChangeHandler;
+            val_rollTarget.ValueChanged += RollTargetChangeHandler;
 
             val_throttle.ValueChanged += ThrottleChangeHandler;
             val_pitch.ValueChanged += PitchChangeHandler;
             val_yaw.ValueChanged += YawChangeHandler;
             val_roll.ValueChanged += RollChangeHandler;
             val_stabilization.ValueChanged += StabilizationChangeHandler; 
+            val_droneFailure.ValueChanged += DroneFailureChangeHandler;
+            val_droneEnabled.ValueChanged += DroneEnabledChangeHandler;
         }
         
         private void ClearValuesChangedEventHandlers()
@@ -356,8 +400,10 @@ namespace UI
             val_yaw.ValueChanged -= YawChangeHandler;
             val_roll.ValueChanged -= RollChangeHandler;
             val_stabilization.ValueChanged -= StabilizationChangeHandler; 
+            val_droneFailure.ValueChanged -= DroneFailureChangeHandler;
+            val_droneEnabled.ValueChanged -= DroneEnabledChangeHandler;
         }
-        
+
         private static void UpdateNumericLabel<T>(T value, Label targetLabel, string format = "F2")
             where T : struct, IFormattable
         {
@@ -384,7 +430,7 @@ namespace UI
         private void WaypointsCountChangeHandler(int newValue, int oldValue) 
             => lbl_WaypointIndex.text = $"{val_waypointNumber.Value}/{newValue}";
         
-        private void WaypointDirectionChangeHandler(Vector3 newValue, Vector3 oldValue)
+        private void WaypointDirectionChangeHandler(Vector3Int newValue, Vector3Int oldValue)
         {
             var sb = new List<char>(3);
             if (newValue.x != 0) sb.Add(newValue.x > 0 ? 'R' : 'L');
@@ -434,5 +480,15 @@ namespace UI
         
         private void StabilizationChangeHandler(bool newValue, bool oldValue)
             => tgl_Stabilization.value = newValue;
+
+        private void DroneFailureChangeHandler(bool newValue, bool previousValue)
+        {
+            lbl_Status.style.display = newValue ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        private void DroneEnabledChangeHandler(bool newValue, bool previousValue)
+        {
+            lbl_DroneEnabled.style.display = newValue ? DisplayStyle.None : DisplayStyle.Flex;
+        }
     }
 }

@@ -53,6 +53,8 @@ namespace Drone
         
         private void FixedUpdate()
         {
+            if (!enabled) return;
+            
             // When using stabilization target values are limited to maxLiftSpeed, maxPitchAngle etc.
             // Output force will be limited to forceMultiplier, maxPitchForce etc.
             // This restricts drone vertical speed and tilt angles

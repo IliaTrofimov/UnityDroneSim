@@ -1,7 +1,7 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Prefabs/UI/FlightHUD.uss?fileID=7433441132597879392&amp;guid=3815161438bf64700b3e24dcc8dada7d&amp;type=3#FlightHUD" />
     <engine:VisualElement name="panel_Root" style="flex-grow: 1;">
-        <engine:Foldout text="NAVIGATION (N)" name="fold_Navigation" enabled="true" value="true" focusable="false" picking-mode="Ignore" class="expand-panel" style="position: absolute; left: 2px; bottom: auto; max-width: 50%; max-height: 15%; top: 2px;">
+        <engine:Foldout text="NAVIGATION ({0})" name="fold_Navigation" enabled="true" value="true" focusable="false" picking-mode="Ignore" class="expand-panel" style="position: absolute; left: 2px; bottom: auto; max-width: 50%; max-height: 15%; top: 2px;">
             <engine:Label text="WaypointNavigator component is not attached" name="lbl_NavigationFallback" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="label-fallback" style="visibility: hidden;" />
             <engine:VisualElement name="panel_Navigation" class="top-panel panel" style="flex-grow: 1; max-width: none; min-width: auto; max-height: initial; min-height: auto; width: 100%; flex-direction: row;">
                 <engine:VisualElement style="flex-grow: 1;">
@@ -25,7 +25,7 @@
                 </engine:VisualElement>
             </engine:VisualElement>
         </engine:Foldout>
-        <engine:Foldout text="MOVEMENT (M)" name="fold_Movement" enabled="true" value="true" focusable="false" picking-mode="Ignore" class="expand-panel expand-panel-bottom" style="position: absolute; left: 2px; bottom: 2px;">
+        <engine:Foldout text="MOVEMENT ({0})" name="fold_Movement" enabled="true" value="true" focusable="false" picking-mode="Ignore" class="expand-panel expand-panel-bottom" style="position: absolute; left: 2px; bottom: 2px;">
             <engine:Label text="QuadcopterComputer component is not attached" name="lbl_MovementFallback" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="label-fallback" style="visibility: hidden;" />
             <engine:VisualElement name="panel_MovementRoot" class="panel panel-bottom" style="flex-grow: 1;">
                 <engine:VisualElement name="panel_Velocity" style="flex-grow: 1; flex-direction: row; border-bottom-width: 1.5px; border-bottom-color: rgb(197, 197, 197); border-left-color: rgb(197, 197, 197); border-right-color: rgb(197, 197, 197); border-top-color: rgb(197, 197, 197); margin-left: 5px; margin-right: 5px; padding-left: 0; padding-right: 0; margin-bottom: 5px;">
@@ -57,10 +57,11 @@
                 </engine:VisualElement>
             </engine:VisualElement>
         </engine:Foldout>
-        <engine:Foldout text="CONTROLS (C)" name="fold_Controls" enabled="true" value="true" focusable="false" picking-mode="Ignore" class="expand-panel expand-panel-bottom" style="position: absolute; left: auto; bottom: 2px; right: 2px;">
+        <engine:Foldout text="CONTROLS ({0})" name="fold_Controls" enabled="true" value="true" focusable="false" picking-mode="Ignore" class="expand-panel expand-panel-bottom" style="position: absolute; left: auto; bottom: 2px; right: 2px;">
             <engine:Label text="DroneInputsController component is not attached" name="lbl_ControlsFallback" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="label-fallback" style="visibility: hidden;" />
             <engine:VisualElement name="panel_Controls" class="panel-bottom panel" style="flex-grow: 1; flex-direction: column;">
-                <engine:Toggle name="tgl_Stabilization" toggle-on-label-click="true" text="Stabilization (SPACE)" value="false" focusable="false" style="flex-direction: row-reverse; flex-shrink: 0; min-height: initial; height: initial; flex-grow: 1; margin-bottom: 0; padding-bottom: 0;" />
+                <engine:Label name="lbl_Status" text="Control failure - repair ({0})" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" style="display: none; -unity-font-style: bold; color: rgb(255, 85, 85); -unity-text-align: upper-center;" />
+                <engine:Toggle name="tgl_Stabilization" toggle-on-label-click="true" text="Stabilization ({0})" value="false" focusable="false" style="flex-direction: row-reverse; flex-shrink: 0; min-height: initial; height: initial; flex-grow: 1; margin-bottom: 0; padding-bottom: 0;" />
                 <engine:VisualElement name="panel_ControlsSliders" style="flex-grow: 1; flex-direction: row; flex-shrink: 0; align-items: stretch; justify-content: space-between; align-content: flex-start;">
                     <engine:Slider label="Throttle" value="0.5" high-value="1" name="sld_Throttle" low-value="-1" direction="Vertical" fill="false" page-size="0" show-input-field="false" inverted="false" enabled="true" focusable="false" class="slider-controls" />
                     <engine:Slider label="Pitch" value="0.5" high-value="1" name="sld_Pitch" low-value="-1" direction="Vertical" fill="false" page-size="0" show-input-field="false" inverted="false" enabled="true" focusable="false" class="slider-controls" />
@@ -69,6 +70,9 @@
                 </engine:VisualElement>
             </engine:VisualElement>
         </engine:Foldout>
-        <engine:Button text="Switch view (V)" emoji-fallback-support="false" enable-rich-text="false" display-tooltip-when-elided="false" triple-click-selects-line="false" double-click-selects-word="false" name="btn_SwitchView" selectable="true" focusable="false" style="position: absolute; top: 2px; right: 2px; padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; font-size: 16px; background-color: rgba(2, 2, 2, 0.47); -unity-font-style: bold; color: rgb(224, 224, 224);" />
+        <engine:Button text="Switch view ({0})" emoji-fallback-support="false" enable-rich-text="false" display-tooltip-when-elided="false" triple-click-selects-line="false" double-click-selects-word="false" name="btn_SwitchView" selectable="true" focusable="false" style="position: absolute; top: 2px; right: 2px; padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; font-size: 16px; background-color: rgba(2, 2, 2, 0.47); -unity-font-style: bold; color: rgb(224, 224, 224);" />
+        <engine:VisualElement style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; justify-content: center; align-items: center;">
+            <engine:Label text="Drone is disabled. Press ({0}) to start." name="lbl_DroneEnabled" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="panel expand-panel" style="position: relative; top: auto; left: auto; right: auto; bottom: auto; -unity-text-align: middle-center; font-size: 35px; justify-content: center;" />
+        </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

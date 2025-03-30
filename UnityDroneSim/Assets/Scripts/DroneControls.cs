@@ -91,6 +91,24 @@ namespace Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Repair"",
+                    ""type"": ""Button"",
+                    ""id"": ""dacb879a-4c2e-4de6-ba8a-95cd36bf386a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EnableDrone"",
+                    ""type"": ""Button"",
+                    ""id"": ""a41fe771-ae36-4a0b-8be7-a13b6d8417d6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -280,6 +298,28 @@ namespace Inputs
                     ""action"": ""NavigationPanel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1a078a50-b853-4cb9-82dd-597c810b8c5c"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Repair"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7fc95f14-77ba-4a46-bcab-6ff72745789b"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EnableDrone"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -295,6 +335,8 @@ namespace Inputs
             m_Default_ControlsPanel = m_Default.FindAction("ControlsPanel", throwIfNotFound: true);
             m_Default_MovementPanel = m_Default.FindAction("MovementPanel", throwIfNotFound: true);
             m_Default_NavigationPanel = m_Default.FindAction("NavigationPanel", throwIfNotFound: true);
+            m_Default_Repair = m_Default.FindAction("Repair", throwIfNotFound: true);
+            m_Default_EnableDrone = m_Default.FindAction("EnableDrone", throwIfNotFound: true);
         }
 
         ~@DroneControls()
@@ -368,6 +410,8 @@ namespace Inputs
         private readonly InputAction m_Default_ControlsPanel;
         private readonly InputAction m_Default_MovementPanel;
         private readonly InputAction m_Default_NavigationPanel;
+        private readonly InputAction m_Default_Repair;
+        private readonly InputAction m_Default_EnableDrone;
         public struct DefaultActions
         {
             private @DroneControls m_Wrapper;
@@ -379,6 +423,8 @@ namespace Inputs
             public InputAction @ControlsPanel => m_Wrapper.m_Default_ControlsPanel;
             public InputAction @MovementPanel => m_Wrapper.m_Default_MovementPanel;
             public InputAction @NavigationPanel => m_Wrapper.m_Default_NavigationPanel;
+            public InputAction @Repair => m_Wrapper.m_Default_Repair;
+            public InputAction @EnableDrone => m_Wrapper.m_Default_EnableDrone;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -409,6 +455,12 @@ namespace Inputs
                 @NavigationPanel.started += instance.OnNavigationPanel;
                 @NavigationPanel.performed += instance.OnNavigationPanel;
                 @NavigationPanel.canceled += instance.OnNavigationPanel;
+                @Repair.started += instance.OnRepair;
+                @Repair.performed += instance.OnRepair;
+                @Repair.canceled += instance.OnRepair;
+                @EnableDrone.started += instance.OnEnableDrone;
+                @EnableDrone.performed += instance.OnEnableDrone;
+                @EnableDrone.canceled += instance.OnEnableDrone;
             }
 
             private void UnregisterCallbacks(IDefaultActions instance)
@@ -434,6 +486,12 @@ namespace Inputs
                 @NavigationPanel.started -= instance.OnNavigationPanel;
                 @NavigationPanel.performed -= instance.OnNavigationPanel;
                 @NavigationPanel.canceled -= instance.OnNavigationPanel;
+                @Repair.started -= instance.OnRepair;
+                @Repair.performed -= instance.OnRepair;
+                @Repair.canceled -= instance.OnRepair;
+                @EnableDrone.started -= instance.OnEnableDrone;
+                @EnableDrone.performed -= instance.OnEnableDrone;
+                @EnableDrone.canceled -= instance.OnEnableDrone;
             }
 
             public void RemoveCallbacks(IDefaultActions instance)
@@ -460,6 +518,8 @@ namespace Inputs
             void OnControlsPanel(InputAction.CallbackContext context);
             void OnMovementPanel(InputAction.CallbackContext context);
             void OnNavigationPanel(InputAction.CallbackContext context);
+            void OnRepair(InputAction.CallbackContext context);
+            void OnEnableDrone(InputAction.CallbackContext context);
         }
     }
 }

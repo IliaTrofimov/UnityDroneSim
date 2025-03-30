@@ -13,6 +13,5 @@ namespace Drone
     {
         /// <summary>Enumerate all drone motors. </summary>
         public abstract IEnumerable<DroneMotor> GetAllMotors();
-        
     }
 }
