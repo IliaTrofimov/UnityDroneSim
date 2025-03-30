@@ -9647,6 +9647,23 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3071880003872577166, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: hullBreakSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071880003872577166, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: hullDestructionPrefab
+      value: 
+      objectReference: {fileID: 8444957704130355678, guid: 18e0cd41a3a0a45869f6d601c53d38d0,
+        type: 3}
+    - target: {fileID: 3071880003872577166, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: motorDestructionPrefab
+      value: 
+      objectReference: {fileID: 579799967915267250, guid: 6f9590fa62b7f49e593aa17d4310e813,
+        type: 3}
     - target: {fileID: 3687313545292754829, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_LocalPosition.x
