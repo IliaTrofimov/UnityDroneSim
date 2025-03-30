@@ -9650,7 +9650,7 @@ PrefabInstance:
     - target: {fileID: 3071880003872577166, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: hullBreakSpeed
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3071880003872577166, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}

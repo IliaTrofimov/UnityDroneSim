@@ -71,28 +71,24 @@ namespace Drone
             var colliderParent = thisCollider.transform.parent?.gameObject;
             var spd = other.relativeVelocity.magnitude;
 
-            if (colliderParent != null) // motor or propeller always have parent
+            if (colliderParent && motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
             {
-                // Propeller collider is child of motor itself
-                if (motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
-                {
-                    if (motorInfo.Motor.PropellerLinearSpeed + spd < motorBreakSpeed) return;
+                if (motorInfo.Motor.PropellerLinearSpeed + spd < motorBreakSpeed) return;
 
-                    Debug.LogFormat("Collision (Propeller) [{0}.{1}] -> [{2}]: drone.vel={3:F2} m/s, prop.vel={4:F2} m/s",
-                        colliderParent.name, thisCollider.name, other.gameObject.name, spd, motorInfo.Motor.PropellerLinearSpeed + spd);
+                Debug.LogFormat("Collision (Propeller) [{0}.{1}] -> [{2}]: drone.vel={3:F2} m/s, prop.vel={4:F2} m/s",
+                    colliderParent.name, thisCollider.name, other.gameObject.name, spd, motorInfo.Motor.PropellerLinearSpeed + spd);
 
-                    OnMotorCollided(motorInfo);
-                }
-                else if (motorsLookup.TryGetValue(thisCollider.GetInstanceID(), out motorInfo))
-                {
-                    if (spd < motorBreakSpeed) return;
-
-                    Debug.LogFormat("Collision (Motor) [{0}.{1}] -> [{2}]: vel={3:F2} m/s",
-                        colliderParent.name, thisCollider.name, other.gameObject.name, spd);
-
-                    OnMotorCollided(motorInfo);
-                }   
+                OnMotorCollided(motorInfo);
             }
+            else if (motorsLookup.TryGetValue(thisCollider.GetInstanceID(), out motorInfo))
+            {
+                if (spd < motorBreakSpeed) return;
+
+                Debug.LogFormat("Collision (Motor) [{0}] -> [{1}]: vel={2:F2} m/s",
+                    thisCollider.name, other.gameObject.name, spd);
+
+                OnMotorCollided(motorInfo);
+            }   
             else
             {
                 if (spd < hullBreakSpeed) return;
