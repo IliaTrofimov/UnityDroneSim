@@ -26,16 +26,6 @@ namespace Drone.Motors
         [Range(0f, 50f)] public float staticColliderSpeed;
         
         
-        /// <summary>Broken motor will leave this trail after detaching from drone.</summary>
-        [Header("Destruction FX")]
-        public Material trailMaterial;
-        
-        /// <summary>Broken motor will leave a trail with this colour after detaching from drone.</summary>
-        public Color trailColor = Color.white;
-        
-        /// <summary>Broken motor will leave a trail fot this time (seconds) after detaching from drone.</summary>
-        [Range(0f, 60f)] public float trailTime = 5f;
-        
         private bool isDestroyed;
         private float trailWidth = 0.1f;
         private TrailRenderer trailRenderer;
@@ -71,22 +61,6 @@ namespace Drone.Motors
             isDestroyed = true;
             dynamicRotorCollider.enabled = true;
             staticRotorCollider.enabled = false;
-            
-            if (trailTime <= 1e-3 || trailWidth <= 1e-4)
-                return;
-            
-            trailRenderer = gameObject.AddComponent<TrailRenderer>();
-            trailRenderer.material = trailMaterial;
-            trailRenderer.startWidth = trailWidth * 0.9f;
-            trailRenderer.endWidth = trailWidth;
-            trailRenderer.startColor = trailColor;
-            trailRenderer.endColor = trailColor * 0.8f;
-            trailRenderer.time = trailTime;
-            trailRenderer.shadowCastingMode = ShadowCastingMode.Off;
-            trailRenderer.generateLightingData = false;
-            trailRenderer.autodestruct = false;
-            trailRenderer.numCapVertices = 5;
-            trailRenderer.numCornerVertices = 5;
         }
 
         /// <summary>Repairs broken motor.</summary>

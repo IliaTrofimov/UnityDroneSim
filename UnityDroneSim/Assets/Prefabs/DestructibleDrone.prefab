@@ -869,11 +869,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5341c4bb9b3c4ef18ed722003aa8e936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  breakSpeed: 5
-  breakImpulse: 5
+  anyMotorsDestroyed: 0
+  hullBreakSpeed: 7
+  motorBreakSpeed: 5
   brokenMotorMass: 0.1
   brokenMotorInterpolation: 0
   brokenMotorCollisions: 1
+  trailMaterial: {fileID: 2100000, guid: df0a9d4a1d2f26c4eb697a71ac5b82d6, type: 2}
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  trailTime: 5
+  motorDestructionPrefab: {fileID: 1025285306637258, guid: d8f0099df63275647a8bcf646df1ca00,
+    type: 3}
 --- !u!1 &7640537058468897458
 GameObject:
   m_ObjectHideFlags: 0
