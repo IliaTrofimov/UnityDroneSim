@@ -22,10 +22,11 @@ namespace Drone
         private readonly Dictionary<int, MotorDestructionInfo> motorsLookup = new(4);
         
         public bool AllMotorsDestroyed => destroyedMotorsCount == motorsLookup.Count; 
-        public bool AnyMotorsDestroyed => destroyedMotorsCount > 0; 
+        public bool AnyMotorsDestroyed => destroyedMotorsCount > 0;
 
         /// <summary>Maximal collision speed (m/s) that drone hull can survive.</summary>
-        [Header("Physics")]
+        [Header("Physics")] 
+        
         [Range(0f, 20f)] public float hullBreakSpeed = 7f;
         
         /// <summary>Maximal collision speed (m/s) that motor can survive.</summary>
@@ -46,7 +47,7 @@ namespace Drone
         public bool enableEffects = true;
         public GameObject motorDestructionPrefab;
         public GameObject hullDestructionPrefab;
-
+    
         
         
         private void Awake()
@@ -62,15 +63,13 @@ namespace Drone
         
         private void OnCollisionEnter(Collision other)
         {
-            if (!enabled) return;
-            
-            if (other.contactCount == 0) 
+            if (!enabled || AllMotorsDestroyed || other.contactCount == 0) 
                 return;
             
             var thisCollider = other.GetContact(0).thisCollider;
             var colliderParent = thisCollider.transform.parent?.gameObject;
             var spd = other.relativeVelocity.magnitude;
-
+            
             if (colliderParent && motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
             {
                 if (motorInfo.Motor.PropellerLinearSpeed + spd < motorBreakSpeed) return;
@@ -122,13 +121,14 @@ namespace Drone
             motorInfo.Motor.enabled = false;
             motorInfo.Motor.transform.parent = null;
             motorInfo.IsDestroyed = true;
+            Destroy(motorInfo.Motor);
 
             if (enableEffects && addEffects)
             {
                 if (motorDestructionPrefab)
                     AddMotorDestructionFx(motorInfo.Motor.transform);
                 if (AllMotorsDestroyed)
-                   AddHullDestructionFx();
+                    AddHullDestructionFx();
             }
             
             if (motorInfo.Motor is DestructibleMotor destructibleMotor)
