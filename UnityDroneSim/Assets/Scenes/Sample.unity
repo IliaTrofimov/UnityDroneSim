@@ -9634,11 +9634,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6861557873318692091, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: m_RendererIndex
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7083853030385943622, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: path
@@ -9647,12 +9642,7 @@ PrefabInstance:
     - target: {fileID: 7181929161792296690, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_Name
-      value: DroneFpv_2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8571162416980300483, guid: 081f81782f8434689b3115a1caa1ece4,
-        type: 3}
-      propertyPath: m_ImplicitCom
-      value: 0
+      value: PlayerDrone
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
