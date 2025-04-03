@@ -118,5 +118,18 @@ namespace Utils
         /// <summary>Returns 1 if value greater than or equal to zero, otherwise -1.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float NonZeroSign(float value) => value >= 0f ? 1f : -1f;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float NormalizedHeadingTo(this Transform current, Vector3 target)
+        {
+            var normalized = Vector3.Normalize(target - current.position);
+            normalized.y = 0.0f;
+
+            var currentHeading = Quaternion.Euler(new Vector3(0.0f, current.rotation.eulerAngles.y, 0.0f)) * Vector3.forward;
+            currentHeading.y = 0.0f;
+
+            var angle = Vector3.SignedAngle(currentHeading, normalized, Vector3.up);
+            return angle;
+        }
     }
 }

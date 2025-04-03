@@ -31,7 +31,7 @@ MonoBehaviour:
   m_RendererFeatureMap: 333e95196fa7b33c
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
-  postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
+  postProcessData: {fileID: 0}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Active: 1
   injectionPoint: 600
   fetchColorBuffer: 0
-  requirements: 1
+  requirements: 4
   passMaterial: {fileID: -876546973899608171, guid: dd706c13823184273af5b7730c793c14,
     type: 3}
   passIndex: 0

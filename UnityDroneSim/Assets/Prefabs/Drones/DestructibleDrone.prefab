@@ -762,10 +762,11 @@ GameObject:
   - component: {fileID: 310941504761515658}
   - component: {fileID: 1773305771786904982}
   - component: {fileID: 3071880003872577166}
+  - component: {fileID: 7496530621990308001}
   m_Layer: 9
   m_Name: DestructibleDrone
   m_TagString: DroneBase
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -849,7 +850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8571162416980300483}
-  showForceVectors: 1
+  showForceVectors: 0
   clampNegativeForce: 1
   useVelocityStab: 1
   controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
@@ -870,8 +871,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyedMotorsCount: 0
+  landed: 0
+  landingDotProduct: 0.2
   hullBreakSpeed: 5
   motorBreakSpeed: 5
+  enableBrokenMotorsPhysics: 1
   brokenMotorMass: 0.1
   brokenMotorInterpolation: 0
   brokenMotorCollisions: 1
@@ -880,6 +884,27 @@ MonoBehaviour:
     type: 3}
   hullDestructionPrefab: {fileID: 8444957704130355678, guid: 18e0cd41a3a0a45869f6d601c53d38d0,
     type: 3}
+--- !u!114 &7496530621990308001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7181929161792296690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 284cb89a9c414a21a728c166f4c4a260, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drone: {fileID: 1773305771786904982}
+  path: {fileID: 0}
+  isLoopPath: 0
+  waypointPrefab: {fileID: 2956973809340232748, guid: c6967e99bc191400daa256d17b1dfa28,
+    type: 3}
+  pathMaterial: {fileID: 2100000, guid: ef486a50aa3354878bf6d8875cd8576e, type: 2}
+  pathWidth: 0.1
+  showPreviousWaypoints: 0
+  showNextWaypoints: 2
 --- !u!1 &7640537058468897458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1019,7 +1044,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.010599971, z: 0.10349989}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3381990629990056455}
   m_Father: {fileID: 5105738793918560498}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6688608788927151849
@@ -1057,7 +1083,7 @@ Camera:
   far clip plane: 500
   field of view: 70
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 0.98125
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -1701,3 +1727,77 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c0d0d88fc24f70a417197ff9e8e409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &7183591362031051594
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4846712609616613426}
+    m_Modifications:
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7115979890597007880, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_Name
+      value: DepthCameraPreview
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d2c8c8514c35b423fb09502c0c26c122, type: 3}
+--- !u!4 &3381990629990056455 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5574894246234497357, guid: d2c8c8514c35b423fb09502c0c26c122,
+    type: 3}
+  m_PrefabInstance: {fileID: 7183591362031051594}
+  m_PrefabAsset: {fileID: 0}
