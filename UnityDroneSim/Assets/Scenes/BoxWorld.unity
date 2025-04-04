@@ -4444,6 +4444,31 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8318183637488411737, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_TargetDisplay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318183637488411737, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318183637488411737, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318183637488411737, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8318183637488411737, guid: d2c8c8514c35b423fb09502c0c26c122,
+        type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 0.33333334
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9663,6 +9688,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3071880003872577166, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      propertyPath: landingDotProduct
+      value: 0.55
+      objectReference: {fileID: 0}
     - target: {fileID: 3687313545292754829, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_LocalPosition.x

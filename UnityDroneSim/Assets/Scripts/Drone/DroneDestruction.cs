@@ -1,9 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Drone.Motors;
 using InspectorTools;
 using UnityEngine;
-using UnityEngine.Serialization;
-
 
 namespace Drone
 {
@@ -18,19 +17,27 @@ namespace Drone
     public class DroneDestruction : MonoBehaviour
     {
         [SerializeField, ReadOnlyField] private int destroyedMotorsCount;
+        [SerializeField, ReadOnlyField] private bool landed;
         private DroneComputerBase droneComputer;
         private readonly Dictionary<int, MotorDestructionInfo> motorsLookup = new(4);
         
         public bool AllMotorsDestroyed => destroyedMotorsCount == motorsLookup.Count; 
         public bool AnyMotorsDestroyed => destroyedMotorsCount > 0;
+        public bool Landed => landed;
+
+        
+        /// <summary>Minimal </summary>
+        [Header("Physics")] 
+        [Range(0.1f, 1f)] public float landingDotProduct = 0.55f;
 
         /// <summary>Maximal collision speed (m/s) that drone hull can survive.</summary>
-        [Header("Physics")] 
-        
         [Range(0f, 20f)] public float hullBreakSpeed = 7f;
         
         /// <summary>Maximal collision speed (m/s) that motor can survive.</summary>
         [Range(0f, 20f)] public float motorBreakSpeed = 5f;
+
+        /// <summary>Add rigidbodies to destroyed motors.</summary>
+        public bool enableBrokenMotorsPhysics = true;
         
         /// <summary>Each broken motor will have a Rigidbody attached with such mass (kg).</summary>
         [Range(0f, 5f)] public float brokenMotorMass = 0.1f;
@@ -61,39 +68,73 @@ namespace Drone
                 motorsLookup[motor.gameObject.GetInstanceID()] = new MotorDestructionInfo(motor);
         }
         
-        private void OnCollisionEnter(Collision other)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (!enabled || AllMotorsDestroyed || other.contactCount == 0) 
+            if (!enabled || AllMotorsDestroyed || collision.contactCount == 0) 
                 return;
             
-            var thisCollider = other.GetContact(0).thisCollider;
+            var contact = collision.GetContact(0);
+            var contactSpeed = collision.relativeVelocity.magnitude;
+            
+            if (CheckLanding(contactSpeed, contact.normal)) 
+                return;
+            
+            CheckDestruction(contactSpeed, contact.thisCollider.gameObject, contact.otherCollider.gameObject);
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (!Landed) return;
+
+            landed = false;
+            Debug.LogFormat("Take-off [{0}]: drone.vel={1:F2} m/s", gameObject.name, collision.relativeVelocity.magnitude);
+        }
+
+        private bool CheckLanding(float speed, Vector3 contactNormal)
+        {
+            var dot = 0f;
+            if (speed > hullBreakSpeed || (dot = Vector3.Dot(contactNormal, Vector3.up)) < landingDotProduct)
+            {
+                landed = false;
+                return false;
+            }
+            if (!landed) // prevent log spamming
+            {
+                Debug.LogFormat("Landed [{0}]: drone.vel={1:F2} m/s, normal={2:F2}, dot={3:F2}/{4:F2}",
+                    gameObject.name, speed, contactNormal, dot, landingDotProduct);
+                landed = true;    
+            }
+            return true;
+        }
+        
+        private void CheckDestruction(float contactSpeed, GameObject thisCollider, GameObject otherCollider)
+        {
             var colliderParent = thisCollider.transform.parent?.gameObject;
-            var spd = other.relativeVelocity.magnitude;
             
             if (colliderParent && motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
             {
-                if (motorInfo.Motor.PropellerLinearSpeed + spd < motorBreakSpeed) return;
+                if (motorInfo.Motor.PropellerLinearSpeed + contactSpeed < motorBreakSpeed) return;
 
-                Debug.LogFormat("Collision (Propeller) [{0}.{1}] -> [{2}]: drone.vel={3:F2} m/s, prop.vel={4:F2} m/s",
-                    colliderParent.name, thisCollider.name, other.gameObject.name, spd, motorInfo.Motor.PropellerLinearSpeed + spd);
+                Debug.LogFormat("Collision (Propeller) [{0}.{1}] -> [{2}]: drone.vel={3:F2} m/s, propeller.vel={4:F2} m/s",
+                    colliderParent.name, thisCollider.name, otherCollider.name, contactSpeed, motorInfo.Motor.PropellerLinearSpeed + contactSpeed);
 
                 OnMotorCollided(motorInfo);
             }
             else if (motorsLookup.TryGetValue(thisCollider.GetInstanceID(), out motorInfo))
             {
-                if (spd < motorBreakSpeed) return;
+                if (contactSpeed < motorBreakSpeed) return;
 
                 Debug.LogFormat("Collision (Motor) [{0}] -> [{1}]: vel={2:F2} m/s",
-                    thisCollider.name, other.gameObject.name, spd);
+                    thisCollider.name, otherCollider.name, contactSpeed);
 
                 OnMotorCollided(motorInfo);
             }   
             else
             {
-                if (spd < hullBreakSpeed) return;
+                if (contactSpeed < hullBreakSpeed) return;
                 
                 Debug.LogFormat("Collision (Hull) [{0}] -> [{1}]: vel={2:F2} m/s",
-                        thisCollider.name, other.gameObject.name, spd);
+                    thisCollider.name, otherCollider.name, contactSpeed);
 
                 BreakAllMotors();
             }
@@ -105,6 +146,13 @@ namespace Drone
 
             destroyedMotorsCount++;
 
+            motorInfo.Motor.name = "[X] " + motorInfo.Motor.name;
+            motorInfo.Motor.enabled = false;
+            motorInfo.IsDestroyed = true;
+            
+            if (!enableBrokenMotorsPhysics) return;
+            
+            motorInfo.Motor.transform.parent = null;
             motorInfo.AttachedRigidbody = motorInfo.Motor.gameObject.AddComponent<Rigidbody>();
             if (motorInfo.AttachedRigidbody is not null)
             {
@@ -116,12 +164,6 @@ namespace Drone
                 motorInfo.AttachedRigidbody.AddRelativeForce(Vector3.up * motorInfo.Motor.liftForce / 5, ForceMode.Force);
                 motorInfo.AttachedRigidbody.AddRelativeTorque(Vector3.up * motorInfo.Motor.liftForce / 5, ForceMode.VelocityChange);
             }
-            
-            motorInfo.Motor.name = "[X] " + motorInfo.Motor.name;
-            motorInfo.Motor.enabled = false;
-            motorInfo.Motor.transform.parent = null;
-            motorInfo.IsDestroyed = true;
-            Destroy(motorInfo.Motor);
 
             if (enableEffects && addEffects)
             {
@@ -195,6 +237,5 @@ namespace Drone
             var motorFx = Instantiate(motorDestructionPrefab, parent);
             motorFx.name = "[FX] Motor destruction";
         }
-
     }
 }

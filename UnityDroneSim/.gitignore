@@ -79,3 +79,11 @@ crashlytics-build.properties
 
 # User layout
 /UserSettings/
+
+#ML Agents stuff
+*/ML-Agents/Timers*
+
+#Images
+*.png
+*.jpg
+*.jpeg
