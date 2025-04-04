@@ -1,0 +1,15 @@
+I don't want to flood this repository with other assets that are not necessary to run project, so I will only mention them here. You can download all these assets on your own and attach them to corresponding scene objects. 
+
+
+UnityTechnologies: ML Agents - MUST HAVE
+
+UnityTechnologies: ParticlePack - some visual effects and materials
+https://assetstore.unity.com/packages/vfx/particles/particle-pack-127325
+
+255 pixel studios: Parking Garage - parking garage scene and objects 
+https://assetstore.unity.com/packages/3d/environments/urban/parking-garage-complete-104909
+
+SpeedTutor: Tutorial Level - BoxWorld scene and materials
+https://assetstore.unity.com/packages/3d/environments/speedtutor-tutorial-level-free-159460
+
+
