@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 namespace RL
 {
+    /// <summary>
+    /// Helper script for managing <see cref="RenderTexture"/> for given <see cref="RenderTextureSensorComponent"/>.
+    /// </summary>
+    /// <remarks>Will automatically create textures and assign them to the sensor and camera.</remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Camera))]
     public class DepthCameraHelper : MonoBehaviour
@@ -14,12 +18,19 @@ namespace RL
         private Camera depthCamera;
         private RenderTextureSensorComponent sensor;
 
+        [Tooltip("RenderTexture will be created with RenderTexture.GetTemporary() method. Otherwise constructor will be used.")]
         public bool useTemporaryTexture;
+        
+        [Tooltip("RenderTexture color format.")]
         public GraphicsFormat colorFormat = GraphicsFormat.R8_SNorm;
 
+        [Tooltip("RenderTexture width. Keep it as small as possible.")]
         [Range(8, 1024)] public int width = 86;
+        
+        [Tooltip("RenderTexture height. Keep it as small as possible.")]
         [Range(8, 1024)] public int height = 86;
 
+        [Tooltip("Use this canvas to display RenderTexture. Will automatically add RawImage to the canvas.")]
         public Canvas debugCanvas;
         private RawImage debugImage;
 
