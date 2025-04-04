@@ -14,54 +14,76 @@ namespace Drone
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(DroneComputerBase))]
-    public class DroneDestruction : MonoBehaviour
+    public class DroneState : MonoBehaviour
     {
         [SerializeField, ReadOnlyField] private int destroyedMotorsCount;
         [SerializeField, ReadOnlyField] private bool landed;
         private DroneComputerBase droneComputer;
         private readonly Dictionary<int, MotorDestructionInfo> motorsLookup = new(4);
         
+        /// <summary>All motors have been destroyed.</summary>
         public bool AllMotorsDestroyed => destroyedMotorsCount == motorsLookup.Count; 
+        
+        /// <summary>Some motors have been destroyed.</summary>
         public bool AnyMotorsDestroyed => destroyedMotorsCount > 0;
+        
+        /// <summary>Drone has landed on the ground safely.</summary>
         public bool Landed => landed;
 
-        
-        /// <summary>Minimal </summary>
         [Header("Physics")] 
-        [Range(0.1f, 1f)] public float landingDotProduct = 0.55f;
-
-        /// <summary>Maximal collision speed (m/s) that drone hull can survive.</summary>
-        [Range(0f, 20f)] public float hullBreakSpeed = 7f;
+        [Tooltip("Colliders with this tag will instantly destroy drone.")]
+        public string instantDeathColliderTag;
+        private TagHandle? instantDeathColliderTagHandle;
         
-        /// <summary>Maximal collision speed (m/s) that motor can survive.</summary>
-        [Range(0f, 20f)] public float motorBreakSpeed = 5f;
+        [Range(0.1f, 1f)]
+        [Tooltip("Minimal value for the dot product of world UP and drone UP vectors to make safe landing.")]
+        public float landingDotProduct = 0.55f;
 
-        /// <summary>Add rigidbodies to destroyed motors.</summary>
+        [Range(0f, 20f)] 
+        [Tooltip("Maximal collision speed (m/s) that drone hull can survive.")]
+        public float hullBreakSpeed = 7f;
+        
+        [Range(0f, 20f)] 
+        [Tooltip("Maximal collision speed (m/s) that motor can survive.")]
+        public float motorBreakSpeed = 5f;
+
+        [Tooltip("Add rigidbodies to destroyed motors.")]
         public bool enableBrokenMotorsPhysics = true;
         
-        /// <summary>Each broken motor will have a Rigidbody attached with such mass (kg).</summary>
+        [Tooltip("Each broken motor will have a Rigidbody attached with such mass (kg).")]
         [Range(0f, 5f)] public float brokenMotorMass = 0.1f;
         
-        /// <summary>Each broken motor will have a Rigidbody attached with such interpolation mode.</summary>
+        [Tooltip("Each broken motor will have a Rigidbody attached with such interpolation mode.")]
         public RigidbodyInterpolation brokenMotorInterpolation = RigidbodyInterpolation.None;
         
-        /// <summary>Each broken motor will have a Rigidbody attached with such collision detection mode.</summary>
+        [Tooltip("Each broken motor will have a Rigidbody attached with such collision detection mode.")]
         public CollisionDetectionMode brokenMotorCollisions = CollisionDetectionMode.Continuous;
         
         
-        /// <summary>Broken motor will leave this trail after detaching from drone.</summary>
         [Header("Destruction FX")]
+        [Tooltip("Enable destruction effects.")]
         public bool enableEffects = true;
+        
+        [Tooltip("This object will appear after motor destruction.")]
         public GameObject motorDestructionPrefab;
+        
+        [Tooltip("This object will appear after whole drone destruction.")]
         public GameObject hullDestructionPrefab;
     
         
-        
         private void Awake()
-        { 
+        {
             droneComputer = GetComponent<QuadcopterComputer>();
+            if (!string.IsNullOrEmpty(instantDeathColliderTag))
+                instantDeathColliderTagHandle = TagHandle.GetExistingTag(instantDeathColliderTag);
         }
-       
+
+        private void OnValidate()
+        {
+            if (!string.IsNullOrEmpty(instantDeathColliderTag))
+                instantDeathColliderTagHandle = TagHandle.GetExistingTag(instantDeathColliderTag);
+        }
+
         private void OnEnable()
         {
             foreach (var motor in droneComputer.GetAllMotors())
@@ -71,6 +93,9 @@ namespace Drone
         private void OnCollisionEnter(Collision collision)
         {
             if (!enabled || AllMotorsDestroyed || collision.contactCount == 0) 
+                return;
+
+            if (CheckInstantDeath(collision.gameObject))
                 return;
             
             var contact = collision.GetContact(0);
@@ -89,6 +114,17 @@ namespace Drone
             landed = false;
             Debug.LogFormat("Take-off [{0}]: drone.vel={1:F2} m/s", gameObject.name, collision.relativeVelocity.magnitude);
         }
+
+        private bool CheckInstantDeath(GameObject otherCollider)
+        {
+            if (!instantDeathColliderTagHandle.HasValue || !otherCollider.CompareTag(instantDeathColliderTagHandle.Value))
+                return false;
+            
+            BreakAllMotors();
+            Debug.LogFormat("Instant death [{0}] -> [{1}]", gameObject.name, otherCollider.name);
+            return true;
+        }
+        
 
         private bool CheckLanding(float speed, Vector3 contactNormal)
         {

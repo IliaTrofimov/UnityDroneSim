@@ -22,7 +22,7 @@ namespace RL
         public WaypointNavigator navigator;
         
         private DroneInputsController inputsController;
-        private DroneDestruction droneDestruction;
+        private DroneState droneState;
         private Rigidbody droneRigidBody;
         private DroneControlSettings droneControlSettings;
         private int currentWaypointIndex;
@@ -42,7 +42,7 @@ namespace RL
             //    throw new UnityException("WaypointNavigator's target drone is not the same as Agent's drone.");
 
             inputsController = drone.GetComponent<DroneInputsController>();
-            droneDestruction = drone.GetComponent<DroneDestruction>();
+            droneState = drone.GetComponent<DroneState>();
             droneRigidBody = drone.rigidBody;
             droneControlSettings = drone.controlSettings;
             
@@ -59,7 +59,7 @@ namespace RL
                 return;
             }
             */
-            if (droneDestruction.AnyMotorsDestroyed)
+            if (droneState.AnyMotorsDestroyed)
             {
                 //ResetTraining(destructionPenalty);
                 //return;
@@ -75,7 +75,7 @@ namespace RL
             //var distance = (drone.transform.position - navigator.CurrentWaypoint.position).magnitude;
             //var direction = drone.transform.NormalizedHeadingTo(navigator.CurrentWaypoint.position);
             
-            sensor.AddObservation(droneDestruction.Landed ? 1 : 0);
+            sensor.AddObservation(droneState.Landed ? 1 : 0);
             sensor.AddObservation(0);
             sensor.AddObservation(0);
             sensor.AddObservation(droneRigidBody.linearVelocity.x);
@@ -111,7 +111,7 @@ namespace RL
             AddReward(finalReward);
             EndEpisode();
             //navigator.ResetWaypoint();
-            droneDestruction.RepairAllMotors();
+            droneState.RepairAllMotors();
         }
     }
 }
