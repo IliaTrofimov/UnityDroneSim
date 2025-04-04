@@ -24,13 +24,13 @@ namespace Drone
 
 		private DroneControls controls;
 		
-		/// <summary>Turn on/off reading inputs from user.</summary>
+		[Tooltip("Turn on/off reading inputs from user.")]
 		public bool manualInput = true;
 		
-		/// <summary>Use legacy Unity Input manager instead of new Inputs system.</summary>
+		[Tooltip("Use legacy Unity Input manager instead of new Inputs system.")]
 		public bool useLegacyInputs;
 		
-		/// <summary>Flight stabilization mode.</summary>
+		[Tooltip("Flight stabilization mode.")]
 		public DroneStabilizerMode stabilizerMode = DroneStabilizerMode.StabAltitude | DroneStabilizerMode.StabPitchRoll;
 		
 		/// <summary>Desired throttle value. Range [-1, 1].</summary>

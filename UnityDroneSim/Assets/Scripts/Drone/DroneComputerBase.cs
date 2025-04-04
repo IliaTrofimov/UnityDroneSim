@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using Drone.Motors;
 using UnityEngine;
-using UtilsDebug;
 
 
 namespace Drone
 {
+    // TODO: move important parts of drone as interface here
+    
     /// <summary>Abstract drone flight computer.</summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(DroneInputsController))]

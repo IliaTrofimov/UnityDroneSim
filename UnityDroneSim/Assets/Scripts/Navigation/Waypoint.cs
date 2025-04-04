@@ -4,14 +4,21 @@ using UnityEngine;
 
 namespace Navigation
 {
+    /// <summary>
+    /// Waypoint that contains its name, position and radius.
+    /// </summary>
     [Serializable]
     public struct Waypoint 
     {
+        [Tooltip("Name of the waypoint.")]
         public string name;
+        
+        [Tooltip("Waypoint can be activated in this radius.")]
         [Range(0.01f, 10f)] 
         public float radius;
-        public Vector3 position;
 
+        [Tooltip("Position (world coordinates) of the waypoint.")]
+        public Vector3 position;
         
         public Waypoint(string name) : this(name, 0.5f, Vector3.zero)
         {}

@@ -19,37 +19,34 @@ namespace Drone.Motors
         public float PropellerRadius { get; private set; }
         
 	    
-        /// <summary>A factor to be applied to torque produced by motor.</summary>
+        [Tooltip("A factor to be applied to torque produced by motor.")]
         [Header("Force values"), Range(0f, 5f)]
         public float torqueFactor = 1f;
 		
-        /// <summary>A factor to be applied to the pitch correction.</summary>
-        /// <remarks>Front motors must have positive value.</remarks>
+        [Tooltip("A factor to be applied to the pitch correction. Front motors must have positive value.")]
         [Range(-1, 1)] public int pitchFactor;
 		
-        /// <summary>A factor to be applied to the yaw correction.</summary>
-        /// <remarks>Front-left and rear-right motors must have positive value.</remarks>
+        [Tooltip("A factor to be applied to the yaw correction. Front-left and rear-right motors must have positive value.")]
         [Range(-1, 1)] public int yawFactor;
 		
-        /// <summary>A factor to be applied to the roll correction.</summary>
-        /// <remarks>Left motors must have positive value.</remarks>
+        [Tooltip("A factor to be applied to the roll correction. Left motors must have positive value.")]
         [Range(-1, 1)] public int rollFactor;
 		
-        /// <summary>Total lift force to be applied by this motor.</summary>
+        [Tooltip("Total lift force to be applied by this motor.")]
         [ReadOnlyField] public float liftForce;
         
-        
-        /// <summary>Turns on/off propellers animations.</summary>
+
         [Header("Animations")]
+        [Tooltip("Turns on/off propellers animations.")]
         public bool animatePropellers = true;
 
-        /// <summary>Propeller rotation speed multiplier.</summary>
+        [Tooltip("Propeller rotation speed multiplier.")]
         [Range(0f, 100f)] public float animationSpeed = 0.5f;
         
-        /// <summary>Minimal propeller's rotation speed (degrees per frame) before stopping.</summary>
+        [Tooltip("Minimal propeller's rotation speed (degrees per frame) before stopping.")]
         [Range(0f, 10f)] public float idleRotationSpeed = 1f;
 
-        /// <summary>The propeller object. Animation will be done here.</summary>
+        [Tooltip("The propeller object. Animation will be done here.")]
         public GameObject propeller;
 
         [SerializeField, ReadOnlyField] protected float propellerAngleDelta;
