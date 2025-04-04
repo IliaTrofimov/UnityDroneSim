@@ -19,7 +19,7 @@ namespace UI
         
         protected override bool ValuesEqual(Vector3 oldValue, Vector3 newValue)
         {
-            return math.cmax(oldValue - newValue) < Epsilon;
+            return math.cmax(math.abs(oldValue - newValue)) < Epsilon;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace UI
         }
         
         public TrackedFloat(float initialValue, float epsilon) : base(initialValue)
-        {
+        {   
             Epsilon = epsilon;
         }
         
