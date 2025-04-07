@@ -159,6 +159,7 @@ namespace Navigation
             if (!isLoopPath && currentWaypointIndex == path.WaypointsCount - 1)
             {
                 waypoint = CurrentWaypoint;
+                currentWaypointIndex = path.WaypointsCount;
                 return false;
             }
             
@@ -176,5 +177,11 @@ namespace Navigation
         public bool NextWaypoint() => NextWaypoint(out _);
 
         public void ResetWaypoint() => currentWaypointIndex = 0;
+
+        public float GetCurrentDistance(Vector3 position)
+        {
+            if (IsFinished || WaypointsCount == 0) return 0;
+            return Vector3.Distance(position, CurrentWaypoint.position);
+        }
     }
 }

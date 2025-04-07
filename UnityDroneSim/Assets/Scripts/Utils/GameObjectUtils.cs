@@ -47,6 +47,40 @@ namespace Utils
 
             return true;           
         }
+        
+        /// <summary>Try to measure GameObject's size using its meshes in local coordinates.</summary>
+        /// <remarks>
+        /// This method searches through any Mesh in this object and its children and sets
+        /// <c>minPoint</c> and <c>maxPoint</c> as vertices with minimal and maximal coordinates in all meshes.
+        /// </remarks>
+        /// <returns>True if object has mesh and size can be calculated, otherwise false.</returns>
+        public static bool TryGetLocalDimensions(this GameObject gameObject, out Vector3 minPoint, out Vector3 maxPoint)
+        {
+            if (TryGetDimensions(gameObject, out minPoint, out maxPoint))
+            {
+                minPoint = gameObject.transform.InverseTransformPoint(minPoint);
+                maxPoint = gameObject.transform.InverseTransformPoint(maxPoint);
+                return true;
+            }    
+            return false;
+        }
+        
+        /// <summary>Try to measure GameObject's size using its meshes in local coordinates.</summary>
+        /// <remarks>
+        /// This method searches through any Mesh in this object and its children and sets
+        /// <c>minPoint</c> and <c>maxPoint</c> as vertices with minimal and maximal coordinates in all meshes.
+        /// </remarks>
+        /// <returns>True if object has mesh and size can be calculated, otherwise false.</returns>
+        public static bool TryGetLocalDimensions(this GameObject gameObject, out Vector3 axis)
+        {
+            if (!TryGetLocalDimensions(gameObject, out var minPoint, out var maxPoint))
+            {
+                axis = Vector3.zero;
+                return false;
+            }
+            axis = (maxPoint - minPoint).Abs();
+            return true;
+        }
 
         /// <summary>Try to measure GameObject's size using its meshes.</summary>
         /// <remarks>Resulting vector <c>axis</c> is length of given object in XYZ dimensions.</remarks>

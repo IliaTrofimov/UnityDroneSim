@@ -74,6 +74,7 @@ namespace Drone
             else
             {
                 throttleOutput = inputController.throttle * controlSettings.maxLiftForce;
+                pidThrottle.Reset();
             }    
             
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabPitchRoll))
@@ -87,6 +88,8 @@ namespace Drone
                 // must be inverted to match stabilized version (don't fix what is working)
                 pitchOutput = -inputController.pitch * controlSettings.maxRollForce;
                 rollOutput  = -inputController.roll * controlSettings.maxRollForce;
+                pidPitch.Reset();
+                pidRoll.Reset();
             }
             
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabYaw))
@@ -97,6 +100,7 @@ namespace Drone
             else
             {
                 yawOutput = inputController.yaw * controlSettings.maxYawForce;
+                pidYaw.Reset();
             }
             
             CalculateMotorsForces(throttleOutput, pitchOutput, yawOutput, rollOutput);
@@ -170,6 +174,14 @@ namespace Drone
             yield return motorFrontRight;
             yield return motorRearLeft;
             yield return motorRearRight;
+        }
+
+        public void ResetStabilizers()
+        {
+            pidThrottle.Reset();   
+            pidPitch.Reset();
+            pidYaw.Reset();
+            pidRoll.Reset();
         }
     }
 }

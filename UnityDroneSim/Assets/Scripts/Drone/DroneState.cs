@@ -81,7 +81,16 @@ namespace Drone
         private void OnValidate()
         {
             if (!string.IsNullOrEmpty(instantDeathColliderTag))
-                instantDeathColliderTagHandle = TagHandle.GetExistingTag(instantDeathColliderTag);
+            {
+                try
+                {
+                    instantDeathColliderTagHandle = TagHandle.GetExistingTag(instantDeathColliderTag);
+                }
+                catch (UnityException)
+                {
+                    instantDeathColliderTagHandle = null;
+                }
+            }
         }
 
         private void OnEnable()
