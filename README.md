@@ -1,6 +1,6 @@
 # Unity Drone Simulator
 
-My attempt on creating self-flying quadcopter in Unity with ML-Agents.
+My attempt on creating self-flying quadcopter in Unity with ML-Agents. Main progress is on develop branch, important milestones are marked with tags in git tree.
 
 
 ## Features
