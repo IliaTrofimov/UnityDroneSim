@@ -3,6 +3,9 @@ I don't want to flood this repository with other assets that are not necessary t
 
 UnityTechnologies: ML Agents - MUST HAVE
 
+mbaske: Grid Sensor
+https://github.com/mbaske/grid-sensor?ysclid=m93azf0ea5354974035
+
 UnityTechnologies: ParticlePack - some visual effects and materials
 https://assetstore.unity.com/packages/vfx/particles/particle-pack-127325
 
@@ -13,3 +16,5 @@ SpeedTutor: Tutorial Level - BoxWorld scene and materials
 https://assetstore.unity.com/packages/3d/environments/speedtutor-tutorial-level-free-159460
 
 
+Denis Rizov: NaughtyAttributes
+https://assetstore.unity.com/packages/tools/utilities/naughtyattributes-129996
