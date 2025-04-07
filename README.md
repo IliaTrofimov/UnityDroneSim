@@ -31,7 +31,7 @@ Raycast AI drone prefab:
 
 <img width="789" alt="Lidar drone" src="https://github.com/user-attachments/assets/49cea489-74f0-42cd-982c-bac963b7563e" />
 
-GridSensor AI drone prefab:
+GridSensor AI drone prefab (thanks to [mbaske](https://github.com/mbaske/grid-sensor) repository):
 
 <img width="789" alt="Снимок экрана 2025-04-08 в 01 05 20" src="https://github.com/user-attachments/assets/89ea7227-7f7d-458f-8cba-0762bfc0c545" />
 <img width="453" alt="Снимок экрана 2025-04-08 в 01 05 34" src="https://github.com/user-attachments/assets/391e6d24-0ebc-444f-8bfb-00dee0a61152" />
