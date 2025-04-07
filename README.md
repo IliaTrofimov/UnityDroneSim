@@ -22,9 +22,21 @@ Four drone propellers can be destroyed and detached from the frame if collided w
 Scene depth can be observed using URP full screen shader. This shader is than used in ML Agents' `RenderTextureSensor` component to send depth date to the neural network.
 
 
+## Examples
+Playable drone UI:
 
+<img width="789" alt="Playable drone UI" src="https://github.com/user-attachments/assets/2fe9b63a-ecf9-4bfd-a30f-814ccda44f44" />
 
+Raycast AI drone prefab:
 
+<img width="789" alt="Lidar drone" src="https://github.com/user-attachments/assets/49cea489-74f0-42cd-982c-bac963b7563e" />
 
+GridSensor AI drone prefab:
 
-*Work in progress ...*
+<img width="789" alt="Снимок экрана 2025-04-08 в 01 05 20" src="https://github.com/user-attachments/assets/89ea7227-7f7d-458f-8cba-0762bfc0c545" />
+<img width="453" alt="Снимок экрана 2025-04-08 в 01 05 34" src="https://github.com/user-attachments/assets/391e6d24-0ebc-444f-8bfb-00dee0a61152" />
+
+Sample scene view:
+
+<img width="789" alt="Снимок экрана 2025-04-08 в 01 01 55" src="https://github.com/user-attachments/assets/e3b0ade9-5904-4033-89b3-041da86d3de2" />
+
