@@ -7,40 +7,60 @@ using UnityEngine;
 
 namespace Navigation
 {
+    /// <summary>
+    /// Waypoint navigation manager. Uses <see cref="WaypointPath"/> object as path.
+    /// Keeps track of visited and unvisited waypoints.
+    /// </summary>
     [DisallowMultipleComponent]
     public class WaypointNavigator : MonoBehaviour
     {
-        private List<GameObject> waypointsObjects = new();
+        private readonly List<GameObject> waypointsObjects = new();
         private GameObject waypointsParent;
         private LineRenderer pathRenderer;
         private int currentWaypointIndex;
 
-        [Header("Target")]
-        public DroneComputerBase drone;
-
-        [Header("Path Options")]
-        [SerializeField] private WaypointPath path;
-        [SerializeField] private bool isLoopPath;
-        
-        [Header("Visuals")]
-        [SerializeField] 
-        private GameObject waypointPrefab;
-        
-        [SerializeField] private Material pathMaterial;
-        
-        [SerializeField, Range(0, 1)] 
-        private float pathWidth = 0.5f;
-        
-        [SerializeField] private bool showPreviousWaypoints;
-        
-        [SerializeField, Min(0)] 
-        private int showNextWaypoints;
         
         public Waypoint CurrentWaypoint => path[currentWaypointIndex];
         public int CurrentWaypointIndex => currentWaypointIndex;
         public int WaypointsCount => path?.WaypointsCount ?? 0;
         public bool IsLoopPath => isLoopPath;
         public bool IsFinished => currentWaypointIndex >= WaypointsCount;
+        
+        
+        [Header("Target")]
+        [Tooltip("Drone object. Navigator will track its position and change current active waypoint accordingly.")]
+        public DroneComputerBase drone;
+
+        [Header("Path Options")]
+        [Tooltip("Path object. Several navigators can use same the path. " +
+                 "Path itself is never changing, navigator only changes current active waypoint for its target drone.")]
+        [SerializeField] 
+        private WaypointPath path;
+        
+        [Tooltip("Path will be repeated after visiting last waypoint.")]
+        [SerializeField] 
+        private bool isLoopPath;
+        
+        
+        [Header("Visuals")]
+        [Tooltip("Waypoint object. Leave empty if you don't want to render it.")]
+        [SerializeField] 
+        private GameObject waypointPrefab;
+        
+        [Tooltip("Material for line between waypoints. Leave empty if you don't want to render it.")]
+        [SerializeField] private Material pathMaterial;
+        
+        [Tooltip("Line between waypoints will have such width.")]
+        [SerializeField, Range(0, 1)] 
+        private float pathWidth = 0.5f;
+        
+        [Tooltip("Will show/hide already visited waypoints.")]
+        [SerializeField] 
+        private bool showPreviousWaypoints;
+        
+        [Tooltip("Will show N waypoints ahead.")]
+        [SerializeField, Min(0)] 
+        private int showNextWaypoints;
         
 
         private void Start()
@@ -54,7 +74,7 @@ namespace Navigation
 
         private void FixedUpdate()
         {
-            if (!path || !enabled || IsFinished) return;
+            if (!enabled || IsFinished || WaypointsCount == 0) return;
 
             if (path.Waypoints[currentWaypointIndex].ComparePosition(drone.transform, out var distance))
             {
@@ -73,14 +93,17 @@ namespace Navigation
                 waypointsParent.transform.SetParent(drone.transform.parent);
             }
 
-            pathRenderer ??= waypointsParent.AddComponent<LineRenderer>();
-            pathRenderer.startWidth = pathWidth;
-            pathRenderer.endWidth = pathWidth;
-            pathRenderer.material = pathMaterial;
-            pathRenderer.numCornerVertices = 4;
-            pathRenderer.numCapVertices = 5;
-            pathRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            pathRenderer.positionCount = path.WaypointsCount;
+            if (pathMaterial)
+            {
+                pathRenderer ??= waypointsParent.AddComponent<LineRenderer>();
+                pathRenderer.startWidth = pathWidth;
+                pathRenderer.endWidth = pathWidth;
+                pathRenderer.material = pathMaterial;
+                pathRenderer.numCornerVertices = 4;
+                pathRenderer.numCapVertices = 5;
+                pathRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                pathRenderer.positionCount = path.WaypointsCount;    
+            }
             
             for (var i = 0; i < path.WaypointsCount; i++)
             {
@@ -127,13 +150,20 @@ namespace Navigation
 
         public bool NextWaypoint(out Waypoint waypoint)
         {
-            if (!path || !enabled || (currentWaypointIndex >= WaypointsCount && !isLoopPath))
+            if (!path || !enabled)
             {
                 waypoint = default;
                 return false;       
             }
             
-            if (currentWaypointIndex == WaypointsCount - 1)
+            if (!isLoopPath && currentWaypointIndex == path.WaypointsCount - 1)
+            {
+                waypoint = CurrentWaypoint;
+                currentWaypointIndex = path.WaypointsCount;
+                return false;
+            }
+            
+            if (isLoopPath && currentWaypointIndex == WaypointsCount - 1)
                 currentWaypointIndex = 0;
             else
                 currentWaypointIndex++;
@@ -141,12 +171,17 @@ namespace Navigation
             waypoint = path.Waypoints[currentWaypointIndex];
 
             UpdateWaypointObjects();    
-            
             return true;
         }
         
         public bool NextWaypoint() => NextWaypoint(out _);
 
         public void ResetWaypoint() => currentWaypointIndex = 0;
+
+        public float GetCurrentDistance(Vector3 position)
+        {
+            if (IsFinished || WaypointsCount == 0) return 0;
+            return Vector3.Distance(position, CurrentWaypoint.position);
+        }
     }
 }

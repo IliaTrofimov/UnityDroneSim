@@ -51,8 +51,8 @@ namespace UI
 
         #region Tracked UI values
         private const float MIN_DIRECTION_CHANGE = 0.1F;
-        private const float FLOAT_CHANGE_EPS_PRECISE = 0.0009f;
-        private const float FLOAT_CHANGE_EPS = 0.009f;
+        private const float FLOAT_CHANGE_EPS_PRECISE = 0.0001f;
+        private const float FLOAT_CHANGE_EPS = 0.001f;
 
         private readonly TrackedVector3            val_position = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedVector3            val_waypointPos = new(FLOAT_CHANGE_EPS_PRECISE);
@@ -100,7 +100,7 @@ namespace UI
         public WaypointNavigator navigator;
         private DroneInputsController inputsController;
         private Rigidbody droneRigidbody;
-        private DroneDestruction droneDestruction;
+        private DroneState droneState;
         
         #endregion
 
@@ -114,9 +114,9 @@ namespace UI
             
             inputsController = drone.GetComponent<DroneInputsController>();
             droneRigidbody = drone.rigidBody;
-            droneDestruction = drone.gameObject.GetComponent<DroneDestruction>();
+            droneState = drone.gameObject.GetComponent<DroneState>();
             
-            if (!navigator) navigator = GetComponent<WaypointNavigator>();
+            //if (!navigator) navigator = GetComponent<WaypointNavigator>();
 
             if (cameraFpv && cameraTpv)
             {
@@ -209,11 +209,11 @@ namespace UI
             val_roll.Value = inputsController.roll;
             val_stabilization.Value = inputsController.IsFullStabilization();
 
-            if (droneDestruction)
+            if (droneState)
             {
-                val_droneFailure.Value = droneDestruction.AnyMotorsDestroyed;
-                if (droneDestruction.AnyMotorsDestroyed && controls.Default.Repair.WasPressedThisFrame())
-                    droneDestruction.RepairAllMotors();
+                val_droneFailure.Value = droneState.AnyMotorsDestroyed;
+                if (droneState.AnyMotorsDestroyed && controls.Default.Repair.WasPressedThisFrame())
+                    droneState.RepairAllMotors();
             }
             
             return true;
@@ -260,7 +260,7 @@ namespace UI
                 
                 if (navigator.IsFinished || navigator.WaypointsCount == 0)
                 {
-                    val_waypointNumber.Value = 0;
+                    val_waypointNumber.Value = navigator.WaypointsCount;
                     val_waypointPos.Value = Vector3.zero;
                     val_waypointDist.Value = float.NaN;
                     val_waypointDirection.Value = Vector3Int.zero;
@@ -268,7 +268,7 @@ namespace UI
                 else
                 {
                     val_waypointNumber.Value = navigator.CurrentWaypointIndex + 1;
-                    val_waypointPos.Value  = navigator.CurrentWaypoint.position;
+                    val_waypointPos.Value = navigator.CurrentWaypoint.position;
                     val_waypointDist.Value = (drone.transform.position - navigator.CurrentWaypoint.position).magnitude;
                     val_waypointDirection.Value = GetWaypointDirection();
                 }
@@ -423,12 +423,19 @@ namespace UI
         
         private void WaypointDistanceChangeHandler(float newValue, float oldValue) 
             => UpdateNumericLabel(newValue, lbl_WaypointDistance);
-        
+
         private void WaypointNumberChangeHandler(int newValue, int oldValue) 
-            => lbl_WaypointIndex.text = $"{newValue}/{val_waypointsCount.Value}";
+            => SetWaypointIndex(newValue, val_waypointsCount.Value);
 
         private void WaypointsCountChangeHandler(int newValue, int oldValue) 
-            => lbl_WaypointIndex.text = $"{val_waypointNumber.Value}/{newValue}";
+            => SetWaypointIndex(val_waypointNumber.Value, newValue);
+        
+        private void SetWaypointIndex(int current, int max)
+        {
+            if (max <= 0) lbl_WaypointIndex.text = "NONE";
+            else if (max == current) lbl_WaypointIndex.text = $"{current}/{max} FINISHED";
+            else lbl_WaypointIndex.text = $"{current}/{max}";
+        }
         
         private void WaypointDirectionChangeHandler(Vector3Int newValue, Vector3Int oldValue)
         {

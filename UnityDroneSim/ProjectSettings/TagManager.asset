@@ -4,9 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Motor
   - DroneBase
   - Rotor
+  - Waypoint
+  - WorldEdge
+  - Obstacle
   layers:
   - Default
   - TransparentFX

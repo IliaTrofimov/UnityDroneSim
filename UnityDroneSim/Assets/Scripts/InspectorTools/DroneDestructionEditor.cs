@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace InspectorTools
 {
-    /// <summary>Custom editor for <see cref="DroneDestruction"/> component.</summary>
-    [CustomEditor(typeof(DroneDestruction))]
+    /// <summary>Custom editor for <see cref="DroneState"/> component.</summary>
+    [CustomEditor(typeof(DroneState))]
     public class DroneDestructionEditor : Editor
     {
         public override void OnInspectorGUI() 
         {
-            var script = (DroneDestruction)target;
+            var script = (DroneState)target;
             DrawDefaultInspector();
 
             GUILayout.Space(8);

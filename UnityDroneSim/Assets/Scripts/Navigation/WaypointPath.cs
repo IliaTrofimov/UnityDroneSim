@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UtilsDebug;
@@ -6,11 +5,15 @@ using UtilsDebug;
 
 namespace Navigation
 {
+    /// <summary>
+    /// Path made of several waypoints.
+    /// </summary>
     public class WaypointPath : MonoBehaviour
     {
-        [SerializeField]
+        [Tooltip("Color for waypoints and lines between them. Used only as gizmos.")]
         public Color color = Color.green;
         
+        [Tooltip("List of all waypoints. Can be changed only in Inspector.")]
         [SerializeField]
         private List<Waypoint> waypoints = new();
         

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Drone.Motors;
@@ -22,19 +21,21 @@ namespace Drone
         private Vector3 droneSizes;
         private DroneInputsController inputController;
 
-        /// <summary>Rigidbody of the drone.</summary>
+        [Tooltip("Rigidbody of the drone.")]
         public Rigidbody rigidBody;
-        
-        /// <summary>Settings toggles.</summary>
-        public bool showForceVectors, clampNegativeForce, useVelocityStab;
 
-        /// <summary>Movement and stabilization settings.</summary>
+        [Tooltip("Show force vectors for all motors. Uses gizmos.")] 
+        public bool showForceVectors;
+        
+        [Tooltip("Do not apply negative forces to motors.")]
+        public bool clampNegativeForce;
+
+        [Tooltip("Movement and stabilization settings.")]
         public DroneControlSettings controlSettings;
 
-        /// <summary>Quadcopter motors.</summary>
+        [Tooltip("One of the quadcopter's motors.")]
         public DroneMotor motorFrontLeft, motorFrontRight, motorRearLeft, motorRearRight;
 
-        /// <summary>PID stabilizers for each control value.</summary>
         [HideInInspector] 
         public BasePidController pidThrottle, pidPitch, pidRoll, pidYaw; 
         
@@ -73,6 +74,7 @@ namespace Drone
             else
             {
                 throttleOutput = inputController.throttle * controlSettings.maxLiftForce;
+                pidThrottle.Reset();
             }    
             
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabPitchRoll))
@@ -86,6 +88,8 @@ namespace Drone
                 // must be inverted to match stabilized version (don't fix what is working)
                 pitchOutput = -inputController.pitch * controlSettings.maxRollForce;
                 rollOutput  = -inputController.roll * controlSettings.maxRollForce;
+                pidPitch.Reset();
+                pidRoll.Reset();
             }
             
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabYaw))
@@ -96,6 +100,7 @@ namespace Drone
             else
             {
                 yawOutput = inputController.yaw * controlSettings.maxYawForce;
+                pidYaw.Reset();
             }
             
             CalculateMotorsForces(throttleOutput, pitchOutput, yawOutput, rollOutput);
@@ -169,6 +174,14 @@ namespace Drone
             yield return motorFrontRight;
             yield return motorRearLeft;
             yield return motorRearRight;
+        }
+
+        public void ResetStabilizers()
+        {
+            pidThrottle.Reset();   
+            pidPitch.Reset();
+            pidYaw.Reset();
+            pidRoll.Reset();
         }
     }
 }

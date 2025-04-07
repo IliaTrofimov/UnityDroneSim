@@ -11,31 +11,23 @@ namespace Drone.Motors
     /// </summary>
     /// <remarks>
     /// This script manages only motor's own colliders and visual effects.
-    /// All collision logic is executed in <see cref="DroneDestruction"/> script or in any component attached to drone Rigidbody.
+    /// All collision logic is executed in <see cref="DroneState"/> script or in any component attached to drone Rigidbody.
     /// </remarks>
     public class DestructibleMotor : DroneMotor
     {
-        /// <summary>Collider that will be active while propeller speed is slow.</summary>
 		[Header("Collisions")]
+        [Tooltip("Collider that will be active while propeller speed is slow.")]
         public Collider dynamicRotorCollider;
        
-        /// <summary>Collider that will be active while propeller speed is fast.</summary>
+        [Tooltip("Collider that will be active while propeller speed is fast.")]
         public Collider staticRotorCollider;
         
-        /// <summary>Speed (degrees per second) to enable static collider.</summary>
+        [Tooltip("Speed (degrees per second) to enable static collider.")]
         [Range(0f, 50f)] public float staticColliderSpeed;
         
         
         private bool isDestroyed;
-        private float trailWidth = 0.1f;
         private TrailRenderer trailRenderer;
-        
-        
-        private void Awake()
-        { 
-            gameObject.TryGetDimensions(out Vector3 dimensions);
-            trailWidth = math.cmin(dimensions) * 0.8f;
-        }
 
         private void FixedUpdate()
         {
