@@ -483,7 +483,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BASE_COLOR: {r: 0.3490566, g: 0.26179245, b: 0.26179245, a: 1}
-    - _BaseColor: {r: 0.25355998, g: 0.27205762, b: 0.6981132, a: 1}
+    - _BaseColor: {r: 0.21568625, g: 0.2644382, b: 0.83137256, a: 1}
     - _COAT_COLOR: {r: 0, g: 0, b: 0, a: 0}
     - _CarPaint2_BRDFColorMapUVScale: {r: 1, g: 1, b: 0, a: 0}
     - _CarPaint2_BTFFlakeMap_SO: {r: 1, g: 1, b: 0, a: 0}
@@ -491,7 +491,7 @@ Material:
     - _CarPaint2_CTF0s: {r: 1, g: 1, b: 1, a: 1}
     - _CarPaint2_CTSpreads: {r: 1, g: 1, b: 1, a: 1}
     - _ClearcoatNormalMap_SO: {r: 1, g: 1, b: 0, a: 0}
-    - _Color: {r: 0.25355995, g: 0.2720576, b: 0.6981132, a: 1}
+    - _Color: {r: 0.2156862, g: 0.26443818, b: 0.83137256, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: 1, a: 0}
     - _EMISSION_COLOR: {r: 0, g: 0, b: 0, a: 0}

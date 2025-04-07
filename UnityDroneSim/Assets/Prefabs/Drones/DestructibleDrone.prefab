@@ -346,6 +346,166 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2677454746033511863
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1926165481779175261}
+  - component: {fileID: 867787055867688169}
+  - component: {fileID: 522347657922141216}
+  - component: {fileID: 4330220128235010197}
+  - component: {fileID: 7454653130762926740}
+  m_Layer: 9
+  m_Name: Lidar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1926165481779175261
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677454746033511863}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3687313545292754829}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &867787055867688169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677454746033511863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e8a8c7f477e67846951e95d4e075347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &522347657922141216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677454746033511863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15f986e748490149879c4064b27952c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ObservationShape: 0 channels x 30 width x 14 height
+  m_SensorName: ForwardGridSensor
+  m_ObservationStacks: 1
+  m_CompressionType: 1
+  m_ObservationType: 0
+  m_ChannelLabels: []
+  m_Debug_CreateSensorOnAwake: 1
+  m_Debug_CreateSensorOnValidate: 1
+  m_Debug_FrameInterval: 1
+  m_Debug_DrawGridBuffer: 1
+  m_Debug_GridBufferDrawer:
+    Context: {fileID: 0}
+    Editor: {fileID: 0}
+    GridSizeRatio: 0
+    IsEnabled: 0
+    IsStandby: 0
+  m_GridShape:
+    NumChannels: 0
+    Width: 30
+    Height: 14
+  m_ClearCacheOnReset: 0
+  m_ColliderBufferSize: 64
+  m_TmpObjectToAdd: {fileID: 0}
+  m_GameObjectSettingsList: []
+  m_SensorResolution: 2.09 meters (3.00 deg at 40.00 meters)
+  m_CellArc: 3
+  m_LatAngleNorth: 25
+  m_LatAngleSouth: 15
+  m_LonAngle: 45
+  m_MinDistance: 0
+  m_MaxDistance: 40
+  m_DistanceNormalization:
+    Value: 0.5
+    Weighted: 1
+  m_LonLatRect:
+    serializedVersion: 2
+    x: -45
+    y: -16
+    width: 90
+    height: 42
+  m_GridResolution: 2.0943952
+--- !u!114 &4330220128235010197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677454746033511863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f8abecd5902d09449e947799d9330a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7454653130762926740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677454746033511863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8722596ac4fb346894cd62602b3999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ObservationShape: 0 channels x 32 width x 32 height
+  m_SensorName: TopDownGridSensor
+  m_ObservationStacks: 1
+  m_CompressionType: 1
+  m_ObservationType: 0
+  m_ChannelLabels: []
+  m_Debug_CreateSensorOnAwake: 1
+  m_Debug_CreateSensorOnValidate: 1
+  m_Debug_FrameInterval: 1
+  m_Debug_DrawGridBuffer: 1
+  m_Debug_GridBufferDrawer:
+    Context: {fileID: 0}
+    Editor: {fileID: 0}
+    GridSizeRatio: 0
+    IsEnabled: 0
+    IsStandby: 0
+  m_GridShape:
+    NumChannels: 0
+    Width: 32
+    Height: 32
+  m_ClearCacheOnReset: 0
+  m_ColliderBufferSize: 64
+  m_TmpObjectToAdd: {fileID: 0}
+  m_GameObjectSettingsList: []
+  m_RotationType: 0
+  m_DetectionBounds:
+    m_Center: {x: 0, y: 0, z: 3}
+    m_Extent: {x: 4, y: 0.5, z: 4}
+  m_EditorBounds:
+    m_Center: {x: 0, y: 0, z: 3}
+    m_Extent: {x: 4, y: 0.5, z: 4}
+  m_CellSize: 0.25
+  m_NumCells: {x: 32, y: 1, z: 32}
+  m_DetectionSize: {x: 8, y: 1, z: 8}
+  m_BoundsSize: {x: 8, y: 1, z: 8}
+  m_Offset: {x: 0, y: 0, z: 3}
 --- !u!1 &2719353348116634319
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,7 +690,7 @@ MonoBehaviour:
   cameraFpv: {fileID: 6688608788927151849}
   cameraTpv: {fileID: 774949004541268088}
   drone: {fileID: 1773305771786904982}
-  navigator: {fileID: 0}
+  navigator: {fileID: 7496530621990308001}
 --- !u!1 &5080202655946929120
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,6 +943,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1926165481779175261}
   - {fileID: 5105738793918560498}
   - {fileID: 342809845396875306}
   - {fileID: 2253572441573144778}
@@ -852,7 +1013,6 @@ MonoBehaviour:
   rigidBody: {fileID: 8571162416980300483}
   showForceVectors: 0
   clampNegativeForce: 1
-  useVelocityStab: 1
   controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
   motorFrontLeft: {fileID: 735657432093211137}
   motorFrontRight: {fileID: 7021292104955613104}
@@ -872,13 +1032,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyedMotorsCount: 0
   landed: 0
+  instantDeathColliderTag: WorldEdge
   landingDotProduct: 0.2
   hullBreakSpeed: 5
   motorBreakSpeed: 5
   enableBrokenMotorsPhysics: 1
   brokenMotorMass: 0.1
   brokenMotorInterpolation: 0
-  brokenMotorCollisions: 1
+  brokenMotorCollisions: 0
   enableEffects: 1
   motorDestructionPrefab: {fileID: 579799967915267250, guid: 6f9590fa62b7f49e593aa17d4310e813,
     type: 3}
