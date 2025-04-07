@@ -1466,6 +1466,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51a043a56ff31408f8392016acf0dc66, type: 3}
+--- !u!4 &738051792 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3687313545292754829, guid: 081f81782f8434689b3115a1caa1ece4,
+    type: 3}
+  m_PrefabInstance: {fileID: 924363797}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &783634179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,7 +1740,11 @@ PrefabInstance:
       objectReference: {fileID: 1775208364}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3687313545292754829, guid: 081f81782f8434689b3115a1caa1ece4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1953869140}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 081f81782f8434689b3115a1caa1ece4, type: 3}
 --- !u!1001 &931990144
@@ -2259,6 +2269,7 @@ GameObject:
   - component: {fileID: 1251457663}
   - component: {fileID: 1251457662}
   - component: {fileID: 1251457661}
+  - component: {fileID: 1251457664}
   m_Layer: 0
   m_Name: Bridge
   m_TagString: Untagged
@@ -2356,6 +2367,34 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1251457659}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1251457664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1251457659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f06e7c5ae2f9934e93db866ce90ef93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Shape:
+    m_ScanResultsByLOD:
+    - LocalPoints:
+      - {x: -0.000000009842257, y: -16.416668, z: 0.000000011849117}
+    m_LocalPoints:
+    - {x: -0.000000009842257, y: -16.416668, z: 0.000000011849117}
+    m_WorldPoints: []
+    m_MergeDisconnected: 0
+    m_Flatten: 0
+    m_MaxLOD: 0
+    m_SelectedLOD: 0
+    m_ScanLOD: 0
+    m_GizmoLOD: 0
+    m_Projection: 0
+    m_PointCount: 1
+    m_DrawGrid: 0
 --- !u!1 &1327618358
 GameObject:
   m_ObjectHideFlags: 0
@@ -2367,6 +2406,7 @@ GameObject:
   - component: {fileID: 1327618359}
   - component: {fileID: 1327618361}
   - component: {fileID: 1327618360}
+  - component: {fileID: 1327618362}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -2449,6 +2489,34 @@ Terrain:
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
+--- !u!114 &1327618362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327618358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f06e7c5ae2f9934e93db866ce90ef93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Shape:
+    m_ScanResultsByLOD:
+    - LocalPoints:
+      - {x: 50, y: 5, z: 50}
+    m_LocalPoints:
+    - {x: 50, y: 5, z: 50}
+    m_WorldPoints: []
+    m_MergeDisconnected: 0
+    m_Flatten: 0
+    m_MaxLOD: 0
+    m_SelectedLOD: 0
+    m_ScanLOD: 0
+    m_GizmoLOD: 0
+    m_Projection: 0
+    m_PointCount: 1
+    m_DrawGrid: 0
 --- !u!1 &1351171415
 GameObject:
   m_ObjectHideFlags: 0
@@ -3539,6 +3607,104 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1934686839}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1953869139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1953869140}
+  - component: {fileID: 1953869142}
+  - component: {fileID: 1953869141}
+  m_Layer: 9
+  m_Name: Sensors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1953869140
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953869139}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 738051792}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1953869141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953869139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15f986e748490149879c4064b27952c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ObservationShape: 0 channels x 40 width x 14 height
+  m_SensorName: ForwardGridSensor
+  m_ObservationStacks: 1
+  m_CompressionType: 1
+  m_ObservationType: 0
+  m_ChannelLabels: []
+  m_Debug_CreateSensorOnAwake: 1
+  m_Debug_CreateSensorOnValidate: 1
+  m_Debug_FrameInterval: 1
+  m_Debug_DrawGridBuffer: 1
+  m_Debug_GridBufferDrawer:
+    Context: {fileID: 0}
+    Editor: {fileID: 0}
+    GridSizeRatio: 0
+    IsEnabled: 0
+    IsStandby: 0
+  m_GridShape:
+    NumChannels: 0
+    Width: 40
+    Height: 14
+  m_ClearCacheOnReset: 0
+  m_ColliderBufferSize: 64
+  m_TmpObjectToAdd: {fileID: 0}
+  m_GameObjectSettingsList: []
+  m_SensorResolution: 2.62 meters (3.00 deg at 50.00 meters)
+  m_CellArc: 3
+  m_LatAngleNorth: 20
+  m_LatAngleSouth: 20
+  m_LonAngle: 60
+  m_MinDistance: 1
+  m_MaxDistance: 50
+  m_DistanceNormalization:
+    Value: 0.618
+    Weighted: 1
+  m_LonLatRect:
+    serializedVersion: 2
+    x: -60
+    y: -21
+    width: 120
+    height: 42
+  m_GridResolution: 2.6179938
+--- !u!114 &1953869142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953869139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e8a8c7f477e67846951e95d4e075347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2056617573
 GameObject:
   m_ObjectHideFlags: 0
