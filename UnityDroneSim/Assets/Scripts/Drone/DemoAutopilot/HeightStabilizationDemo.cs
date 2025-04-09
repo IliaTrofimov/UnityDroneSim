@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Drone.Stability;
 using Telemetry;
 using Unity.Mathematics;
 using UnityEditor;
@@ -140,12 +141,11 @@ namespace Drone.DemoAutopilot
             if (logType == LogsType.None) return;
             
             
-            var pid = drone.controlSettings.pidThrottle;
-            var force = drone.controlSettings.maxLiftForce;
-            var speed = drone.controlSettings.maxLiftSpeed;
+            var pid = drone.PidThrottle as DebugPidController 
+                      ?? throw new UnityException($"Cannot save log for PID controller of type {drone.PidThrottle.GetType().Name}");
             
             var logName = string.Format("p{0:f2};i{1:f2};d{2:f2};imin{3:f1};imax{4:f1};f{5:f0};v{6:f0}",
-                pid.pFactor, pid.iFactor, pid.dFactor, pid.minIntegral, pid.maxIntegral, force, speed);
+                pid.PFactor, pid.IFactor, pid.DFactor, pid.MinIntegral, pid.MaxIntegral, drone.MaxLiftForce, drone.MaxLiftSpeed);
   
             if (!string.IsNullOrEmpty(logPrefix))
                 logName = $"{logPrefix}#{logName}";

@@ -21,35 +21,17 @@ namespace Drone
         private Vector3 droneSizes;
         private DroneInputsController inputController;
 
-        [Tooltip("Rigidbody of the drone.")]
-        public Rigidbody rigidBody;
-
-        [Tooltip("Show force vectors for all motors. Uses gizmos.")] 
-        public bool showForceVectors;
-        
-        [Tooltip("Do not apply negative forces to motors.")]
-        public bool clampNegativeForce;
-
-        [Tooltip("Movement and stabilization settings.")]
-        public DroneControlSettings controlSettings;
-
-        [Tooltip("One of the quadcopter's motors.")]
-        public DroneMotor motorFrontLeft, motorFrontRight, motorRearLeft, motorRearRight;
-
-        [HideInInspector] 
-        public BasePidController pidThrottle, pidPitch, pidRoll, pidYaw; 
+        [Header("Motors")]
+        public DroneMotor motorFrontLeft;
+        public DroneMotor motorFrontRight;
+        public DroneMotor motorRearLeft; 
+        public DroneMotor motorRearRight;
         
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             inputController = GetComponent<DroneInputsController>();
-
-            pidThrottle = new ValueDerivativePidController(controlSettings.pidThrottle);
-            pidPitch = new ValueDerivativePidController(controlSettings.pidPitch);
-            pidRoll = new ValueDerivativePidController(controlSettings.pidRoll);
-            pidYaw = new ValueDerivativePidController(controlSettings.pidYaw);
-
-            gameObject.TryGetDimensions(out droneSizes);
         }
         
         private void FixedUpdate()
@@ -105,34 +87,6 @@ namespace Drone
             
             CalculateMotorsForces(throttleOutput, pitchOutput, yawOutput, rollOutput);
         }
-
-        private void OnDrawGizmos()
-        {
-            if (!showForceVectors || !enabled) return;
-            
-            var labelFmt = $"motor_{{0}} ({{1:F2}} | {controlSettings.maxLiftForce:F0})";
-            var vectMult = math.cmax(droneSizes) / controlSettings.maxLiftForce;
-            var opts = new GizmoOptions(Color.red,
-                capSize: math.cmin(droneSizes) / 3,
-                vectSize: math.cmax(droneSizes));
-            
-            VectorDrawer.DrawDirection(motorFrontLeft.transform.position, 
-                motorFrontLeft.ForceVector * vectMult,
-                string.Format(labelFmt, "FL", motorFrontLeft.ForceVector.magnitude), opts);
-            
-            VectorDrawer.DrawDirection(motorFrontRight.transform.position, 
-                motorFrontRight.ForceVector * vectMult,
-                string.Format(labelFmt, "FR", motorFrontRight.ForceVector.magnitude), opts);
-            
-            VectorDrawer.DrawDirection(motorRearLeft.transform.position, 
-                motorRearLeft.ForceVector * vectMult,
-                string.Format(labelFmt, "RL", motorRearLeft.ForceVector.magnitude), opts);
-           
-            VectorDrawer.DrawDirection(motorRearRight.transform.position, 
-                motorRearRight.ForceVector * vectMult,
-                string.Format(labelFmt, "RR", motorRearRight.ForceVector.magnitude), opts);
-        }
-
         
         private void CalculateMotorsForces(float throttleOutput, float pitchOutput, float yawOutput, float rollOutput)
         {
@@ -174,14 +128,6 @@ namespace Drone
             yield return motorFrontRight;
             yield return motorRearLeft;
             yield return motorRearRight;
-        }
-
-        public void ResetStabilizers()
-        {
-            pidThrottle.Reset();   
-            pidPitch.Reset();
-            pidYaw.Reset();
-            pidRoll.Reset();
         }
     }
 }

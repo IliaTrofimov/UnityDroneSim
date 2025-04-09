@@ -27,17 +27,4 @@ namespace Drone.Stability
 
         public override string ToString() => parameters.ToString();
     }
-
-
-    public static class BasePidControllerExtensions
-    {
-        /// <summary>Update static PID parameters or create new PID controller with given parameters if controller does not exist.</summary>
-        public static TPid Init<TPid>(this TPid pid, PidParameters pidParameters) 
-            where TPid : BasePidController, new()
-        {
-            pid ??= new TPid();
-            pid.ResetParameters(pidParameters);
-            return pid;
-        }
-    }
 }

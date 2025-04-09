@@ -1,5 +1,6 @@
 using System;
 using Unity.Mathematics;
+using UnityEngine;
 
 
 namespace Drone.Stability
@@ -8,28 +9,26 @@ namespace Drone.Stability
     [Serializable]
     public sealed class PidParameters
     {
-        /// <summary>Proportional factor. Main value to play with.</summary>
-        /// <remarks>Large values create faster reaction but also cause self-oscillations.</remarks>
+        [Tooltip("Proportional factor. Main value to play with. Large values create faster reaction but also cause self-oscillations.")]
         public float pFactor;
     
-        /// <summary>Integral factor.</summary>
-        /// <remarks>Compensates static errors (e.g. gravity) but can cause windup.</remarks>
+        [Tooltip("Integral factor. Compensates static errors (e.g. gravity) but can cause windup.")]
         public float iFactor;
     
-        /// <summary>Derivative factor. Makes output proportionally large/smaller when change in error is large/small.</summary>
-        /// <remarks>Can compensate oscillations caused by proportional component.</remarks>
+        [Tooltip("Derivative factor. Makes output proportionally large/smaller when change in error is large/small. " +
+                 "Can compensate oscillations caused by proportional component.")]
         public float dFactor;
         
-        /// <summary>Minimal output value.</summary>
+        [Tooltip("Minimal output value.")]
         public float minOutput;
 
-        /// <summary>Maximum output value.</summary>
+        [Tooltip("Maximum output value.")]
         public float maxOutput;
         
-        /// <summary>Minimal value integral component can have.</summary>
+        [Tooltip("Minimal value integral component can have.")]
         public float minIntegral;
 
-        /// <summary>Maximum value integral component can have.</summary>
+        [Tooltip("Maximum value integral component can have.")]
         public float maxIntegral;
 
         

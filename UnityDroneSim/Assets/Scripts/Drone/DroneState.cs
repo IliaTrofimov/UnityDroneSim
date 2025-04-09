@@ -29,7 +29,10 @@ namespace Drone
         
         /// <summary>Drone has landed on the ground safely.</summary>
         public bool Landed => landed;
-
+        
+        [Header("Debug")]
+        public bool enableDebugMessages = true;
+        
         [Header("Physics")] 
         [Tooltip("Colliders with this tag will instantly destroy drone.")]
         public string instantDeathColliderTag;
@@ -121,7 +124,7 @@ namespace Drone
             if (!Landed) return;
 
             landed = false;
-            Debug.LogFormat("Take-off [{0}]: drone.vel={1:F2} m/s", gameObject.name, collision.relativeVelocity.magnitude);
+            DebugLog("Take-off [{0}]: drone.vel={1:F2} m/s", gameObject.name, collision.relativeVelocity.magnitude);
         }
 
         private bool CheckInstantDeath(GameObject otherCollider)
@@ -130,7 +133,7 @@ namespace Drone
                 return false;
             
             BreakAllMotors();
-            Debug.LogFormat("Instant death [{0}] -> [{1}]", gameObject.name, otherCollider.name);
+            DebugLog("Instant death [{0}] -> [{1}]", gameObject.name, otherCollider.name);
             return true;
         }
         
@@ -145,7 +148,7 @@ namespace Drone
             }
             if (!landed) // prevent log spamming
             {
-                Debug.LogFormat("Landed [{0}]: drone.vel={1:F2} m/s, normal={2:F2}, dot={3:F2}/{4:F2}",
+                DebugLog("Landed [{0}]: drone.vel={1:F2} m/s, normal={2:F2}, dot={3:F2}/{4:F2}",
                     gameObject.name, speed, contactNormal, dot, landingDotProduct);
                 landed = true;    
             }
@@ -160,7 +163,7 @@ namespace Drone
             {
                 if (motorInfo.Motor.PropellerLinearSpeed + contactSpeed < motorBreakSpeed) return;
 
-                Debug.LogFormat("Collision (Propeller) [{0}.{1}] -> [{2}]: drone.vel={3:F2} m/s, propeller.vel={4:F2} m/s",
+                DebugLog("Collision (Propeller) [{0}.{1}] -> [{2}]: drone.vel={3:F2} m/s, propeller.vel={4:F2} m/s",
                     colliderParent.name, thisCollider.name, otherCollider.name, contactSpeed, motorInfo.Motor.PropellerLinearSpeed + contactSpeed);
 
                 OnMotorCollided(motorInfo);
@@ -169,7 +172,7 @@ namespace Drone
             {
                 if (contactSpeed < motorBreakSpeed) return;
 
-                Debug.LogFormat("Collision (Motor) [{0}] -> [{1}]: vel={2:F2} m/s",
+                DebugLog("Collision (Motor) [{0}] -> [{1}]: vel={2:F2} m/s",
                     thisCollider.name, otherCollider.name, contactSpeed);
 
                 OnMotorCollided(motorInfo);
@@ -178,7 +181,7 @@ namespace Drone
             {
                 if (contactSpeed < hullBreakSpeed) return;
                 
-                Debug.LogFormat("Collision (Hull) [{0}] -> [{1}]: vel={2:F2} m/s",
+                DebugLog("Collision (Hull) [{0}] -> [{1}]: vel={2:F2} m/s",
                     thisCollider.name, otherCollider.name, contactSpeed);
 
                 BreakAllMotors();
@@ -241,7 +244,7 @@ namespace Drone
             if (motorInfo.Motor is DestructibleMotor destructibleMotor)
                 destructibleMotor.OnMotorRepaired();
             
-            Debug.LogFormat("Motor [{0}] was repaired and reattached to drone [{1}]", motorInfo.Motor.name, gameObject.name);
+            DebugLog("Motor [{0}] was repaired and reattached to drone [{1}]", motorInfo.Motor.name, gameObject.name);
         }
 
         [ContextMenu("Repair All Motors")]
@@ -281,6 +284,12 @@ namespace Drone
         {
             var motorFx = Instantiate(motorDestructionPrefab, parent);
             motorFx.name = "[FX] Motor destruction";
+        }
+
+        private void DebugLog(string format, params object[] args)
+        {
+            if (enableEffects)
+                Debug.LogFormat(format, args);
         }
     }
 }

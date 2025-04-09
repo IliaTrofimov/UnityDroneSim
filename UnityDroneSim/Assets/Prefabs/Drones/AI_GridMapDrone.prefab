@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
-  m_BehaviorName: GridMapDrone
+  m_BehaviorName: Drone_GridSensor_1
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -496,11 +496,7 @@ MonoBehaviour:
   drone: {fileID: 1773305771786904982}
   navigator: {fileID: 5834208892645119488}
   spawnPoint: {fileID: 0}
-  finishReward: 100
-  waypointReward: 15
-  nearWaypointReward: 1
-  destructionPenalty: -100
-  nearObstaclePenalty: -0.9
+  rewardSettings: {fileID: 11400000, guid: 9b74d9ff1007a493ea66380fe1b15cca, type: 2}
   displayRewards: 1
   freeSpaceRadius: 1
   obstacleDetectionDistance: 15
@@ -1019,6 +1015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyedMotorsCount: 0
   landed: 0
+  enableDebugMessages: 0
   instantDeathColliderTag: WorldEdge
   landingDotProduct: 0.2
   hullBreakSpeed: 5

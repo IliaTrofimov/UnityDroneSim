@@ -21,7 +21,6 @@ namespace Drone.Stability
         private const int STATS_BUFFER = 50; // avoid large values
         private float lastValue, lastError;
         
-        
         [StatsCurve(STATS_BUFFER), SerializeField] 
         public float targetValue;
         
@@ -43,9 +42,17 @@ namespace Drone.Stability
         [StatsCurve(STATS_BUFFER), SerializeField] 
         public float output;
         
-        
         public bool useValueDerivative, clampOutput, relativeForm;
         public IntegralClamping integralClamping = IntegralClamping.PostClamping;
+
+        public float PFactor => parameters.pFactor;
+        public float IFactor => parameters.iFactor;
+        public float DFactor => parameters.dFactor;
+        public float MaxIntegral => parameters.maxIntegral;
+        public float MinIntegral => parameters.minIntegral;
+        public float MaxOutput => parameters.maxOutput;
+        public float MinOutput => parameters.minOutput;
+
         
         
         public DebugPidController() : this(new PidParameters(1f, 0.5f, 0.1f)) {}
