@@ -82,6 +82,8 @@ crashlytics-build.properties
 
 #ML Agents stuff
 */ML-Agents/Timers*
+/Assets/AgentsSettings/results/*
+/Assets/AgentsSettings/results*
 
 #Images
 *.png
