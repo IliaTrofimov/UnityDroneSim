@@ -1,5 +1,5 @@
-using UnityEngine;
 using Unity.MLAgents.Sensors;
+using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 
@@ -12,34 +12,39 @@ namespace RL
     /// <remarks>Will automatically create textures and assign them to the sensor and the camera.</remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Camera))]
+    [RequireComponent(typeof(RenderTextureSensorComponent))]
     public class DepthCameraHelper : MonoBehaviour
     {
-        private Camera depthCamera;
-        private RenderTextureSensorComponent sensor;
+        private RenderTextureSensorComponent _sensor;
+        private Camera                       _depthCamera;
+        private RawImage                     _debugImage;
 
-        [Tooltip("RenderTexture will be created with RenderTexture.GetTemporary() method. Otherwise constructor will be used.")]
+        [Tooltip(
+            "RenderTexture will be created with RenderTexture.GetTemporary() method. Otherwise constructor will be used."
+        )]
         public bool useTemporaryTexture;
-        
+
         [Tooltip("RenderTexture color format.")]
         public GraphicsFormat colorFormat = GraphicsFormat.R8_SNorm;
 
         [Tooltip("RenderTexture width. Keep it as small as possible.")]
-        [Range(8, 1024)] public int width = 86;
-        
+        [Range(8, 1024)]
+        public int width = 86;
+
         [Tooltip("RenderTexture height. Keep it as small as possible.")]
-        [Range(8, 1024)] public int height = 86;
+        [Range(8, 1024)]
+        public int height = 86;
 
         [Tooltip("Use this canvas to display RenderTexture. Will automatically add RawImage to the canvas.")]
         public Canvas debugCanvas;
-        private RawImage debugImage;
 
         private void OnEnable()
         {
-            depthCamera = GetComponent<Camera>();
-            
+            _depthCamera = GetComponent<Camera>();
+
             if (useTemporaryTexture)
             {
-                depthCamera.targetTexture = RenderTexture.GetTemporary(width, height, 1, colorFormat);
+                _depthCamera.targetTexture = RenderTexture.GetTemporary(width, height, 1, colorFormat);
                 /*Debug.LogFormat(
                     "[{0}] camera '{1}:{2:x8}' - renderTexture '{3:x8}' {4}x{5} {6} (Temporary)",
                     gameObject.name,
@@ -49,8 +54,8 @@ namespace RL
             }
             else
             {
-                depthCamera.targetTexture = new RenderTexture(width, height, 1, colorFormat);
-                depthCamera.targetTexture.Create();
+                _depthCamera.targetTexture = new RenderTexture(width, height, 1, colorFormat);
+                _depthCamera.targetTexture.Create();
                 /*Debug.LogFormat(
                     "[{0}] camera '{1}:{2:x8}' - renderTexture '{3:x8}' {4}x{5} {6} (Permanent)",
                     gameObject.name,
@@ -58,27 +63,27 @@ namespace RL
                     depthCamera.targetTexture.GetInstanceID(),
                     width, height, colorFormat);*/
             }
-            
-            sensor = gameObject.AddComponent<RenderTextureSensorComponent>();
-            sensor.Grayscale = true;
-            sensor.CompressionType = SensorCompressionType.PNG;
-            sensor.SensorName = "DepthMap";
-            sensor.RenderTexture = depthCamera.targetTexture;
+
+            _sensor = gameObject.GetComponent<RenderTextureSensorComponent>();
+            _sensor.Grayscale = true;
+            _sensor.CompressionType = SensorCompressionType.PNG;
+            _sensor.SensorName = "DepthMap";
+            _sensor.RenderTexture = _depthCamera.targetTexture;
 
             if (debugCanvas)
             {
-                debugImage = debugCanvas.gameObject.AddComponent<RawImage>();
-                debugImage.texture = depthCamera.targetTexture;
+                _debugImage = debugCanvas.gameObject.AddComponent<RawImage>();
+                _debugImage.texture = _depthCamera.targetTexture;
             }
         }
 
         private void OnDisable()
         {
-            depthCamera.targetTexture.Release();
-            sensor.Dispose();
-            //Destroy(depthCamera.targetTexture);
-            Destroy(sensor);
-            Destroy(debugImage);
+            _depthCamera.targetTexture.Release();
+            //sensor.Dispose();
+            Destroy(_depthCamera.targetTexture);
+            //Destroy(sensor);
+            Destroy(_debugImage);
         }
     }
 }

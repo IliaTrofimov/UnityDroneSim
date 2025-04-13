@@ -431,11 +431,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -445,6 +450,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1875,6 +1885,7 @@ Transform:
   m_Children:
   - {fileID: 1701070744}
   - {fileID: 751679821}
+  - {fileID: 2114193707}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &280727684
@@ -2049,11 +2060,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -2063,6 +2079,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2206,11 +2227,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -2220,6 +2246,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4845,11 +4876,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -4859,6 +4895,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5386,6 +5427,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 973652625}
+  - component: {fileID: 973652626}
   m_Layer: 0
   m_Name: Static
   m_TagString: Untagged
@@ -5411,6 +5453,18 @@ Transform:
   - {fileID: 1938598074}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &973652626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973652624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85811de07d5744019db4922dcbe5d633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1010043985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5787,11 +5841,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -5801,6 +5860,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6286,11 +6350,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -6300,6 +6369,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7198,11 +7272,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -7212,6 +7291,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7643,7 +7727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1361014681
 Transform:
   m_ObjectHideFlags: 0
@@ -7749,6 +7833,39 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1522832500}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1534354548
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1534354549}
+  m_Layer: 0
+  m_Name: Cameras
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1534354549
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534354548}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2108087308}
+  - {fileID: 2122708471}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1546032689 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5800985766121567282, guid: d643b5045c52042e9b2c77569f9fd4e3,
@@ -7860,11 +7977,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -7874,6 +7996,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8756,11 +8883,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -8770,6 +8902,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AI_LidarDrone (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9010,11 +9147,16 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 1701070750}
+    - target: {fileID: 3733350635086191512, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: nearObstaclePenalty
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: path
       value: 
-      objectReference: {fileID: 280727684}
+      objectReference: {fileID: 2114193708}
     - target: {fileID: 5834208892645119488, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
         type: 3}
       propertyPath: waypointPrefab
@@ -9025,9 +9167,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: AI_LidarDrone (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7181929161792296690, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449234510248772688, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      propertyPath: m_BehaviorType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3687313545292754829, guid: ca7766ca8f3ee45dbb4a15efc2fb759d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2104752845}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca7766ca8f3ee45dbb4a15efc2fb759d, type: 3}
 --- !u!4 &1718947922 stripped
@@ -9199,6 +9355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1770343439}
+  - component: {fileID: 1770343440}
   m_Layer: 0
   m_Name: Drones
   m_TagString: Untagged
@@ -9225,6 +9382,19 @@ Transform:
   - {fileID: 883683970}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1770343440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770343438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8b71d371f644e18d76d090008b8d66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 588282488aa624c33b08ac6c2530c2fb, type: 2}
 --- !u!1001 &1794643375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9829,7 +9999,7 @@ PrefabInstance:
     - target: {fileID: 7181929161792296690, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7454653130762926740, guid: 081f81782f8434689b3115a1caa1ece4,
         type: 3}
@@ -10057,7 +10227,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 280727684}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2677454746033511863, guid: 081f81782f8434689b3115a1caa1ece4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 081f81782f8434689b3115a1caa1ece4, type: 3}
@@ -11467,6 +11638,317 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2104675690}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2104752844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2104752845}
+  - component: {fileID: 2104752847}
+  - component: {fileID: 2104752846}
+  m_Layer: 9
+  m_Name: 3PV
+  m_TagString: DroneBase
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2104752845
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104752844}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.043619405, y: -0, z: -0, w: 0.9990483}
+  m_LocalPosition: {x: 0, y: 0.44999993, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1718947922}
+  m_LocalEulerAnglesHint: {x: 5, y: 0, z: 0}
+--- !u!114 &2104752846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104752844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 0
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!20 &2104752847
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104752844}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 200
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!1 &2108087307
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2108087308}
+  - component: {fileID: 2108087310}
+  - component: {fileID: 2108087309}
+  m_Layer: 0
+  m_Name: CameraSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2108087308
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108087307}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.40557975, y: 0.579228, z: -0.40557975, w: 0.579228}
+  m_LocalPosition: {x: -20, y: 15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1534354549}
+  m_LocalEulerAnglesHint: {x: 70, y: 90, z: 0}
+--- !u!114 &2108087309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108087307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 0
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!20 &2108087310
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108087307}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 0.5
+  near clip plane: 5
+  far clip plane: 100
+  field of view: 70
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 1
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!1 &2114193706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2114193707}
+  - component: {fileID: 2114193708}
+  m_Layer: 0
+  m_Name: NavigationSimple
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2114193707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114193706}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 280727683}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2114193708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114193706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9316e7088dd44b0dbccf40ef57ec1f47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 0, g: 1, b: 0, a: 1}
+  waypoints:
+  - name: 
+    radius: 1
+    position: {x: -20, y: 3, z: 0}
+  - name: 
+    radius: 1
+    position: {x: -20, y: 6, z: 0}
+  - name: 
+    radius: 1
+    position: {x: -20, y: 9, z: 0}
 --- !u!1001 &2116878502
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11535,6 +12017,134 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d643b5045c52042e9b2c77569f9fd4e3, type: 3}
+--- !u!1 &2122708470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2122708471}
+  - component: {fileID: 2122708473}
+  - component: {fileID: 2122708472}
+  m_Layer: 0
+  m_Name: CameraFinish
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2122708471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122708470}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.40557975, y: -0.579228, z: 0.40557975, w: 0.579228}
+  m_LocalPosition: {x: 20, y: 15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1534354549}
+  m_LocalEulerAnglesHint: {x: 70, y: -90, z: 0}
+--- !u!114 &2122708472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122708470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 0
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!20 &2122708473
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122708470}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0.5
+    width: 1
+    height: 0.5
+  near clip plane: 5
+  far clip plane: 100
+  field of view: 70
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 1
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!4 &2131610322 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5800985766121567282, guid: d643b5045c52042e9b2c77569f9fd4e3,
@@ -11549,3 +12159,4 @@ SceneRoots:
   - {fileID: 73133982}
   - {fileID: 280727683}
   - {fileID: 1770343439}
+  - {fileID: 1534354549}

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f6e24de6-a648-41d1-8abe-d5c04f03b139" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Notebooks/graphs.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/drone_agents_config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/drone_agents_config.yml.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/train.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/train.sh.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardSettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/DroneTrainManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/DroneTrainManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementReward.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementReward.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementRewardSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementRewardSettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenalty.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenalty.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenaltySettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenaltySettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/RewardProvider.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/RewardProvider.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointReward.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointReward.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointRewardSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointRewardSettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardsManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardsManager.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Materials/DroneCarbonGreen.mat" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Materials/DroneCarbonGreen.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/LightingData.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Third Party/GridSensor.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/InspectorTools/QuadcopterComputerEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/InspectorTools/QuadcopterComputerEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Navigation/WaypointNavigator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Navigation/WaypointNavigator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DepthCameraHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DepthCameraHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DroneAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DroneAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/ObstacleTracker.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/ObstacleTracker.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Telemetry/PidTelemetryRecorder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Telemetry/PidTelemetryRecorder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHud.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHud.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHudLegacy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHudLegacy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/EditorUserSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Agents/main.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2vSSg1SQAHNlzS3wIFynIC4YXoN" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Agents" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="PythonScripts" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Agents/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f6e24de6-a648-41d1-8abe-d5c04f03b139" name="Changes" comment="" />
+      <created>1744137089605</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744137089605</updated>
+      <workItem from="1744137090667" duration="1351000" />
+      <workItem from="1744319991471" duration="911000" />
+      <workItem from="1744456277098" duration="390000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/PythonScripts$main.coverage" NAME="main Coverage Results" MODIFIED="1744137093474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

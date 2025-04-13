@@ -6,8 +6,8 @@ namespace InspectorTools
 {
     public static class EditorGUIHelper
     {
-        public static readonly GUIStyle Bold = new GUIStyle("label") { fontStyle = FontStyle.Bold };
-        public static readonly GUIStyle Italic = new GUIStyle("label") { fontStyle = FontStyle.Italic };
+        public static readonly GUIStyle Bold   = new("label") { fontStyle = FontStyle.Bold };
+        public static readonly GUIStyle Italic = new("label") { fontStyle = FontStyle.Italic };
 
         public static void VerticalLabel(string name, float val)
         {
@@ -23,8 +23,11 @@ namespace InspectorTools
             EditorGUILayout.Vector3Field(GUIContent.none, val);
         }
 
-        public static void StartTable(string name, string[] columns, GUIStyle headerStyle = default,
-                                      GUIStyle columnHeaderStyle = default)
+        public static void StartTable(
+            string name,
+            string[] columns,
+            GUIStyle headerStyle = default,
+            GUIStyle columnHeaderStyle = default)
         {
             GUILayout.Label(name, headerStyle);
 

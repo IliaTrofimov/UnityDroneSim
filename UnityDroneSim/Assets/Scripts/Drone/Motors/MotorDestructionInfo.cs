@@ -7,11 +7,11 @@ namespace Drone.Motors
     internal class MotorDestructionInfo
     {
         public bool IsDestroyed { get; set; }
-        public Rigidbody AttachedRigidbody{ get; set; }
+        public Rigidbody  AttachedRigidbody { get; set; }
         public Vector3 InitialLocalPosition { get; }
         public Vector3 InitialLocalScale { get; }
         public Quaternion InitialLocalRotation { get; }
-        public Transform InitialParent { get; }
+        public Transform  InitialParent { get; }
         public DroneMotor Motor { get; }
 
         public MotorDestructionInfo(DroneMotor motor)
@@ -25,9 +25,7 @@ namespace Drone.Motors
             AttachedRigidbody = null;
         }
 
-        public override string ToString()
-        {
-            return $"{(Motor is DestructibleMotor ? "dMotor" : "Motor")} '{InitialParent.name}'.'{Motor.name}' ({(IsDestroyed ? "broken" : "ok")})";
-        }
+        public override string ToString() =>
+            $"{(Motor is DestructibleMotor ? "dMotor" : "Motor")} '{InitialParent.name}'.'{Motor.name}' ({(IsDestroyed ? "broken" : "ok")})";
     }
 }

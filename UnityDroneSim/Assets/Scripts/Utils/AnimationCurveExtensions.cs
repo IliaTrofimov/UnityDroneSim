@@ -12,9 +12,9 @@ namespace Utils
         /// </remarks>
         public static void AddKeyWrapped(this AnimationCurve curve, float time, float value, int maxBufferSize = 50)
         {
-            curve.AddKeyWrapped(new Keyframe(time, value), maxBufferSize);   
+            curve.AddKeyWrapped(new Keyframe(time, value), maxBufferSize);
         }
-        
+
         /// <summary>Add new key to the curve so internal buffer keeps constant size removing old keys.</summary>
         /// <remarks>
         /// Works only in Editor mode, otherwise does nothing.<br/>
@@ -23,8 +23,8 @@ namespace Utils
         public static void AddKeyWrapped(this AnimationCurve curve, Keyframe keyframe, int maxBufferSize = 50)
         {
             #if UNITY_EDITOR
-            if (maxBufferSize <= 0) return; 
-            
+            if (maxBufferSize <= 0) return;
+
             if (curve.length <= maxBufferSize)
             {
                 curve.AddKey(keyframe);
@@ -33,6 +33,7 @@ namespace Utils
             {
                 for (var i = 1; i < curve.length; i++)
                     curve.MoveKey(i - 1, curve.keys[i]);
+
                 curve.MoveKey(curve.length - 1, keyframe);
             }
             #else

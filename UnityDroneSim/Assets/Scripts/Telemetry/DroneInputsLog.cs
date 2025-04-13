@@ -9,9 +9,8 @@ namespace Telemetry
     [CreateAssetMenu(fileName = "NewDroneInputsLog", menuName = "Telemetry/Drone Inputs Log")]
     public sealed class DroneInputsLog : TelemetryLog<DroneInputsRecord>
     {
-        public void Add(DroneInputsController inputsController) 
-            => Add(new DroneInputsRecord(inputsController)); 
-        
+        public void Add(DroneInputsController inputsController) => Add(new DroneInputsRecord(inputsController));
+
         public void SaveToCsv(string path, bool onlyInputs)
         {
             if (RecordCount == 0) return;
@@ -19,10 +18,7 @@ namespace Telemetry
             try
             {
                 using var stream = new StreamWriter(path);
-                foreach (var r in records)
-                {
-                    r.ToCsvNewLine(stream, onlyInputs);
-                }
+                foreach (var r in records) r.ToCsvNewLine(stream, onlyInputs);
             }
             catch (FileNotFoundException)
             {

@@ -11,37 +11,39 @@ namespace Drone.Stability
     [Serializable]
     public class PidController : BasePidController
     {
-        private float integral, lastError; 
-        
-        public PidController() : this(new PidParameters(1, 0.5f, 0.1f)) {}
-    
-        public PidController(PidParameters parameters) => this.parameters = parameters;
+        private float _integral, _lastError;
 
-        
+        public PidController() : this(new PidParameters(1, 0.5f, 0.1f)) { }
+
+        public PidController(PidParameters parameters) { this.parameters = parameters; }
+
+
         public override float Calc(float target, float actual, float dt)
         {
             var error = target - actual;
-            
-            integral += error * dt;
-            var i = math.clamp(integral * parameters.iFactor, 
-                parameters.minIntegral, 
-                parameters.maxIntegral);
+
+            _integral += error * dt;
+            var i = math.clamp(_integral * parameters.iFactor,
+                parameters.minIntegral,
+                parameters.maxIntegral
+            );
 
             var derivative = 0f;
-            if (errorWasSet) derivative = (error - lastError) / dt;
-            else errorWasSet = true;
-            
-            lastError = error;
-            
-            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor, 
+            if (ErrorWasSet) derivative = (error - _lastError) / dt;
+            else ErrorWasSet = true;
+
+            _lastError = error;
+
+            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor,
                 parameters.minOutput,
-                parameters.maxOutput);
+                parameters.maxOutput
+            );
         }
 
-        public override void Reset() 
+        public override void Reset()
         {
-            integral = lastError = 0f;
-            errorWasSet = false;
+            _integral = _lastError = 0f;
+            ErrorWasSet = false;
         }
     }
 }

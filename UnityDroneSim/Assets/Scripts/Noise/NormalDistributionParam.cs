@@ -10,14 +10,10 @@ namespace Noise
         public float mean;
         public float variance;
 
-        public NormalDistributionParam() : this(0, 0)
-        {
-        }
+        public NormalDistributionParam() : this(0, 0) { }
 
-        public NormalDistributionParam(float variance) : this(0, variance)
-        {
-        }
-        
+        public NormalDistributionParam(float variance) : this(0, variance) { }
+
         public NormalDistributionParam(float mean, float variance)
         {
             this.variance = variance;
