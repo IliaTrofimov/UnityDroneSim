@@ -5,31 +5,23 @@ using UnityEngine;
 
 namespace Telemetry
 {
-    public interface ICsvSerializable
-    {
-        public void ToCsv(TextWriter writer, string separator = "\t");
-        
-        public void ToCsvNewLine(TextWriter writer, string separator = "\t");
-    }
-    
     /// <summary>Base type for all serializable telemetry logs.</summary>
     [PreferBinarySerialization]
-    public abstract class TelemetryLog<T> : ScriptableObject 
-        where T: ICsvSerializable 
+    public abstract class TelemetryLog<T> : ScriptableObject
+        where T : ICsvSerializable
     {
-        [SerializeField]
-        protected List<T> records = new(100);
+        [SerializeField] protected List<T> records = new(100);
 
-        public IReadOnlyList<T> Records => records;
-        public int RecordCount => records.Count;
+        public IReadOnlyList<T> Records     => records;
+        public int              RecordCount => records.Count;
         public T this[int index] => records[index];
-        
+
         public void Add(T item) => records.Add(item);
-        
+
         public bool Clear()
         {
             if (records.Count == 0) return false;
-            
+
             records.Clear();
             return true;
         }
@@ -41,10 +33,7 @@ namespace Telemetry
             try
             {
                 using var stream = new StreamWriter(path);
-                foreach (var r in records)
-                {
-                    r.ToCsvNewLine(stream);
-                }
+                foreach (var r in records) r.ToCsvNewLine(stream);
             }
             catch (FileNotFoundException)
             {

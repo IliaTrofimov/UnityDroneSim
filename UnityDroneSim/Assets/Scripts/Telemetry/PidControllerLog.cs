@@ -9,10 +9,17 @@ namespace Telemetry
     [CreateAssetMenu(fileName = "NewPidControllerLog", menuName = "Telemetry/Pid Controller Log")]
     public sealed class PidControllerLog : TelemetryLog<PidControllerRecord>
     {
-        public void Add(DebugPidController pid) 
-            => records.Add(new (pid));
-        
-        public void Add(float target, float error, float integral, float output, float p, float i, float d) 
-            => records.Add(new (target, error, integral, output, p, i, d));
+        public void Add(DebugPidController pid) => records.Add(new PidControllerRecord(pid));
+
+        public void Add(float target,
+                        float error,
+                        float integral,
+                        float output,
+                        float p,
+                        float i,
+                        float d) =>
+            records.Add(
+                new PidControllerRecord(target, error, integral, output, p, i, d)
+            );
     }
 }
