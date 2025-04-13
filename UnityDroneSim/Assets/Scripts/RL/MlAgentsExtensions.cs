@@ -1,6 +1,3 @@
-using Unity.MLAgents.Sensors;
-
-
 namespace RL
 {
     public static class MlAgentsExtensions
