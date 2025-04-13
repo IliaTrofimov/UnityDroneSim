@@ -2,14 +2,18 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
+
 namespace InspectorTools
 {
     /// <summary>
     /// Makes field non-editable (appears as disabled).
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class ReadOnlyFieldAttribute : PropertyAttribute { }
-    
+    public sealed class ReadOnlyFieldAttribute : PropertyAttribute
+    {
+    }
+
+
     /// <summary>
     /// This class contain custom drawer for ReadOnlyField attribute.
     /// </summary>

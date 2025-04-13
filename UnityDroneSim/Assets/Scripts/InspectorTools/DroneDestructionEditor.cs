@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace InspectorTools
 {
-    /// <summary>Custom editor for <see cref="DroneState"/> component.</summary>
-    [CustomEditor(typeof(DroneState))]
+    /// <summary>Custom editor for <see cref="DroneStateManager"/> component.</summary>
+    [CustomEditor(typeof(DroneStateManager))]
     public class DroneDestructionEditor : Editor
     {
-        public override void OnInspectorGUI() 
+        public override void OnInspectorGUI()
         {
-            var script = (DroneState)target;
+            var script = (DroneStateManager)target;
             DrawDefaultInspector();
 
             GUILayout.Space(8);
@@ -25,6 +25,5 @@ namespace InspectorTools
                     script.BreakAllMotors();
             }
         }
-
     }
 }
