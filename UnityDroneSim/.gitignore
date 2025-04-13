@@ -87,3 +87,4 @@ crashlytics-build.properties
 *.png
 *.jpg
 *.jpeg
+/*/Scenes
