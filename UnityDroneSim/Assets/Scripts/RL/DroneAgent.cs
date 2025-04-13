@@ -1,203 +1,176 @@
-using System;
 using Drone;
 using Exceptions;
 using Navigation;
+using RL.Rewards;
+using RL.RewardsSettings;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 using UtilsDebug;
 
 
 namespace RL
 {
+    /// <summary>
+    /// AI agent for flying drone. Uses <see cref="DroneInputsController"/> to pass controls for <see cref="DroneComputerBase"/>.
+    /// </summary>
     public class DroneAgent : Agent
     {
-        private DroneInputsController inputsController;
-        private DroneState droneState;
-        private Rigidbody droneRigidBody;
-        private ObstacleTracker obstacleTracker;
+        private DroneInputsController _inputsController;
+        private DroneStateManager     _droneState;
+        private Rigidbody             _droneRigidBody;
 
-        private bool isHeuristicsOnly;
-        private int currentWaypointIndex;
-        private float lastWaypointDistance;
-        
-        [Header("Drone")]
+        /// <summary>Agent is using heuristics instead of neural network.</summary>
+        public bool IsHeuristicsOnly { get; private set; }
+
+        /// <summary>Composite rewards for drone agent.</summary>
+        public DroneAgentRewardProvider RewardProvider { get; private set; }
+
+
+        [Header("Main settings")]
         [Tooltip("Drone flight computer.")]
-        public QuadcopterComputer drone;
-        
+        public DroneComputerBase drone;
+
         [Tooltip("Waypoint navigation manager. This object must reference same QuadcopterComputer.")]
         public WaypointNavigator navigator;
-        
-        
-        [Header("Train scenarios")]
+
+        [Tooltip("Place where drone will start new episode.")]
         public SpawnPoint spawnPoint;
-        
-        
-        [Header("Rewards")] 
-        [Tooltip("Reward for reaching last waypoint and finishing episode.")]
-        [Range(10f, 1000f)] public float finishReward = 500;
-        
-        [Tooltip("Reward for reaching waypoint.")]
-        [Range(1f, 100f)] public float waypointReward = 100;
-        
-        [Tooltip("Reward for moving towards waypoint.")]
-        [Range(0f, 10f)] public float nearWaypointReward = 15;
-        
-        [Tooltip("Penalty for destroying drone.")]
-        [Range(-1000f, 0f)] public float destructionPenalty = -100;
-        
-        [Tooltip("Penalty for moving towards an obstacle.")]
-        [Range(-10f, 0f)] public float nearObstaclePenalty = 10;
-        
-        public bool displayRewards = true;
-        
-        
-        [Header("Obstacle avoidance")]
-        [Tooltip("SphereCast radius for finding obstacles in front of the drone.")]        
-        [Range(0.01f, 5f)] public float freeSpaceRadius = 1f;
-        
-        [Tooltip("SphereCast distance for finding obstacles in front of the drone.")]       
-        [Range(0.01f, 100f)] public float obstacleDetectionDistance = 20f;
 
         
+        [Header("Training parameters")]
+        [Tooltip("Training parameters. Can be overridden by parent DroneTrainingManager component.")]
+        public TrainingSettings trainingSettings;
+
+        [Tooltip("Display current cumulative reward value near drone object.")]
+        public bool displayRewards = true;
+
+
+        private new void Awake()
+        {
+            if (!trainingSettings)
+            {
+                trainingSettings = ScriptableObject.CreateInstance<TrainingSettings>();
+                Debug.LogFormat(
+                    "DroneAgent '{0}': [1] missing TrainingSettings parameter. Default one will be instantiated.",
+                    drone.name
+                );
+            }
+
+            base.Awake();
+        }
+
         public override void Initialize()
         {
             ExceptionHelper.ThrowIfComponentIsMissing(this, drone, nameof(drone));
             ExceptionHelper.ThrowIfComponentIsMissing(this, navigator, nameof(navigator));
-            
+
             if (navigator.drone != drone)
                 throw new UnityException("WaypointNavigator's target drone is not the same as Agent's drone.");
-            
-            inputsController = drone.GetComponent<DroneInputsController>();
-            droneState = drone.GetComponent<DroneState>();
-            droneRigidBody = drone.rigidBody;
-            
-            isHeuristicsOnly = GetComponent<BehaviorParameters>()?.IsInHeuristicMode() ?? false;
-            inputsController.manualInput = isHeuristicsOnly;
-            
-            obstacleTracker = GetComponent<ObstacleTracker>() ?? gameObject.AddComponent<ObstacleTracker>();
-            obstacleTracker.Initialize(droneRigidBody, navigator, freeSpaceRadius, obstacleDetectionDistance);
+
+            _inputsController = drone.GetComponent<DroneInputsController>();
+            _droneState = drone.GetComponent<DroneStateManager>();
+            _droneRigidBody = drone.Rigidbody;
+
+            IsHeuristicsOnly = GetComponent<BehaviorParameters>()?.IsInHeuristicMode() ?? false;
+            _inputsController.manualInput = IsHeuristicsOnly;
+            if (IsHeuristicsOnly)
+                Debug.LogFormat("DroneAgent '{0}': running in heuristic mode", drone.name);
+
+            if (!trainingSettings)
+            {
+                trainingSettings = ScriptableObject.CreateInstance<TrainingSettings>();
+                Debug.LogFormat(
+                    "DroneAgent '{0}': [2] missing TrainingSettings parameter. Default one will be instantiated.",
+                    drone.name
+                );
+            }
+
+            RewardProvider = new DroneAgentRewardProvider(trainingSettings, this, _droneState);
         }
 
-        private void OnDestroy()
+        public void InitRewardsProvider()
         {
-            Destroy(obstacleTracker);
+            RewardProvider = new DroneAgentRewardProvider(trainingSettings, this, _droneState);
         }
 
         private void OnDrawGizmos()
         {
             if (!displayRewards) return;
-            VectorDrawer.DrawLabel(drone.transform.position, $"R: {GetCumulativeReward():F0}", new ()
-            {
-                color = Color.white,
-                labelOutline = true,
-            });
-        }
 
+            VectorDrawer.DrawLabel(drone.transform.position,
+                $"R: {GetCumulativeReward():F0}",
+                new GizmoOptions { Color = IsHeuristicsOnly ? Color.yellow : Color.white, LabelOutline = true }
+            );
+        }
 
         public override void OnEpisodeBegin()
         {
             spawnPoint.MoveInsideSpawnPoint(drone.transform);
-            droneRigidBody.linearVelocity = Vector3.zero;
-            droneRigidBody.angularVelocity = Vector3.zero;
-            droneState.RepairAllMotors();
+            RewardProvider.Reset();
+            _droneRigidBody.linearVelocity = Vector3.zero;
+            _droneRigidBody.angularVelocity = Vector3.zero;
+            _droneState.RepairAllMotors();
             drone.ResetStabilizers();
             navigator.ResetWaypoint();
-            currentWaypointIndex = navigator.CurrentWaypointIndex;
-
             base.OnEpisodeBegin();
         }
 
         public override void CollectObservations(VectorSensor sensor)
         {
             float distance = 0, direction = 0;
-            if (!navigator.IsFinished)
+            if (navigator.CurrentWaypoint.HasValue)
             {
-                 distance = navigator.GetCurrentDistance(drone.transform.position);
-                 direction = drone.transform.NormalizedHeadingTo(navigator.CurrentWaypoint.position);   
+                distance = navigator.GetCurrentDistance(drone.transform.position);
+                direction = drone.transform.NormalizedHeadingTo(navigator.CurrentWaypoint.Value.position);
             }
-            
-            sensor.AddObservation(droneState.AnyMotorsDestroyed);
-            sensor.AddObservation(droneState.Landed);
+
+            sensor.AddObservation(_droneState.AnyMotorsDestroyed);
+            sensor.AddObservation(_droneState.Landed);
             sensor.AddObservation(distance);
             sensor.AddObservation(direction);
-            sensor.AddObservation(droneRigidBody.linearVelocity.x);
-            sensor.AddObservation(droneRigidBody.linearVelocity.y);
-            sensor.AddObservation(droneRigidBody.linearVelocity.z);
-            sensor.AddObservation(droneRigidBody.angularVelocity.x);
-            sensor.AddObservation(droneRigidBody.angularVelocity.y);
-            sensor.AddObservation(droneRigidBody.angularVelocity.z);
+            sensor.AddObservation(_droneRigidBody.linearVelocity.x);
+            sensor.AddObservation(_droneRigidBody.linearVelocity.y);
+            sensor.AddObservation(_droneRigidBody.linearVelocity.z);
+            sensor.AddObservation(_droneRigidBody.angularVelocity.x);
+            sensor.AddObservation(_droneRigidBody.angularVelocity.y);
+            sensor.AddObservation(_droneRigidBody.angularVelocity.z);
         }
 
         public override void OnActionReceived(ActionBuffers actions)
         {
-            if (navigator && navigator.IsFinished)
+            var reward = RewardProvider.CalculateReward();
+            AddReward(reward);
+            if (RewardProvider.IsFinalReward)
             {
-                this.EndEpisode(finishReward);
+                EndEpisode();
                 return;
-            }
-            if (droneState.AnyMotorsDestroyed)
-            {
-                this.EndEpisode(destructionPenalty);
-                return;
-            }
-            
-            AddWaypointReward();
-            AddObstaclePenalty();
-            
-            if (!isHeuristicsOnly)
-            {
-                inputsController.manualInput = false;
-                inputsController.SetInputs(
-                    actions.ContinuousActions[0],
-                    actions.ContinuousActions[1],
-                    actions.ContinuousActions[2], 
-                    actions.ContinuousActions[3]
-                );     
-            }
-        }
-        
-        public override void Heuristic(in ActionBuffers actionsOut)
-        {
-            if (isHeuristicsOnly)
-            {
-                inputsController.manualInput = true;
-                actionsOut.ContinuousActions.Array[0] = inputsController.throttle;
-                actionsOut.ContinuousActions.Array[1] = inputsController.pitch;
-                actionsOut.ContinuousActions.Array[2] = inputsController.yaw;
-                actionsOut.ContinuousActions.Array[3] = inputsController.roll;      
-            }
-        }
-        
-        private void AddWaypointReward()
-        {
-            if (currentWaypointIndex != navigator.CurrentWaypointIndex)
-            {   
-                currentWaypointIndex = navigator.CurrentWaypointIndex;
-                AddReward(waypointReward);
-            }
-            
-            var waypointDistance = (droneRigidBody.position - navigator.CurrentWaypoint.position).magnitude;
-            if (lastWaypointDistance > waypointDistance)
-            {
-                var reward = nearWaypointReward / (waypointDistance + 1) * Time.fixedDeltaTime;
-                AddReward(reward);
             }
 
-            lastWaypointDistance = waypointDistance;
-        }
-        
-        private void AddObstaclePenalty()
-        {
-            if (obstacleTracker.NextObstacleDistance > 0 && !droneState.Landed)
+            if (!IsHeuristicsOnly)
             {
-                var penalty = nearObstaclePenalty / (obstacleTracker.NextObstacleDistance + 1) * Time.fixedDeltaTime;
-                AddReward(penalty);
+                _inputsController.manualInput = false;
+                _inputsController.SetInputs(
+                    actions.ContinuousActions[0],
+                    actions.ContinuousActions[1],
+                    actions.ContinuousActions[2],
+                    actions.ContinuousActions[3]
+                );
             }
+        }
+
+        public override void Heuristic(in ActionBuffers actionsOut)
+        {
+            if (!IsHeuristicsOnly) return;
+
+            _inputsController.manualInput = true;
+            actionsOut.ContinuousActions.Array[0] = _inputsController.throttle;
+            actionsOut.ContinuousActions.Array[1] = _inputsController.pitch;
+            actionsOut.ContinuousActions.Array[2] = _inputsController.yaw;
+            actionsOut.ContinuousActions.Array[3] = _inputsController.roll;
         }
     }
 }
