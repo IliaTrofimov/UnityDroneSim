@@ -8,11 +8,11 @@ namespace Drone.Stability
     [Serializable]
     public abstract class BasePidController
     {
-        protected bool errorWasSet;
-        
+        protected bool ErrorWasSet;
+
         /// <summary>Static PID parameters (P, I, D factors and output clamping).</summary>
         [HideInInspector] public PidParameters parameters;
-        
+
         /// <summary>Calculate output value.</summary>
         public abstract float Calc(float target, float actual, float dt);
 
@@ -20,10 +20,7 @@ namespace Drone.Stability
         public abstract void Reset();
 
         /// <summary>Update static parameters values.</summary>
-        public void ResetParameters(PidParameters pidParameters)
-        {
-            parameters = pidParameters;
-        }
+        public void ResetParameters(PidParameters pidParameters) { parameters = pidParameters; }
 
         public override string ToString() => parameters.ToString();
     }

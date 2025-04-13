@@ -1,6 +1,5 @@
 using System;
 using Unity.Mathematics;
-using UnityEngine;
 
 
 namespace Drone.Stability
@@ -15,37 +14,39 @@ namespace Drone.Stability
     [Serializable]
     public sealed class ValueDerivativePidController : BasePidController
     {
-        private float integral, lastValue; 
-        
-        public ValueDerivativePidController() : this(new PidParameters(1, 0.5f, 0.1f)) {}
-    
-        public ValueDerivativePidController(PidParameters parameters) => this.parameters = parameters;
-        
-        
-        public override float Calc(float target, float actual, float dt) 
+        private float _integral, _lastValue;
+
+        public ValueDerivativePidController() : this(new PidParameters(1, 0.5f, 0.1f)) { }
+
+        public ValueDerivativePidController(PidParameters parameters) { this.parameters = parameters; }
+
+
+        public override float Calc(float target, float actual, float dt)
         {
             var error = target - actual;
-            
-            integral += error * dt;
-            var i = math.clamp(integral * parameters.iFactor, 
+
+            _integral += error * dt;
+            var i = math.clamp(_integral * parameters.iFactor,
                 parameters.minIntegral,
-                parameters.maxIntegral);
+                parameters.maxIntegral
+            );
 
             var derivative = 0f;
-            if (errorWasSet) derivative = (lastValue - actual) / dt;
-            else errorWasSet = true;
+            if (ErrorWasSet) derivative = (_lastValue - actual) / dt;
+            else ErrorWasSet = true;
 
-            lastValue = actual;
-            
-            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor, 
+            _lastValue = actual;
+
+            return math.clamp(error * parameters.pFactor + i + derivative * parameters.dFactor,
                 parameters.minOutput,
-                parameters.maxOutput);
+                parameters.maxOutput
+            );
         }
-        
-        public override void Reset() 
+
+        public override void Reset()
         {
-            integral = lastValue = 0f;
-            errorWasSet = false;
+            _integral = _lastValue = 0f;
+            ErrorWasSet = false;
         }
     }
 }
