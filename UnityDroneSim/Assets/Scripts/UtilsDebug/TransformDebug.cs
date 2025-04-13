@@ -13,14 +13,14 @@ namespace UtilsDebug
     [ExecuteAlways]
     public class TransformDebug : MonoBehaviour
     {
-        private GizmoOptions globalXOptions, globalYOptions, globalZOptions;
-        private GizmoOptions localXOptions, localYOptions, localZOptions;
-        private GizmoOptions velocityOptions;
+        private GizmoOptions _globalXOptions, _globalYOptions, _globalZOptions;
+        private GizmoOptions _localXOptions,  _localYOptions,  _localZOptions;
+        private GizmoOptions _velocityOptions;
 
-        private Vector3 lastPosition, velocity;
-        
+        private Vector3 _lastPosition, _velocity;
+
         public bool showGlobalCoordinates = true;
-        public bool showVelocity = false;
+        public bool showVelocity;
 
         private void Awake()
         {
@@ -29,16 +29,16 @@ namespace UtilsDebug
 
             var capSize = math.cmin(bounds);
             var vectSize = math.cmax(bounds);
-            
-            globalXOptions = new GizmoOptions(Handles.xAxisColor * 0.7f, capSize, vectSize, FontStyle.Italic);
-            globalYOptions = new GizmoOptions(Handles.yAxisColor * 0.7f, capSize, vectSize, FontStyle.Italic);
-            globalZOptions = new GizmoOptions(Handles.zAxisColor * 0.7f, capSize, vectSize, FontStyle.Italic);
-            
-            localXOptions = new GizmoOptions(Handles.xAxisColor, capSize, vectSize);
-            localYOptions = new GizmoOptions(Handles.yAxisColor, capSize, vectSize);
-            localZOptions = new GizmoOptions(Handles.zAxisColor, capSize, vectSize);
-            
-            velocityOptions = new GizmoOptions(Color.yellow, capSize, vectSize, FontStyle.Bold);
+
+            _globalXOptions = new GizmoOptions(Handles.xAxisColor * 0.7f, capSize, vectSize, FontStyle.Italic);
+            _globalYOptions = new GizmoOptions(Handles.yAxisColor * 0.7f, capSize, vectSize, FontStyle.Italic);
+            _globalZOptions = new GizmoOptions(Handles.zAxisColor * 0.7f, capSize, vectSize, FontStyle.Italic);
+
+            _localXOptions = new GizmoOptions(Handles.xAxisColor, capSize, vectSize);
+            _localYOptions = new GizmoOptions(Handles.yAxisColor, capSize, vectSize);
+            _localZOptions = new GizmoOptions(Handles.zAxisColor, capSize, vectSize);
+
+            _velocityOptions = new GizmoOptions(Color.yellow, capSize, vectSize, FontStyle.Bold);
         }
 
         private void Update()
@@ -47,29 +47,31 @@ namespace UtilsDebug
             var right = transform.right;
             var up = transform.up;
             var fwd = transform.forward;
-            
-            VectorDrawer.DrawDirection(pos, right, "x'", localXOptions);
-            VectorDrawer.DrawDirection(pos, up, "y'", localYOptions);
-            VectorDrawer.DrawDirection(pos, fwd,"z'",  localZOptions);
+
+            VectorDrawer.DrawDirection(pos, right, "x'", _localXOptions);
+            VectorDrawer.DrawDirection(pos, up, "y'", _localYOptions);
+            VectorDrawer.DrawDirection(pos, fwd, "z'", _localZOptions);
 
             if (showGlobalCoordinates)
             {
                 if (right - Vector3.right != Vector3.zero)
-                    VectorDrawer.DrawDirection(pos, Vector3.right, "x", globalXOptions);
+                    VectorDrawer.DrawDirection(pos, Vector3.right, "x", _globalXOptions);
+
                 if (up - Vector3.up != Vector3.zero)
-                    VectorDrawer.DrawDirection(pos, Vector3.up, "y", globalYOptions);
+                    VectorDrawer.DrawDirection(pos, Vector3.up, "y", _globalYOptions);
+
                 if (fwd - Vector3.forward != Vector3.zero)
-                    VectorDrawer.DrawDirection(pos, Vector3.forward, "z", globalZOptions);
+                    VectorDrawer.DrawDirection(pos, Vector3.forward, "z", _globalZOptions);
             }
 
-            if (showVelocity && velocity != Vector3.zero)
-                VectorDrawer.DrawDirection(pos, velocity, "vel", velocityOptions);
+            if (showVelocity && _velocity != Vector3.zero)
+                VectorDrawer.DrawDirection(pos, _velocity, "vel", _velocityOptions);
         }
 
         private void FixedUpdate()
         {
-            velocity = (transform.position - lastPosition) / Time.fixedDeltaTime;
-            lastPosition = transform.position;
+            _velocity = (transform.position - _lastPosition) / Time.fixedDeltaTime;
+            _lastPosition = transform.position;
         }
     }
 }

@@ -8,14 +8,15 @@ namespace UtilsDebug
     [Flags]
     public enum VelocityDebugType
     {
-        None = 0,
-        CenterOfMass = 1,
+        None              = 0,
+        CenterOfMass      = 1,
         CenterOfMassError = 2,
-        Linear = 4,
-        Angular = 8,
-        Acceleration = 16,
+        Linear            = 4,
+        Angular           = 8,
+        Acceleration      = 16
     }
-    
+
+
     /// <summary>
     /// Helper component that draws physics vectors and print stats for rigidbody.
     /// </summary>
@@ -24,127 +25,154 @@ namespace UtilsDebug
     [ExecuteAlways]
     public class RigidbodyDebug : MonoBehaviour
     {
-        private string linVelocityName, angVelocityName, cmPointName, accelerationName, cmErrorName;
-        
-        private GizmoOptions linVelocityGizmoOptions;
-        private GizmoOptions angVelocityGizmoOptions;
-        private GizmoOptions accelerationGizmoOptions;
-        private GizmoOptions centerOfMassGizmoOptions;
+        private string _linVelocityName, _angVelocityName, _cmPointName, _accelerationName, _cmErrorName;
 
-        private Rigidbody rigidBody;
-        
-        private Vector3 startPosition, lastVelocity, linearAcceleration;
-        private Quaternion startRotation;
-        
+        private GizmoOptions _linVelocityGizmoOptions;
+        private GizmoOptions _angVelocityGizmoOptions;
+        private GizmoOptions _accelerationGizmoOptions;
+        private GizmoOptions _centerOfMassGizmoOptions;
+
+        private Rigidbody _rigidBody;
+
+        private Vector3    _startPosition, _lastVelocity, _linearAcceleration;
+        private Quaternion _startRotation;
+
         [Header("Options")]
         public VelocityDebugType debugType = VelocityDebugType.CenterOfMass | VelocityDebugType.Linear;
-        
-        [Header("Sizes")]
-        [Range(0f, 2f)] public float capSize = 0.2f;
-        [Range(0f, 2f)] public float vectorSize = 1f;
-        private float boundsLength;
 
-        
+        [Header("Sizes")] 
+        [Range(0f, 2f)] 
+        public float capSize = 0.2f;
+       
+        [Range(0f, 2f)]                   
+        public float vectorSize = 1f;
+        private float _boundsLength;
+
+
         private void Awake()
         {
-            rigidBody = GetComponent<Rigidbody>();
-            linVelocityName = $"{gameObject.name}_Vel";
-            angVelocityName = $"{gameObject.name}_AngVel";
-            cmPointName = $"{gameObject.name}_CoM";
-            accelerationName = $"{gameObject.name}_Acc";
-            cmErrorName = "cm_err";
-            
-            gameObject.TryGetDimensions(out boundsLength);
-            
-            var _capSize = boundsLength / 2 * capSize;
-            var _vectSize = boundsLength / 2 * vectorSize;
+            _rigidBody = GetComponent<Rigidbody>();
+            _linVelocityName = $"{gameObject.name}_Vel";
+            _angVelocityName = $"{gameObject.name}_AngVel";
+            _cmPointName = $"{gameObject.name}_CoM";
+            _accelerationName = $"{gameObject.name}_Acc";
+            _cmErrorName = "cm_err";
 
-            linVelocityGizmoOptions = new GizmoOptions(Color.yellow, _capSize, _vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
-            angVelocityGizmoOptions = new GizmoOptions(Color.cyan, _capSize, _vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
-            accelerationGizmoOptions = new GizmoOptions(new(1f, 0.5f, 0.016f), _capSize,  _vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
-            centerOfMassGizmoOptions = new GizmoOptions(Color.grey, _capSize, _vectSize,  FontStyle.Italic, GizmoLabelPlacement.End);
+            gameObject.TryGetDimensions(out _boundsLength);
+
+            var capSize = _boundsLength / 2 * this.capSize;
+            var vectSize = _boundsLength / 2 * vectorSize;
+
+            _linVelocityGizmoOptions =
+                new GizmoOptions(Color.yellow, capSize, vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
+
+            _angVelocityGizmoOptions =
+                new GizmoOptions(Color.cyan, capSize, vectSize, FontStyle.Bold, GizmoLabelPlacement.End);
+
+            _accelerationGizmoOptions = new GizmoOptions(new Color(1f, 0.5f, 0.016f),
+                capSize,
+                vectSize,
+                FontStyle.Bold,
+                GizmoLabelPlacement.End
+            );
+
+            _centerOfMassGizmoOptions =
+                new GizmoOptions(Color.grey, capSize, vectSize, FontStyle.Italic, GizmoLabelPlacement.End);
         }
-        
+
         private void Start()
         {
-            startPosition = transform.position;
-            startRotation = transform.rotation;
+            _startPosition = transform.position;
+            _startRotation = transform.rotation;
         }
 
         private void OnValidate()
         {
-            var _capSize = boundsLength / 2 * capSize;
-            var _vectSize = boundsLength / 2 * vectorSize;
+            var capSize = _boundsLength / 2 * this.capSize;
+            var vectSize = _boundsLength / 2 * vectorSize;
 
-            linVelocityGizmoOptions.capSize = _capSize;
-            angVelocityGizmoOptions.capSize = _capSize;
-            accelerationGizmoOptions.capSize = _capSize;
-            centerOfMassGizmoOptions.capSize = _capSize;
-            linVelocityGizmoOptions.vectSize = _vectSize;
-            angVelocityGizmoOptions.vectSize = _vectSize;
-            accelerationGizmoOptions.vectSize = _vectSize;
-            centerOfMassGizmoOptions.vectSize = _vectSize;
+            _linVelocityGizmoOptions.CapSize = capSize;
+            _angVelocityGizmoOptions.CapSize = capSize;
+            _accelerationGizmoOptions.CapSize = capSize;
+            _centerOfMassGizmoOptions.CapSize = capSize;
+            _linVelocityGizmoOptions.VectSize = vectSize;
+            _angVelocityGizmoOptions.VectSize = vectSize;
+            _accelerationGizmoOptions.VectSize = vectSize;
+            _centerOfMassGizmoOptions.VectSize = vectSize;
         }
-        
+
         private void OnDrawGizmos()
         {
             if (debugType == VelocityDebugType.None) return;
 
-            var p = rigidBody.transform.TransformPoint(rigidBody.centerOfMass);
+            var p = _rigidBody.transform.TransformPoint(_rigidBody.centerOfMass);
 
             if (debugType.HasFlag(VelocityDebugType.CenterOfMassError))
-            {
-                VectorDrawer.DrawLine(rigidBody.transform.TransformPoint(rigidBody.centerOfMass),
-                    rigidBody.position,
-                    cmErrorName,
-                    centerOfMassGizmoOptions);
-            }
+                VectorDrawer.DrawLine(_rigidBody.transform.TransformPoint(_rigidBody.centerOfMass),
+                    _rigidBody.position,
+                    _cmErrorName,
+                    _centerOfMassGizmoOptions
+                );
             else if (debugType.HasFlag(VelocityDebugType.CenterOfMass))
-            {
-                VectorDrawer.DrawPoint(p, cmPointName, centerOfMassGizmoOptions);
-            }
+                VectorDrawer.DrawPoint(p, _cmPointName, _centerOfMassGizmoOptions);
 
-            if (debugType.HasFlag(VelocityDebugType.Linear)) 
-                VectorDrawer.DrawDirection(p, rigidBody.linearVelocity * vectorSize, linVelocityName, linVelocityGizmoOptions);
-            
-            if (debugType.HasFlag(VelocityDebugType.Angular)) 
-                VectorDrawer.DrawDirection(p, rigidBody.angularVelocity * vectorSize, angVelocityName, angVelocityGizmoOptions);
-            
-            if (debugType.HasFlag(VelocityDebugType.Acceleration)) 
-                VectorDrawer.DrawDirection(p, linearAcceleration * vectorSize, accelerationName, accelerationGizmoOptions);
+            if (debugType.HasFlag(VelocityDebugType.Linear))
+                VectorDrawer.DrawDirection(p,
+                    _rigidBody.linearVelocity * vectorSize,
+                    _linVelocityName,
+                    _linVelocityGizmoOptions
+                );
+
+            if (debugType.HasFlag(VelocityDebugType.Angular))
+                VectorDrawer.DrawDirection(p,
+                    _rigidBody.angularVelocity * vectorSize,
+                    _angVelocityName,
+                    _angVelocityGizmoOptions
+                );
+
+            if (debugType.HasFlag(VelocityDebugType.Acceleration))
+                VectorDrawer.DrawDirection(p,
+                    _linearAcceleration * vectorSize,
+                    _accelerationName,
+                    _accelerationGizmoOptions
+                );
         }
-        
+
         private void FixedUpdate()
         {
-            linearAcceleration = (rigidBody.linearVelocity - lastVelocity) / Time.fixedDeltaTime;
-            lastVelocity = rigidBody.linearVelocity;
+            _linearAcceleration = (_rigidBody.linearVelocity - _lastVelocity) / Time.fixedDeltaTime;
+            _lastVelocity = _rigidBody.linearVelocity;
         }
 
-        
+
         internal void StopMovement(bool stopLinearMovement, bool stopAngularMovement)
         {
-            if (stopAngularMovement) rigidBody.angularVelocity = Vector3.zero;
-            if (stopLinearMovement) rigidBody.linearVelocity = Vector3.zero;
+            if (stopAngularMovement) _rigidBody.angularVelocity = Vector3.zero;
+            if (stopLinearMovement) _rigidBody.linearVelocity = Vector3.zero;
         }
 
         internal void Recover()
         {
-            transform.position = startPosition;
-            transform.rotation = startRotation;
+            transform.position = _startPosition;
+            transform.rotation = _startRotation;
             StopMovement(true, true);
-            Debug.Log($"{gameObject.name} was recovered to initial position at {startPosition:F2}");
+            Debug.Log($"{gameObject.name} was recovered to initial position at {_startPosition:F2}");
         }
 
-        internal void GetBodyParameters(out Vector3 linVel, out Vector3 angVel, out Vector3 linAcc,
-                                        out Vector3 centerOfMass, out Vector3 cmError)
+        internal void GetBodyParameters(
+            out Vector3 linVel,
+            out Vector3 angVel,
+            out Vector3 linAcc,
+            out Vector3 centerOfMass,
+            out Vector3 cmError)
         {
-            if (rigidBody)
+            if (_rigidBody)
             {
-                linVel = rigidBody.linearVelocity;
-                angVel = rigidBody.angularVelocity;
-                linAcc = linearAcceleration;
-                centerOfMass = rigidBody.centerOfMass;   
-                cmError = rigidBody.centerOfMass;
+                linVel = _rigidBody.linearVelocity;
+                angVel = _rigidBody.angularVelocity;
+                linAcc = _linearAcceleration;
+                centerOfMass = _rigidBody.centerOfMass;
+                cmError = _rigidBody.centerOfMass;
             }
             else
             {
@@ -152,7 +180,7 @@ namespace UtilsDebug
                 angVel = Vector3.zero;
                 linAcc = Vector3.zero;
                 centerOfMass = Vector3.zero;
-                cmError =  Vector3.zero;
+                cmError = Vector3.zero;
             }
         }
     }
