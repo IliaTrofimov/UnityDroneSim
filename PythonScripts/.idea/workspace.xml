@@ -5,72 +5,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f6e24de6-a648-41d1-8abe-d5c04f03b139" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Agents/check.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/train.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/Lightmap-0_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/LightingData.asset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/LightingData.asset.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-0_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-0_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-0_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-1_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-1_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-1_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-2_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-2_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-2_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-3_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-3_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-3_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-3_comp_light.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-4_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-4_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-4_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-4_comp_light.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-5_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-5_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-5_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-5_comp_light.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-6_comp_dir.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-6_comp_dir.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-6_comp_light.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-6_comp_light.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-0.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-0.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-1.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-1.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-2.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-2.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-3.exr" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/ReflectionProbe-3.exr.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Third Party/GridSensor.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/UnityDroneSimPy.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jupyter-settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Agents/hello_world.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_train.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/LightingData.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/LightingData.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/LightingData.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/LightingData.asset.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/Lightmap-0_comp_dir.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/Lightmap-0_comp_dir.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/Lightmap-0_comp_dir.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/Lightmap-0_comp_light.exr" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/Lightmap-0_comp_light.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/Lightmap-0_comp_light.exr.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/Lightmap-0_comp_light.exr.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/ReflectionProbe-0.exr" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/ReflectionProbe-0.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/ReflectionProbe-0.exr.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/ReflectionProbe-0.exr.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/ReflectionProbe-1.exr" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/ReflectionProbe-1.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/ReflectionProbe-1.exr.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/ReflectionProbe-1.exr.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/ReflectionProbe-2.exr" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/ReflectionProbe-2.exr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/ReflectionProbe-2.exr.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld/ReflectionProbe-2.exr.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Textures/0027-sea-water-texture-seamless.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-0_comp_light.exr.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Textures/grass_pattern.jpeg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-1_comp_light.exr.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Textures/surrounding.jpg.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld/Lightmap-2_comp_light.exr.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notebooks/graphs.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/drone_agents_config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/drone_agents_config.yml.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/train.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/AgentsSettings/train.sh.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardSettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/DroneTrainManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/DroneTrainManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementReward.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementReward.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementRewardSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/MovementRewardSettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenalty.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenalty.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenaltySettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/ObstaclePenaltySettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/RewardProvider.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/RewardProvider.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointReward.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointReward.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointRewardSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/Rewards/WaypointRewardSettings.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardsManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/RewardsManager.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Materials/DroneCarbonGreen.mat" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Materials/DroneCarbonGreen.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/BoxWorld2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/Sample/LightingData.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Third Party/GridSensor.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scenes/ValleyWorld.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/InspectorTools/QuadcopterComputerEditor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/InspectorTools/QuadcopterComputerEditor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Navigation/WaypointNavigator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Navigation/WaypointNavigator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DepthCameraHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DepthCameraHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DroneAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/DroneAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/ObstacleTracker.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/RL/ObstacleTracker.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Telemetry/PidTelemetryRecorder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/Telemetry/PidTelemetryRecorder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHud.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHud.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHudLegacy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/Assets/Scripts/UI/FlightHudLegacy.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/EditorUserSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/../UnityDroneSim/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,6 +61,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="Jupyter Notebook" />
       </list>
     </option>
   </component>
@@ -91,9 +71,9 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Agents/main.py" root0="FORCE_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2vSSg1SQAHNlzS3wIFynIC4YXoN" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -102,20 +82,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "develop",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Agents" />
@@ -154,6 +134,8 @@
       <option name="presentableId" value="Default" />
       <updated>1744137089605</updated>
       <workItem from="1744137090667" duration="1351000" />
+      <workItem from="1744319991471" duration="911000" />
+      <workItem from="1744456277098" duration="390000" />
     </task>
     <servers />
   </component>
