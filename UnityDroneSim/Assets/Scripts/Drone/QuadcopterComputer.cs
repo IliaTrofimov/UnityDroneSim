@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Drone.Motors;
 using Drone.Stability;
-using Unity.Mathematics;
 using UnityEngine;
 using Utils;
-using UtilsDebug;
 
 
 namespace Drone
@@ -18,62 +16,63 @@ namespace Drone
     [RequireComponent(typeof(DroneInputsController))]
     public class QuadcopterComputer : DroneComputerBase
     {
-        private Vector3 droneSizes;
+        private Vector3               droneSizes;
         private DroneInputsController inputController;
 
-        [Header("Motors")]
+        [Header("Motors")] 
         public DroneMotor motorFrontLeft;
         public DroneMotor motorFrontRight;
-        public DroneMotor motorRearLeft; 
+        public DroneMotor motorRearLeft;
         public DroneMotor motorRearRight;
-        
-        
+
+
         protected override void Awake()
         {
             base.Awake();
             inputController = GetComponent<DroneInputsController>();
         }
-        
+
         private void FixedUpdate()
         {
             if (!enabled) return;
-            
+
             // When using stabilization target values are limited to maxLiftSpeed, maxPitchAngle etc.
             // Output force will be limited to forceMultiplier, maxPitchForce etc.
             // This restricts drone vertical speed and tilt angles
-            
+
             // Without stabilization forces are directly input * maxForce
             var dt = Time.fixedDeltaTime;
             float throttleOutput, pitchOutput, rollOutput, yawOutput;
-            
+
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabAltitude))
             {
                 throttleOutput = pidThrottle.Calc(
                     inputController.throttle * controlSettings.maxLiftSpeed,
-                    rigidBody.linearVelocity.y, 
-                    dt);
+                    rigidBody.linearVelocity.y,
+                    dt
+                );
             }
             else
             {
                 throttleOutput = inputController.throttle * controlSettings.maxLiftForce;
                 pidThrottle.Reset();
-            }    
-            
+            }
+
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabPitchRoll))
-            { 
+            {
                 var rot = transform.WrapEulerRotation180();
                 pitchOutput = -pidPitch.Calc(inputController.pitch * controlSettings.maxPitchAngle, rot.x, dt);
                 rollOutput = -pidRoll.Calc(inputController.roll * controlSettings.maxRollAngle, rot.z, dt);
             }
             else
-            {  
+            {
                 // must be inverted to match stabilized version (don't fix what is working)
                 pitchOutput = -inputController.pitch * controlSettings.maxRollForce;
-                rollOutput  = -inputController.roll * controlSettings.maxRollForce;
+                rollOutput = -inputController.roll * controlSettings.maxRollForce;
                 pidPitch.Reset();
                 pidRoll.Reset();
             }
-            
+
             if (inputController.stabilizerMode.HasFlag(DroneStabilizerMode.StabYaw))
             {
                 var yawSpeed = rigidBody.YawVelocity();
@@ -84,16 +83,16 @@ namespace Drone
                 yawOutput = inputController.yaw * controlSettings.maxYawForce;
                 pidYaw.Reset();
             }
-            
+
             CalculateMotorsForces(throttleOutput, pitchOutput, yawOutput, rollOutput);
         }
-        
+
         private void CalculateMotorsForces(float throttleOutput, float pitchOutput, float yawOutput, float rollOutput)
         {
-            motorFrontLeft.liftForce  = throttleOutput + pitchOutput + rollOutput + yawOutput;
+            motorFrontLeft.liftForce = throttleOutput + pitchOutput + rollOutput + yawOutput;
             motorFrontRight.liftForce = throttleOutput + pitchOutput - rollOutput - yawOutput;
-            motorRearLeft.liftForce   = throttleOutput - pitchOutput + rollOutput - yawOutput;
-            motorRearRight.liftForce  = throttleOutput - pitchOutput - rollOutput + yawOutput;
+            motorRearLeft.liftForce = throttleOutput - pitchOutput + rollOutput - yawOutput;
+            motorRearRight.liftForce = throttleOutput - pitchOutput - rollOutput + yawOutput;
 
             if (clampNegativeForce)
             {
@@ -102,16 +101,17 @@ namespace Drone
                 motorRearLeft.liftForce = MathExtensions.ClampPositive(motorRearLeft.liftForce);
                 motorRearRight.liftForce = MathExtensions.ClampPositive(motorRearRight.liftForce);
             }
-            
+
             ApplyMotorForce(motorFrontLeft);
             ApplyMotorForce(motorFrontRight);
             ApplyMotorForce(motorRearLeft);
             ApplyMotorForce(motorRearRight);
 
-            var torqueVector = (motorFrontLeft.ForceVector 
-                            - motorFrontRight.ForceVector
-                            - motorRearLeft.ForceVector
-                            + motorRearRight.ForceVector) * controlSettings.torqueMultiplier;
+            var torqueVector = (motorFrontLeft.ForceVector
+                                - motorFrontRight.ForceVector
+                                - motorRearLeft.ForceVector
+                                + motorRearRight.ForceVector) * controlSettings.torqueMultiplier;
+
             rigidBody.AddTorque(torqueVector, ForceMode.Impulse);
         }
 
@@ -121,7 +121,7 @@ namespace Drone
             // ForceMode.Force so it is more stable
             rigidBody.AddForceAtPosition(motor.ForceVector, motor.transform.position, ForceMode.Force);
         }
-        
+
         public override IEnumerable<DroneMotor> GetAllMotors()
         {
             yield return motorFrontLeft;
