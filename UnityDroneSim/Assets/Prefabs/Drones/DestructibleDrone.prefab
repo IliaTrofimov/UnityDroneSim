@@ -686,10 +686,12 @@ MonoBehaviour:
   enableMovementPanel: 1
   enableControlsPanel: 1
   enableNavigationPanel: 1
+  enableRewardsPanel: 1
   isFirstPersonView: 1
   cameraFpv: {fileID: 6688608788927151849}
   cameraTpv: {fileID: 774949004541268088}
   drone: {fileID: 1773305771786904982}
+  droneAgent: {fileID: 0}
   navigator: {fileID: 7496530621990308001}
 --- !u!1 &5080202655946929120
 GameObject:
@@ -1011,9 +1013,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8571162416980300483}
-  showForceVectors: 0
-  clampNegativeForce: 1
   controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
+  pidController: 1
+  clampNegativeForce: 1
+  showForceVectors: 0
   motorFrontLeft: {fileID: 735657432093211137}
   motorFrontRight: {fileID: 7021292104955613104}
   motorRearLeft: {fileID: 8522830723373279982}
@@ -1032,6 +1035,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyedMotorsCount: 0
   landed: 0
+  enableDebugMessages: 1
   instantDeathColliderTag: WorldEdge
   landingDotProduct: 0.2
   hullBreakSpeed: 5
@@ -1043,7 +1047,7 @@ MonoBehaviour:
   enableEffects: 1
   motorDestructionPrefab: {fileID: 579799967915267250, guid: 6f9590fa62b7f49e593aa17d4310e813,
     type: 3}
-  hullDestructionPrefab: {fileID: 8444957704130355678, guid: 18e0cd41a3a0a45869f6d601c53d38d0,
+  hullDestructionPrefab: {fileID: 579799967915267250, guid: b6f6b1b83f5cf4fbc9d57615d931b231,
     type: 3}
 --- !u!114 &7496530621990308001
 MonoBehaviour:
