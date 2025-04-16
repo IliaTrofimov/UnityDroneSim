@@ -46,9 +46,12 @@ namespace RL
 
             foreach (var agent in _droneAgents)
             {
-                agent.trainingSettings = settings;
-                agent.InitRewardsProvider();
-
+                if (settings)
+                {
+                    agent.trainingSettings = settings;
+                    agent.InitRewardsProvider();
+                }
+              
                 var stateManager = agent.drone.GetComponent<DroneStateManager>();
                 if (stateManager)
                 {

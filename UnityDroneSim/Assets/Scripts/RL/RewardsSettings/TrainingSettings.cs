@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using UnityEngine;
 
 
@@ -11,9 +10,6 @@ namespace RL.RewardsSettings
     public class TrainingSettings : ScriptableObject
     {
         [Header("Global parameters")]
-        [Tooltip("Multiply each reward with Time.fixedDeltaTime value.")]
-        public bool useTimeScaledRewards;
-
         [Tooltip("Set of conditions for finishing training episode.")]
         public TerminationConditions termination;
 
@@ -58,7 +54,6 @@ namespace RL.RewardsSettings
 
         public void InitDefault()
         {
-            useTimeScaledRewards = false;
             stateRewardEnabled = false;
             movementRewardEnabled = false;
             obstaclePenaltyEnabled = false;

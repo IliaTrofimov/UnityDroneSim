@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c3e711f384b44849e8d6db2c9b6903d, type: 3}
+  m_Name: TrainingSettings
+  m_EditorClassIdentifier: 
+  termination:
+    trainingEpisodeTime: 30
+    maxPenalty: 0
+    hullBreakSpeed: 7
+    motorBreakSpeed: 5
+  stateRewardEnabled: 1
+  stateRewardSettings:
+    destructionPenalty: -20
+    finishOnDestruction: 1
+    landingReward: 0
+    finishOnLanding: 0
+  movementRewardEnabled: 1
+  movementRewardSettings:
+    movementReward: 0.05
+    noMovementPenalty: -0.01
+    idleSpeed: 0.01
+  waypointRewardEnabled: 1
+  waypointRewardSettings:
+    finishReward: 50
+    waypointReward: 10
+    movingToWaypointReward: 0.5
+    movingAwayFromWaypointPenalty: 0
+    minimalApproachSpeed: 0.1
+  obstaclePenaltyEnabled: 0
+  obstaclePenaltySettings:
+    nearObstaclePenalty: -0.5
+    freeSpaceRadius: 1
+    obstacleDetectionRange: 50
+    reactionTime: 0

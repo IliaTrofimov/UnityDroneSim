@@ -118,7 +118,7 @@ namespace UI
         public Camera cameraTpv;
 
         [Header("Target")] 
-        public QuadcopterComputer drone;
+        public DroneComputerBase drone;
         public DroneAgent droneAgent;
         
         public  WaypointNavigator     navigator;
@@ -234,7 +234,10 @@ namespace UI
             {
                 _valDroneFailure.Value = _droneStateManager.AnyMotorsDestroyed;
                 if (_droneStateManager.AnyMotorsDestroyed && _controls.Default.Repair.WasPressedThisFrame())
+                {
                     _droneStateManager.RepairAllMotors();
+                    drone.ResetStabilizers();
+                }
             }
 
             return true;
