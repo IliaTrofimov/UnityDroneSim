@@ -162,7 +162,6 @@ namespace Drone
                     dot,
                     landingDotProduct
                 );
-
                 landed = true;
             }
 
@@ -173,8 +172,7 @@ namespace Drone
         {
             var colliderParent = thisCollider.transform.parent?.gameObject;
 
-            if (colliderParent &&
-                _motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
+            if (colliderParent && _motorsLookup.TryGetValue(colliderParent.gameObject.GetInstanceID(), out var motorInfo))
             {
                 if (motorInfo.Motor.PropellerLinearSpeed + contactSpeed < motorBreakSpeed) return;
 
@@ -185,7 +183,6 @@ namespace Drone
                     contactSpeed,
                     motorInfo.Motor.PropellerLinearSpeed + contactSpeed
                 );
-
                 OnMotorCollided(motorInfo);
             }
             else if (_motorsLookup.TryGetValue(thisCollider.GetInstanceID(), out motorInfo))
@@ -197,7 +194,6 @@ namespace Drone
                     otherCollider.name,
                     contactSpeed
                 );
-
                 OnMotorCollided(motorInfo);
             }
             else
@@ -209,7 +205,6 @@ namespace Drone
                     otherCollider.name,
                     contactSpeed
                 );
-
                 BreakAllMotors();
             }
         }
@@ -219,29 +214,29 @@ namespace Drone
             if (motorInfo.IsDestroyed) return;
 
             destroyedMotorsCount++;
-
-            motorInfo.Motor.name = "[X] " + motorInfo.Motor.name;
             motorInfo.Motor.enabled = false;
             motorInfo.IsDestroyed = true;
 
-            if (!enableBrokenMotorsPhysics) return;
-
-            motorInfo.Motor.transform.parent = null;
-            motorInfo.AttachedRigidbody = motorInfo.Motor.gameObject.AddComponent<Rigidbody>();
-            if (motorInfo.AttachedRigidbody is not null)
+            if (enableBrokenMotorsPhysics)
             {
-                motorInfo.AttachedRigidbody.mass = brokenMotorMass;
-                motorInfo.AttachedRigidbody.interpolation = brokenMotorInterpolation;
-                motorInfo.AttachedRigidbody.collisionDetectionMode = brokenMotorCollisions;
-                motorInfo.AttachedRigidbody.linearDamping = 0.2f;
-                motorInfo.AttachedRigidbody.angularDamping = 0.1f;
-                motorInfo.AttachedRigidbody.AddRelativeForce(Vector3.up * motorInfo.Motor.liftForce / 5,
-                    ForceMode.Force
-                );
-
-                motorInfo.AttachedRigidbody.AddRelativeTorque(Vector3.up * motorInfo.Motor.liftForce / 5,
-                    ForceMode.VelocityChange
-                );
+                motorInfo.Motor.name = "[X] " + motorInfo.Motor.name;
+                motorInfo.Motor.transform.parent = null;
+                motorInfo.AttachedRigidbody = motorInfo.Motor.gameObject.AddComponent<Rigidbody>();
+                
+                if (motorInfo.AttachedRigidbody is not null)
+                {
+                    motorInfo.AttachedRigidbody.mass = brokenMotorMass;
+                    motorInfo.AttachedRigidbody.interpolation = brokenMotorInterpolation;
+                    motorInfo.AttachedRigidbody.collisionDetectionMode = brokenMotorCollisions;
+                    motorInfo.AttachedRigidbody.linearDamping = 0.2f;
+                    motorInfo.AttachedRigidbody.angularDamping = 0.1f;
+                    motorInfo.AttachedRigidbody.AddRelativeForce(Vector3.up * motorInfo.Motor.liftForce / 5,
+                        ForceMode.Force
+                    );
+                    motorInfo.AttachedRigidbody.AddRelativeTorque(Vector3.up * motorInfo.Motor.liftForce / 5,
+                        ForceMode.VelocityChange
+                    );
+                }   
             }
 
             if (enableEffects && addEffects)
@@ -262,7 +257,7 @@ namespace Drone
             if (!motorInfo.IsDestroyed) return;
 
             destroyedMotorsCount--;
-            motorInfo.Motor.transform.SetParent(motorInfo.InitialParent);
+            motorInfo.Motor.transform.SetParent(motorInfo.InitialParent, true);
             motorInfo.Motor.transform.localPosition = motorInfo.InitialLocalPosition;
             motorInfo.Motor.transform.localScale = motorInfo.InitialLocalScale;
             motorInfo.Motor.transform.localRotation = motorInfo.InitialLocalRotation;
@@ -320,7 +315,7 @@ namespace Drone
 
         private void DebugLog(string format, params object[] args)
         {
-            if (enableEffects)
+            if (enableDebugMessages)
                 Debug.LogFormat(format, args);
         }
     }
