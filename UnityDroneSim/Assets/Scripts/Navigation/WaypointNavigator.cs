@@ -19,8 +19,7 @@ namespace Navigation
         private          LineRenderer     _pathRenderer;
 
 
-        public Waypoint? CurrentWaypoint =>
-            WaypointsCount > 0 && !IsFinished
+        public Waypoint? CurrentWaypoint => WaypointsCount > 0 && !IsFinished
                 ? path[CurrentWaypointIndex]
                 : null;
 
@@ -191,6 +190,12 @@ namespace Navigation
         public bool NextWaypoint() => NextWaypoint(out _);
 
         public void ResetWaypoint() => CurrentWaypointIndex = 0;
+
+        public void ResetPath(WaypointPath newPath)
+        {
+            path = newPath;
+            ResetWaypoint();
+        }
 
         public float GetCurrentDistance(Vector3 position)
         {

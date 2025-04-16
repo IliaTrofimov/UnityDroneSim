@@ -46,6 +46,13 @@ namespace RL.RewardsSettings
         public ObstaclePenaltySettings obstaclePenaltySettings;
 
         
+        [Header("Height rewards")]
+        [Tooltip("Enables/disables fly height rewards.")]
+        public bool heightRewardEnabled;
+
+        [Tooltip("Rewards and penalties based on flight height..")]
+        public HeightRewardSettings heightRewardSettings;
+        
         private void Reset()
         {
             Debug.Log("RewardsSettings: Reset");
@@ -58,12 +65,14 @@ namespace RL.RewardsSettings
             movementRewardEnabled = false;
             obstaclePenaltyEnabled = false;
             waypointRewardEnabled = false;
+            heightRewardEnabled = false;
             
             termination = new TerminationConditions();
             stateRewardSettings = new DroneStateRewardSettings();
             movementRewardSettings = new MovementRewardSettings();
             obstaclePenaltySettings = new ObstaclePenaltySettings();
             waypointRewardSettings = new WaypointRewardSettings();
+            heightRewardSettings = new HeightRewardSettings();
         }
     }
 }

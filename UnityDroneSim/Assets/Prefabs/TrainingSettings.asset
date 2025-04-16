@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TrainingSettings
   m_EditorClassIdentifier: 
   termination:
-    trainingEpisodeTime: 30
+    trainingEpisodeTime: 60
     maxPenalty: 0
     hullBreakSpeed: 7
     motorBreakSpeed: 5
@@ -25,19 +25,26 @@ MonoBehaviour:
     finishOnLanding: 0
   movementRewardEnabled: 1
   movementRewardSettings:
-    movementReward: 0.05
+    movementReward: 0.02
     noMovementPenalty: -0.01
-    idleSpeed: 0.01
-  waypointRewardEnabled: 1
+    idleSpeed: 0.05
+  waypointRewardEnabled: 0
   waypointRewardSettings:
     finishReward: 50
     waypointReward: 10
     movingToWaypointReward: 0.5
     movingAwayFromWaypointPenalty: 0
     minimalApproachSpeed: 0.1
-  obstaclePenaltyEnabled: 0
+  obstaclePenaltyEnabled: 1
   obstaclePenaltySettings:
-    nearObstaclePenalty: -0.5
+    nearObstaclePenalty: -0.25
     freeSpaceRadius: 1
     obstacleDetectionRange: 50
-    reactionTime: 0
+    reactionTime: 2
+  heightRewardEnabled: 1
+  heightRewardSettings:
+    useRaycastHeight: 0
+    minHeight: 0.5
+    maxHeight: 15
+    outOfHeightRangePenalty: -0.05
+    heightReward: 0.05

@@ -1,10 +1,11 @@
 CONDA_PATH=~/miniconda3/bin/activate
 CONDA_ENV='mlagents'
+DEFAULT_CONFIG=./drone_agents_config.yml
 agent_config=$1
 
 if [ ! "$agent_config" ]; then
-    echo "Empty ML agent configuration file!"
-    exit 1
+    echo "Empty ML agent configuration file! Using default config from '$DEFAULT_CONFIG'"
+    agent_config=$DEFAULT_CONFIG
 fi
 
 echo "ML agent configuration file: '$agent_config'"
@@ -15,5 +16,4 @@ if [ ! -f "$agent_config" ]; then
 fi
 
 source $CONDA_PATH $CONDA_ENV
-mlagents-learn "$agent_config"
-
+mlagents-learn "$agent_config" --force

@@ -19,6 +19,7 @@ namespace RL.Rewards
         private readonly MovementRewardProvider   _movementReward;
         private readonly ObstaclePenaltyProvider  _obstaclePenalty;
         private readonly DroneStateRewardProvider _stateReward;
+        private readonly HeightRewardProvider     _heightReward;
         private readonly bool _logsEnabled;
         private readonly string _agentName;
         
@@ -93,10 +94,14 @@ namespace RL.Rewards
             if (_settings.stateRewardEnabled)
                 reward += _stateReward.CalculateReward();
             
+            if (_settings.heightRewardEnabled)
+                reward += _heightReward.CalculateReward();
+            
             var isFinal = _waypointReward.IsFinalReward ||
                           _obstaclePenalty.IsFinalReward ||
                           _movementReward.IsFinalReward ||
-                          _stateReward.IsFinalReward;
+                          _stateReward.IsFinalReward ||
+                          _heightReward.IsFinalReward;
 
             var lowBalance = _settings.termination.maxPenalty != 0 &&
                              CumulativeReward + reward < _settings.termination.maxPenalty;
@@ -127,6 +132,7 @@ namespace RL.Rewards
             _movementReward.Reset();
             _obstaclePenalty.Reset();
             _stateReward.Reset();
+            _heightReward.Reset();
             base.Reset();
         }
 
@@ -136,12 +142,13 @@ namespace RL.Rewards
             yield return _movementReward;
             yield return _obstaclePenalty;
             yield return _stateReward;
+            yield return _heightReward;
         }
 
         public override string ToString()
         {
             const string format =
-                "{0}: waypoint {1:F2}, mov {2:F2}, obs {3:F2}, state {4:F2} (cur.sum {5:F2}, total.sum {6:F2}){7}";
+                "{0}: waypoint {1:F2}, mov {2:F2}, obs {3:F2}, state {4:F2}, height {5:F2} (cur.sum {6:F2}, total.sum {7:F2}){8}";
 
             var finalRewardLabel = IsFinalReward ? ", final" : "";
             return string.Format(format,
@@ -150,6 +157,7 @@ namespace RL.Rewards
                 _movementReward.LastReward,
                 _obstaclePenalty.LastReward,
                 _stateReward.LastReward,
+                _heightReward.LastReward,
                 LastReward,
                 CumulativeReward,
                 finalRewardLabel
@@ -162,6 +170,8 @@ namespace RL.Rewards
                _obstaclePenalty.DrawGizmos();
            if (_settings.waypointRewardEnabled)
                _waypointReward.DrawGizmos();
+           if (_settings.heightRewardEnabled)
+               _heightReward.DrawGizmos();
         }
     }
 }
