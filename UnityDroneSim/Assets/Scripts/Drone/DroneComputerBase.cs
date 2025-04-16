@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Drone.Motors;
 using Drone.Stability;
@@ -111,6 +112,16 @@ namespace Drone
             pidRoll.Reset();
         }
 
+        /// <summary>Turn drone on or off by enabling or disabling this component. Also resets all PID stabilizers.</summary>
+        public virtual void EnableDone(bool shouldEnable)
+        {
+            if (shouldEnable != enabled)
+            {
+                enabled = shouldEnable;
+                ResetStabilizers();
+            }
+        }
+
         protected virtual void Awake()
         {
             if (!gameObject.TryGetDimensions(out _droneSize))
@@ -144,6 +155,18 @@ namespace Drone
             }
         }
 
+        protected void OnValidate()
+        {
+            switch (pidController)
+            {
+            case PidControllerType.Default         when pidThrottle is not PidController:
+            case PidControllerType.ValueDerivative when pidThrottle is not ValueDerivativePidController:
+            case PidControllerType.Debug           when pidThrottle is not DebugPidController:
+                InitPidControllers();
+                break;
+            }
+        }
+
         protected virtual void OnDrawGizmos()
         {
             if (!showForceVectors || !enabled) return;
@@ -164,14 +187,20 @@ namespace Drone
         {
             if (!showForceVectors || !enabled) return;
 
-            var vectMult = math.cmax(_droneSize) / controlSettings.maxLiftForce;
+            var vectMult = math.cmax(_droneSize) / controlSettings.maxLiftForce / 2;
             var options = new GizmoOptions(Color.red,
-                capSize: math.cmin(_droneSize) / 3,
-                vectSize: math.cmax(_droneSize)
+                capSize: math.cmin(_droneSize) / 8,
+                vectSize: math.cmax(_droneSize) / 2
             );
 
             foreach (var motor in GetAllMotors())
             {
+                var dot = Vector3.Dot(transform.up, motor.ForceVector.normalized);
+                if (math.abs(dot - 1f) >= 1e-5)
+                {
+                    options.Color = Color.magenta;
+                }
+                
                 VectorDrawer.DrawDirection(motor.transform.position,
                     motor.ForceVector * vectMult,
                     "",
