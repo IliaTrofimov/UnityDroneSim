@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Drone;
+using MBaske.Sensors.Grid;
+using Navigation;
 using RL.RewardsSettings;
 using UnityEditor;
 using UnityEngine;
@@ -13,13 +15,17 @@ namespace RL
     /// </summary>
     public class DroneTrainManager : MonoBehaviour
     {
-        private int _frame;
-        
         private DroneAgent[] _droneAgents;
 
         [Tooltip("Global training parameters.")]
         public TrainingSettings settings;
 
+        [Tooltip("Selected waypoint path for all drones.")]
+        public WaypointPath path;
+        
+        [Tooltip("Selected spawn point for all drones.")]
+        public SpawnPoint spawn;
+        
         /// <summary>List all agents inside child scene objects.</summary>
         public IReadOnlyCollection<DroneAgent> DroneAgents => _droneAgents;
 
@@ -51,12 +57,18 @@ namespace RL
                     agent.trainingSettings = settings;
                     agent.InitRewardsProvider();
                 }
+
+                if (path) agent.navigator.ResetPath(path);
               
+                if (spawn) agent.spawnPoint = spawn;
+                
                 var stateManager = agent.drone.GetComponent<DroneStateManager>();
                 if (stateManager)
                 {
                     stateManager.hullBreakSpeed = settings.termination.hullBreakSpeed;
                     stateManager.motorBreakSpeed = settings.termination.motorBreakSpeed;
+                    //stateManager.enableEffects = false;
+                    stateManager.enableBrokenMotorsPhysics = false;
                 }
                 else
                 {
@@ -67,6 +79,10 @@ namespace RL
                         agent.name
                     );
                 }
+                
+                var gridSensor = agent.drone.GetComponentInChildren<GridSensorComponent3D>();
+                if (gridSensor)
+                    gridSensor.gameObject.SetActive(true);
             }
         }
 
