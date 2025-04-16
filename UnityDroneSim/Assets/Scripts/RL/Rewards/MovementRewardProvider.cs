@@ -23,10 +23,11 @@ namespace RL.Rewards
         public override float CalculateReward()
         {
             var speed = math.abs(_agentRigidBody.linearVelocity.magnitude);
-            if (speed > _settings.idleSpeed)
-                return UpdateRewards(_settings.movementReward * math.clamp(speed, _settings.idleSpeed, 1));
-
-            return UpdateRewards(_settings.noMovementPenalty * math.clamp(speed, 0, _settings.idleSpeed));
+            return UpdateRewards(
+                speed > _settings.idleSpeed 
+                ? _settings.movementReward 
+                : _settings.noMovementPenalty
+            );
         }
     }
 }

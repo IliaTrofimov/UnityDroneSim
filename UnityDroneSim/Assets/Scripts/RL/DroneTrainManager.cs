@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Drone;
 using RL.RewardsSettings;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -12,6 +13,8 @@ namespace RL
     /// </summary>
     public class DroneTrainManager : MonoBehaviour
     {
+        private int _frame;
+        
         private DroneAgent[] _droneAgents;
 
         [Tooltip("Global training parameters.")]
@@ -23,16 +26,14 @@ namespace RL
 
         private void OnEnable()
         {
-            Debug.Log("DroneTrainManager: OnEnable");
             UpdateDrones();
         }
 
         private void Start()
         {
-            Debug.Log("DroneTrainManager: Start");
             UpdateDrones();
         }
-
+        
         [ContextMenu("Update drone agents")]
         public void UpdateDrones()
         {

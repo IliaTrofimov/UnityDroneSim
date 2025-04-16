@@ -2,6 +2,7 @@ using System;
 using RL.RewardsSettings;
 using Unity.Mathematics;
 using UnityEngine;
+using UtilsDebug;
 
 
 namespace RL.Rewards
@@ -61,6 +62,34 @@ namespace RL.Rewards
             ObstaclePosition = new Vector3(float.NaN, float.NaN, float.NaN);
             ObstacleDistance = -1;
             return UpdateRewards(0);
+        }
+
+        public override void DrawGizmos()
+        {
+            if (IsNearObstacle)
+            { 
+                var color = Gizmos.color;
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(_agentRigidBody.position, _settings.freeSpaceRadius);
+                Gizmos.color = color;
+            }
+            else if (ObstacleDistance > 0)
+            {
+                var options = new GizmoOptions()
+                {
+                    CapSize = 0,
+                    Color = Color.red,
+                    LabelColor = Color.red,
+                    LabelOutline = true,
+                    LabelPlacement = GizmoLabelPlacement.Center
+                };
+                
+                VectorDrawer.DrawLine(
+                    _agentRigidBody.position,
+                    ObstaclePosition, 
+                    $"Obst.: {ObstacleDistance:F1}\nR: {LastReward:F3}",
+                    options);
+            }
         }
     }
 }

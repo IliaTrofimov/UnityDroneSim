@@ -92,10 +92,16 @@ namespace Drone.Motors
             _propellerInertia = Mathf.Lerp(_propellerInertia, idleRotationSpeed * forceSign, Time.deltaTime);
 
             if (liftForce != 0)
+            {
+                _propellerInertia = Mathf.Lerp(_propellerInertia, idleRotationSpeed * forceSign, Time.deltaTime);
                 propellerAngleDelta = MathExtensions.AbsSqrt(liftForce) * _propellerSpeedFactor * Time.deltaTime *
                                       forceSign;
+            }
             else
+            {
+                _propellerInertia = Mathf.Lerp(_propellerInertia, 0, Time.deltaTime);
                 propellerAngleDelta = 0;
+            }
 
             propellerAngleDelta += _propellerInertia;
             propeller.transform.Rotate(0, propellerAngleDelta, 0);

@@ -126,7 +126,12 @@ namespace Navigation
                     : $"[Waypoint] {path.name} ({i + 1}/{path.WaypointsCount}): {waypoint.name}";
 
                 _waypointsObjects.Add(waypointObject);
-                _pathRenderer.SetPosition(i, waypoint.position);
+            }
+
+            if (_pathRenderer)
+            {
+                for (var i = 0; i < path.WaypointsCount; i++)
+                    _pathRenderer.SetPosition(i, path[i].position);
             }
         }
 

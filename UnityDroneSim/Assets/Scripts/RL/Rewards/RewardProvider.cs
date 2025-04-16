@@ -28,6 +28,9 @@ namespace RL.Rewards
         /// <summary>Calculate current reward based on agent and environment state.</summary>
         /// <returns>Reward value.</returns>
         public abstract float CalculateReward();
+        
+        /// <summary>Call this method inside OnDrawGizmos to display additional information about reward.</summary>
+        public virtual void DrawGizmos() { }
 
         /// <summary>Reset all rewards values.</summary>
         public virtual void Reset() { LastReward = CumulativeReward = 0; }

@@ -12,7 +12,8 @@ namespace RL.Rewards
     {
         private readonly DroneStateRewardSettings _settings;
         private readonly DroneStateManager        _droneState;
-
+        private bool _isLanded, _isDestroyed;
+        
         public DroneStateRewardProvider(DroneStateRewardSettings settings, DroneStateManager droneState)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -21,13 +22,22 @@ namespace RL.Rewards
 
         public override float CalculateReward()
         {
-            if (_droneState.AnyMotorsDestroyed && _settings.destructionPenalty != 0)
-                return UpdateRewards(_settings.destructionPenalty, true);
+            if (_droneState.AnyMotorsDestroyed && !_isDestroyed)
+                UpdateRewards(_settings.destructionPenalty, _settings.finishOnDestruction);
+            else if (_droneState.Landed && !_isLanded)
+                UpdateRewards(_settings.landingReward, _settings.finishOnLanding);
+            else
+                UpdateRewards(0, false);
+            
+            _isDestroyed = _droneState.AnyMotorsDestroyed;
+            _isLanded = _droneState.Landed;
+            return LastReward;
+        }
 
-            if (_droneState.Landed && _settings.landingReward != 0)
-                return UpdateRewards(_settings.destructionPenalty, true);
-
-            return UpdateRewards(0);
+        public override void Reset()
+        {
+            base.Reset();
+            _isDestroyed = _isLanded = false;
         }
     }
 }

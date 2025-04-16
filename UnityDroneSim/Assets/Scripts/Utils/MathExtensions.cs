@@ -37,6 +37,10 @@ namespace Utils
         /// <summary>Return given value if it is positive, otherwise return 0.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ClampPositive(float a) => a > 0f ? a : 0f;
+        
+        /// <summary>Return given value if it is positive, otherwise return 0.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ClampPositive(double a) => a > 0 ? a : 0;
 
         /// <summary>Set given value to zero if it is negative.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

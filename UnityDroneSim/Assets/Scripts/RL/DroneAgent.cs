@@ -19,9 +19,12 @@ namespace RL
     /// </summary>
     public class DroneAgent : Agent
     {
+        public enum LogsMode { Never, HeuristicOnly, Always }
+        
         private DroneInputsController _inputsController;
         private DroneStateManager     _droneState;
         private Rigidbody             _droneRigidBody;
+        private bool                  _logsEnabled;
 
         /// <summary>Agent is using heuristics instead of neural network.</summary>
         public bool IsHeuristicsOnly { get; private set; }
@@ -39,7 +42,7 @@ namespace RL
 
         [Tooltip("Place where drone will start new episode.")]
         public SpawnPoint spawnPoint;
-
+        
         
         [Header("Training parameters")]
         [Tooltip("Training parameters. Can be overridden by parent DroneTrainingManager component.")]
@@ -47,21 +50,10 @@ namespace RL
 
         [Tooltip("Display current cumulative reward value near drone object.")]
         public bool displayRewards = true;
+        
+        [Tooltip("When to print debug messages.")]
+        public LogsMode logsMode = LogsMode.HeuristicOnly;
 
-
-        private new void Awake()
-        {
-            if (!trainingSettings)
-            {
-                trainingSettings = ScriptableObject.CreateInstance<TrainingSettings>();
-                Debug.LogFormat(
-                    "DroneAgent '{0}': [1] missing TrainingSettings parameter. Default one will be instantiated.",
-                    drone.name
-                );
-            }
-
-            base.Awake();
-        }
 
         public override void Initialize()
         {
@@ -75,48 +67,78 @@ namespace RL
             _droneState = drone.GetComponent<DroneStateManager>();
             _droneRigidBody = drone.Rigidbody;
 
-            IsHeuristicsOnly = GetComponent<BehaviorParameters>()?.IsInHeuristicMode() ?? false;
-            _inputsController.manualInput = IsHeuristicsOnly;
-            if (IsHeuristicsOnly)
-                Debug.LogFormat("DroneAgent '{0}': running in heuristic mode", drone.name);
-
-            if (!trainingSettings)
+            var behaviour = GetComponent<BehaviorParameters>();
+            if (behaviour == null)
             {
-                trainingSettings = ScriptableObject.CreateInstance<TrainingSettings>();
-                Debug.LogFormat(
-                    "DroneAgent '{0}': [2] missing TrainingSettings parameter. Default one will be instantiated.",
-                    drone.name
-                );
+                IsHeuristicsOnly = true;
+                Debug.LogFormat("DroneAgent '{0}': running in heuristic mode (cannot find BehaviorParameters component).", drone.name);
             }
-
-            RewardProvider = new DroneAgentRewardProvider(trainingSettings, this, _droneState);
+            else if (behaviour.IsInHeuristicMode())
+            {
+                IsHeuristicsOnly = true;
+                Debug.LogFormat("DroneAgent '{0}': running in heuristic mode.", drone.name);
+            }
+            else
+            {
+                IsHeuristicsOnly = false;
+            }
+            
+            _inputsController.manualInput = IsHeuristicsOnly;
+            _logsEnabled = logsMode == LogsMode.Always || logsMode == LogsMode.HeuristicOnly && IsHeuristicsOnly;
+            InitRewardsProvider();
         }
 
         public void InitRewardsProvider()
         {
-            RewardProvider = new DroneAgentRewardProvider(trainingSettings, this, _droneState);
+            if (!trainingSettings)
+            {
+                if (_logsEnabled)
+                {
+                    Debug.LogFormat(
+                        "DroneAgent '{0}': missing TrainingSettings parameter. Default one will be instantiated.",
+                        drone.name
+                    );     
+                }
+               
+                trainingSettings = ScriptableObject.CreateInstance<TrainingSettings>();
+                trainingSettings.InitDefault();
+            }
+
+            RewardProvider = _logsEnabled 
+                ? new DroneAgentRewardProvider(trainingSettings, this, _droneState, true, drone.name) 
+                : new DroneAgentRewardProvider(trainingSettings, this, _droneState);
         }
 
         private void OnDrawGizmos()
         {
             if (!displayRewards) return;
-
+            
             VectorDrawer.DrawLabel(drone.transform.position,
-                $"R: {GetCumulativeReward():F0}",
-                new GizmoOptions { Color = IsHeuristicsOnly ? Color.yellow : Color.white, LabelOutline = true }
+                RewardProvider?.TimeLeft >= 0
+                    ? $"R: {GetCumulativeReward():F0}\nt: {RewardProvider.TimeLeft:F0} s"
+                    : $"R: {GetCumulativeReward():F0}\n",
+                new GizmoOptions { LabelColor = IsHeuristicsOnly ? Color.yellow : Color.white, LabelOutline = true }
             );
+        }
+        
+        private void OnDrawGizmosSelected()
+        {
+            if (displayRewards) RewardProvider?.DrawGizmos();
         }
 
         public override void OnEpisodeBegin()
         {
-            spawnPoint.MoveInsideSpawnPoint(drone.transform);
-            RewardProvider.Reset();
             _droneRigidBody.linearVelocity = Vector3.zero;
             _droneRigidBody.angularVelocity = Vector3.zero;
             _droneState.RepairAllMotors();
+            spawnPoint.MoveInsideSpawnPoint(drone.transform);
             drone.ResetStabilizers();
             navigator.ResetWaypoint();
+            RewardProvider.Reset();
             base.OnEpisodeBegin();
+
+            if (_logsEnabled)
+                Debug.LogFormat("DroneAgent '{0}': begin episode.", drone.name); 
         }
 
         public override void CollectObservations(VectorSensor sensor)

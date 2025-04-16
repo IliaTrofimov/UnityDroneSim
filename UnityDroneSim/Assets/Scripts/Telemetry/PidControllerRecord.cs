@@ -11,22 +11,22 @@ namespace Telemetry
     {
         public readonly float Timestamp;
 
-        public readonly float Target;
-        public readonly float Error;
-        public readonly float Integral;
-        public readonly float Output;
-        public readonly float P;
-        public readonly float I;
-        public readonly float D;
+        public readonly double Target;
+        public readonly double Error;
+        public readonly double Integral;
+        public readonly double Output;
+        public readonly double P;
+        public readonly double I;
+        public readonly double D;
 
         public PidControllerRecord(
-            float target,
-            float error,
-            float integral,
-            float output,
-            float p,
-            float i,
-            float d)
+            double target,
+            double error,
+            double integral,
+            double output,
+            double p,
+            double i,
+            double d)
         {
             Timestamp = Time.timeSinceLevelLoad;
             Target = target;

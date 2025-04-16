@@ -69,6 +69,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "RewardsPanel",
+                    "type": "Button",
+                    "id": "34cbb244-f386-4d5a-9c3b-88e6d88bf00a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Repair",
                     "type": "Button",
                     "id": "dacb879a-4c2e-4de6-ba8a-95cd36bf386a",
@@ -294,6 +303,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "EnableDrone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6c828d8-13df-4489-9775-9285f605bd14",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RewardsPanel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

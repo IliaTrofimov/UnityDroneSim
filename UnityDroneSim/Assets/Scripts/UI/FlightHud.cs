@@ -4,7 +4,11 @@ using System.Globalization;
 using Drone;
 using Exceptions;
 using Inputs;
+using InspectorTools;
 using Navigation;
+using RL;
+using RL.Rewards;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utils;
@@ -15,6 +19,8 @@ namespace UI
     [DisallowMultipleComponent]
     public class FlightHud : MonoBehaviour
     {
+        #region UI Elements
+        
         private bool _elementsAreInitialized;
 
         private Label  _lblDroneEnabled;
@@ -23,6 +29,7 @@ namespace UI
         private Foldout _foldNavigation;
         private Foldout _foldMovement;
         private Foldout _foldControls;
+        private Foldout _foldRewards;
 
         private Label _lblPosition;
         private Label _lblWaypointIndex;
@@ -40,6 +47,10 @@ namespace UI
         private Label _lblRollTarget;
         private Label _lblRollActual;
 
+        private VisualElement _panelRewards;
+        private Label _lblRewardCumulative;
+        private Label _lblRewardLast;
+        
         private Toggle _tglStabilization;
         private Label  _lblStatus;
         private Slider _sldThrottle;
@@ -47,10 +58,17 @@ namespace UI
         private Slider _sldYaw;
         private Slider _sldRoll;
 
+        #endregion
+
+        #region Tracked properties
+        
         private const float MIN_DIRECTION_CHANGE     = 0.1F;
         private const float FLOAT_CHANGE_EPS_PRECISE = 0.0001f;
         private const float FLOAT_CHANGE_EPS         = 0.001f;
 
+        private List<VisualElement> _rewardContainers = new ();
+        private IEnumerator<RewardProvider> _rewardsEnumerator;
+        
         private readonly TrackedVector3            _valPosition          = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedVector3            _valWaypointPos       = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedObject<int>        _valWaypointNumber    = new();
@@ -75,22 +93,34 @@ namespace UI
         private readonly TrackedFloat        _valYaw           = new(FLOAT_CHANGE_EPS);
         private readonly TrackedFloat        _valRoll          = new(FLOAT_CHANGE_EPS);
         private readonly TrackedObject<bool> _valStabilization = new();
+        
+        private readonly TrackedFloat   _valRewardCumulative  = new(1e-4f);
+        private readonly TrackedFloat   _valRewardLast  = new(1e-5f);
 
-        [Header("UI")] public UIDocument hudUIDocument;
+        
+        #endregion
+
+        [Header("UI")] 
+        [Tooltip("UI document that represents overlay UI.")]
+        public UIDocument hudUIDocument;
 
         public  bool          startExpanded         = true;
         public  bool          enableMovementPanel   = true;
         public  bool          enableControlsPanel   = true;
         public  bool          enableNavigationPanel = true;
+        public  bool          enableRewardsPanel    = true;
         private DroneControls _controls;
 
-        [Header("Cameras")] public bool isFirstPersonView;
+        [Header("Cameras")]
+        public bool isFirstPersonView;
 
         public Camera cameraFpv;
         public Camera cameraTpv;
 
-        [Header("Target")] public QuadcopterComputer drone;
-
+        [Header("Target")] 
+        public QuadcopterComputer drone;
+        public DroneAgent droneAgent;
+        
         public  WaypointNavigator     navigator;
         private DroneInputsController _inputsController;
         private Rigidbody             _droneRigidbody;
@@ -107,9 +137,7 @@ namespace UI
             _inputsController = drone.GetComponent<DroneInputsController>();
             _droneRigidbody = drone.Rigidbody;
             _droneStateManager = drone.gameObject.GetComponent<DroneStateManager>();
-
-            //if (!navigator) navigator = GetComponent<WaypointNavigator>();
-
+            
             if (cameraFpv && cameraTpv)
             {
                 cameraFpv.enabled = isFirstPersonView;
@@ -157,25 +185,23 @@ namespace UI
         {
             if (!enabled) return;
 
-            if (drone && _controls.Default.EnableDrone.WasPressedThisFrame())
+            if (_controls.Default.EnableDrone.WasPressedThisFrame() && drone)
             {
                 drone.enabled = !drone.enabled;
                 _valDroneEnabled.Value = drone.enabled;
             }
 
-            if (_controls.Default.CameraMode.WasPressedThisFrame() && cameraFpv && cameraTpv)
-            {
-                cameraFpv.enabled = !cameraFpv.enabled;
-                cameraTpv.enabled = !cameraTpv.enabled;
-                isFirstPersonView = cameraFpv.enabled;
-            }
+            if (_controls.Default.CameraMode.WasPressedThisFrame())
+                SwitchView();
 
-            if (!_elementsAreInitialized) InitializeElements();
+            if (!_elementsAreInitialized)
+                InitializeElements();
 
             if (UpdateControlsPanel())
             {
                 UpdateMovementPanel();
                 UpdateNavigationPanel();
+                UpdateRewardsPanel();
             }
         }
 
@@ -189,9 +215,11 @@ namespace UI
                 _foldControls.enabledSelf = false;
                 _foldMovement.value = false;
                 _foldMovement.enabledSelf = false;
+                _foldNavigation.value = false;
+                _foldNavigation.enabledSelf = false;
                 return false;
             }
-
+            
             _foldControls.enabledSelf = true;
             if (_controls.Default.ControlsPanel.WasPressedThisFrame())
                 _foldControls.value = !_foldControls.value;
@@ -271,38 +299,111 @@ namespace UI
             _foldNavigation.enabledSelf = false;
             return false;
         }
+        
+        private bool UpdateRewardsPanel()
+        {
+            if (droneAgent)
+            {
+                _foldRewards.enabledSelf = true;
+                if (_controls.Default.RewardsPanel.WasPressedThisFrame())
+                    _foldRewards.value = !_foldRewards.value;
 
+                _valRewardLast.Value = droneAgent.RewardProvider.LastReward;
+                _valRewardCumulative.Value = droneAgent.RewardProvider.CumulativeReward;
+                
+                if (_panelRewards.childCount != droneAgent.RewardProvider.RewardsCount)
+                {
+                    _panelRewards.Clear();
+                    foreach (var reward in droneAgent.RewardProvider.GetRewards())
+                    {
+                        var root = new VisualElement();
+                        root.AddToClassList("reward-container");
 
+                        var lblCumReward = new Label(reward.CumulativeReward.ToString("F2"));
+                        lblCumReward.style.color = GetRewardColor(reward.CumulativeReward);
+
+                        var lblLastReward = new Label($"({reward.LastReward:F3})");
+                        lblLastReward.style.color = GetRewardColor(reward.LastReward);
+                        
+                        root.Add(new Label(reward.RewardName));
+                        root.Add(lblCumReward);
+                        root.Add(lblLastReward);
+                        _panelRewards.Add(root);
+                    }
+                }
+                else
+                {
+                    var index = 0;
+                    foreach (var reward in droneAgent.RewardProvider.GetRewards())
+                    {
+                        var root = _panelRewards[index];
+                        if (root[1] is Label lblCumReward)
+                        {
+                            lblCumReward.text = reward.CumulativeReward.ToString("F2");
+                            lblCumReward.style.color = GetRewardColor(reward.CumulativeReward);
+                        }
+                        if (root[2] is Label lblLastReward)
+                        {
+                            lblLastReward.text = $"({reward.LastReward:F3})";
+                            lblLastReward.style.color = GetRewardColor(reward.LastReward);
+                        }
+                        index++;
+                    }
+                }
+
+                return true;
+            }
+
+            _foldRewards.value = false;
+            _foldRewards.enabledSelf = false;
+            return false;
+        }
+
+        private static Color GetRewardColor(float value)
+        {
+            return value switch
+            {
+                > 1e-5f  => Color.green,
+                < -1e-5f => Color.red,
+                _    => Color.gray,
+            };
+        }
+        
         private void InitializeElements()
         {
-            _foldNavigation  = hudUIDocument.rootVisualElement.Q<Foldout>(nameof(_foldNavigation));
-            _foldMovement    = hudUIDocument.rootVisualElement.Q<Foldout>(nameof(_foldMovement));
-            _foldControls    = hudUIDocument.rootVisualElement.Q<Foldout>(nameof(_foldControls));
-            _lblDroneEnabled = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblDroneEnabled));
-            _btnSwitchView   = hudUIDocument.rootVisualElement.Q<Button>(nameof(_btnSwitchView));
+            _foldNavigation  = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Navigation");
+            _foldMovement    = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Movement");
+            _foldControls    = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Controls");
+            _foldRewards     = hudUIDocument.rootVisualElement.Q<Foldout>("fold_Rewards");
+            _lblDroneEnabled = hudUIDocument.rootVisualElement.Q<Label>("lbl_DroneEnabled");
+            _btnSwitchView   = hudUIDocument.rootVisualElement.Q<Button>("btn_SwitchView");
 
-            _lblPosition          = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblPosition));
-            _lblWaypointIndex     = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblWaypointIndex));
-            _lblWaypointPosition  = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblWaypointPosition));
-            _lblWaypointDistance  = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblWaypointDistance));
-            _lblWaypointDirection = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblWaypointDirection));
+            _lblPosition          = hudUIDocument.rootVisualElement.Q<Label>("lbl_Position");
+            _lblWaypointIndex     = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointIndex");
+            _lblWaypointPosition  = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointPosition");
+            _lblWaypointDistance  = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDistance");
+            _lblWaypointDirection = hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDirection");
 
-            _lblVelocity    = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblVelocity));
-            _lblYSpdTarget  = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblYSpdTarget));
-            _lblYSpdActual  = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblYSpdActual));
-            _lblPitchTarget = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblPitchTarget));
-            _lblPitchActual = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblPitchActual));
-            _lblYawTarget   = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblYawTarget));
-            _lblYawActual   = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblYawActual));
-            _lblRollTarget  = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblRollTarget));
-            _lblRollActual  = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblRollActual));
+            _panelRewards = hudUIDocument.rootVisualElement.Q<VisualElement>("panel_RewardsList");
+            _lblRewardCumulative = hudUIDocument.rootVisualElement.Q<Label>("lbl_RewardCumulative");
+            _lblRewardLast = hudUIDocument.rootVisualElement.Q<Label>("lbl_RewardLast");
 
-            _tglStabilization = hudUIDocument.rootVisualElement.Q<Toggle>(nameof(_tglStabilization));
-            _lblStatus        = hudUIDocument.rootVisualElement.Q<Label>(nameof(_lblStatus));
-            _sldThrottle      = hudUIDocument.rootVisualElement.Q<Slider>(nameof(_sldThrottle));
-            _sldPitch         = hudUIDocument.rootVisualElement.Q<Slider>(nameof(_sldPitch));
-            _sldYaw           = hudUIDocument.rootVisualElement.Q<Slider>(nameof(_sldYaw));
-            _sldRoll          = hudUIDocument.rootVisualElement.Q<Slider>(nameof(_sldRoll));
+            _lblVelocity    = hudUIDocument.rootVisualElement.Q<Label>("lbl_Velocity");
+            _lblYSpdTarget  = hudUIDocument.rootVisualElement.Q<Label>("lbl_YSpdTarget");
+            _lblYSpdActual  = hudUIDocument.rootVisualElement.Q<Label>("lbl_YSpdActual");
+            _lblPitchTarget = hudUIDocument.rootVisualElement.Q<Label>("lbl_PitchTarget");
+            _lblPitchActual = hudUIDocument.rootVisualElement.Q<Label>("lbl_PitchActual");
+            _lblYawTarget   = hudUIDocument.rootVisualElement.Q<Label>("lbl_YawTarget");
+            _lblYawActual   = hudUIDocument.rootVisualElement.Q<Label>("lbl_YawActual");
+            _lblRollTarget  = hudUIDocument.rootVisualElement.Q<Label>("lbl_RollTarget");
+            _lblRollActual  = hudUIDocument.rootVisualElement.Q<Label>("lbl_RollActual");
+
+            _tglStabilization = hudUIDocument.rootVisualElement.Q<Toggle>("tgl_Stabilization");
+            _lblStatus        = hudUIDocument.rootVisualElement.Q<Label>("lbl_Status");
+            _sldThrottle      = hudUIDocument.rootVisualElement.Q<Slider>("sld_Throttle");
+            _sldPitch         = hudUIDocument.rootVisualElement.Q<Slider>("sld_Pitch");
+            _sldYaw           = hudUIDocument.rootVisualElement.Q<Slider>("sld_Yaw");
+            _sldRoll          = hudUIDocument.rootVisualElement.Q<Slider>("sld_Roll");
 
             InitializeValuesChangedEventHandlers();
             SetTemplatedLabels();
@@ -326,6 +427,10 @@ namespace UI
                     _controls.Default.MovementPanel.controls[0].displayName
                 );
 
+                _foldRewards.text = string.Format(_foldRewards.text,
+                    _controls.Default.RewardsPanel.controls[0].displayName
+                );
+                
                 _tglStabilization.text = string.Format(_tglStabilization.text,
                     _controls.Default.FullStabilization.controls[0].displayName
                 );
@@ -333,10 +438,12 @@ namespace UI
                 _lblDroneEnabled.text = string.Format(_lblDroneEnabled.text,
                     _controls.Default.EnableDrone.controls[0].displayName
                 );
-
+                
                 _lblStatus.text = string.Format(_lblStatus.text, _controls.Default.Repair.controls[0].displayName);
-                _btnSwitchView.text =
-                    string.Format(_btnSwitchView.text, _controls.Default.CameraMode.controls[0].displayName);
+                
+                _btnSwitchView.text = string.Format(_btnSwitchView.text, 
+                    _controls.Default.CameraMode.controls[0].displayName
+                );
             }
             catch (Exception ex)
             {
@@ -370,6 +477,12 @@ namespace UI
             _valStabilization.ValueChanged += StabilizationChangeHandler;
             _valDroneFailure.ValueChanged += DroneFailureChangeHandler;
             _valDroneEnabled.ValueChanged += DroneEnabledChangeHandler;
+            
+            _valRewardLast.ValueChanged += RewardLastChangeHandler;
+            _valRewardCumulative.ValueChanged += RewardCumulativeChangeHandler;
+            
+            _btnSwitchView.RegisterCallback<PointerDownEvent>(ViewChangedHandler);
+            _tglStabilization.RegisterValueChangedCallback(ToggleStabilizationClickHandler);
         }
 
         private void ClearValuesChangedEventHandlers()
@@ -398,6 +511,12 @@ namespace UI
             _valStabilization.ValueChanged -= StabilizationChangeHandler;
             _valDroneFailure.ValueChanged -= DroneFailureChangeHandler;
             _valDroneEnabled.ValueChanged -= DroneEnabledChangeHandler;
+            
+            _valRewardLast.ValueChanged -= RewardLastChangeHandler;
+            _valRewardCumulative.ValueChanged -= RewardCumulativeChangeHandler;
+            
+            _btnSwitchView.UnregisterCallback<PointerDownEvent>(ViewChangedHandler);
+            _tglStabilization.UnregisterValueChangedCallback(ToggleStabilizationClickHandler);
         }
 
         private static void UpdateNumericLabel<T>(T value, Label targetLabel, string format = "F2")
@@ -466,6 +585,18 @@ namespace UI
         private void RollActualChangeHandler(float newValue, float oldValue) =>
             UpdateNumericLabel(newValue, _lblRollActual);
 
+        private void RewardLastChangeHandler(float newValue, float oldValue)
+        {
+            _lblRewardLast.text = $"({newValue:F3})";
+            _lblRewardLast.style.color = GetRewardColor(newValue);
+        }
+        
+        private void RewardCumulativeChangeHandler(float newValue, float oldValue)
+        {
+            _lblRewardCumulative.text = $"{newValue:F2}";
+            _lblRewardCumulative.style.color = GetRewardColor(newValue);
+        }
+
         private void ThrottleChangeHandler(float newValue, float oldValue) => UpdateSlider(newValue, _sldThrottle);
 
         private void PitchChangeHandler(float newValue, float oldValue) => UpdateSlider(newValue, _sldPitch);
@@ -484,6 +615,25 @@ namespace UI
         private void DroneEnabledChangeHandler(bool newValue, bool previousValue)
         {
             _lblDroneEnabled.style.display = newValue ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
+        private void ViewChangedHandler(PointerDownEvent evt)
+        {
+            SwitchView();
+        }
+
+        private void ToggleStabilizationClickHandler(ChangeEvent<bool> evt)
+        {
+            StabilizationChangeHandler(evt.newValue, evt.previousValue);
+        }
+        
+        private void SwitchView()
+        {
+            if (!cameraFpv || !cameraTpv) return;
+
+            cameraFpv.enabled = !cameraFpv.enabled;
+            cameraTpv.enabled = !cameraTpv.enabled;
+            isFirstPersonView = cameraFpv.enabled;
         }
     }
 }

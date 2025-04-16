@@ -15,7 +15,7 @@ behaviors:
                             #   within a sequence of an agent's actions.
                             #   Typically from 32 to 2048.
     keep_checkpoints: 3
-    checkpoint_interval: 250000
+    checkpoint_interval: 20000
     summary_freq: 20000
     
     hyperparameters:

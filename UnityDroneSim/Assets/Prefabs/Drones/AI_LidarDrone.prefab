@@ -256,7 +256,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -365,7 +365,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -711,10 +711,8 @@ MonoBehaviour:
   drone: {fileID: 1773305771786904982}
   navigator: {fileID: 5834208892645119488}
   spawnPoint: {fileID: 0}
-  rewardSettings: {fileID: 11400000, guid: 9b74d9ff1007a493ea66380fe1b15cca, type: 2}
+  trainingSettings: {fileID: 0}
   displayRewards: 1
-  freeSpaceRadius: 1
-  obstacleDetectionDistance: 15
 --- !u!114 &6167146603061894535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,7 +829,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -940,7 +938,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -1049,9 +1047,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8571162416980300483}
-  showForceVectors: 0
-  clampNegativeForce: 1
   controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
+  pidController: 1
+  clampNegativeForce: 1
+  showForceVectors: 0
   motorFrontLeft: {fileID: 735657432093211137}
   motorFrontRight: {fileID: 7021292104955613104}
   motorRearLeft: {fileID: 8522830723373279982}
@@ -1183,7 +1182,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -1377,7 +1376,7 @@ PrefabInstance:
     - target: {fileID: 5478640821368717531, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120418005160450932, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1397,12 +1396,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8637574527542137469, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1563,7 +1562,7 @@ PrefabInstance:
     - target: {fileID: 5478640821368717531, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120418005160450932, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1583,12 +1582,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8750466123751004787, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1862,7 +1861,7 @@ PrefabInstance:
     - target: {fileID: 5478640821368717531, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120418005160450932, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1882,12 +1881,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8637574527542137469, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -2073,12 +2072,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8637574527542137469, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}

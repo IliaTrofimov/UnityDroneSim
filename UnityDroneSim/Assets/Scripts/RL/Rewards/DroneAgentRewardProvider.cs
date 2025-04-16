@@ -19,6 +19,8 @@ namespace RL.Rewards
         private readonly MovementRewardProvider   _movementReward;
         private readonly ObstaclePenaltyProvider  _obstaclePenalty;
         private readonly DroneStateRewardProvider _stateReward;
+        private readonly bool _logsEnabled;
+        private readonly string _agentName;
         
         private float _startTime;
 
@@ -32,13 +34,33 @@ namespace RL.Rewards
             {
                 if (_settings?.termination.trainingEpisodeTime > 0)
                 {
-                    var dt = Time.fixedTime - _startTime;
+                    var dt = _settings.termination.trainingEpisodeTime - (Time.fixedTime - _startTime);
                     return dt > 0 ? dt : 0;
                 }
-                return -1;
+                return float.PositiveInfinity;
             }
         }
 
+        public DroneAgentRewardProvider(
+            TrainingSettings settings,
+            DroneAgent agent,
+            DroneStateManager droneState,
+            bool logsEnabled,
+            string agentName)
+            : base("DroneSumReward")
+        {
+            if (!settings)
+                throw new ArgumentNullException(nameof(settings));
+
+            _settings = settings;
+            _waypointReward = new WaypointRewardProvider(settings.waypointRewardSettings, agent, agent.navigator);
+            _movementReward = new MovementRewardProvider(settings.movementRewardSettings, agent.drone.Rigidbody);
+            _obstaclePenalty = new ObstaclePenaltyProvider(settings.obstaclePenaltySettings, agent.drone.Rigidbody);
+            _stateReward = new DroneStateRewardProvider(settings.stateRewardSettings, droneState);
+            _logsEnabled = logsEnabled;
+            _agentName = agentName;
+        }
+        
         public DroneAgentRewardProvider(
             TrainingSettings settings,
             DroneAgent agent,
@@ -48,10 +70,12 @@ namespace RL.Rewards
             if (!settings)
                 throw new ArgumentNullException(nameof(settings));
 
+            _settings = settings;
             _waypointReward = new WaypointRewardProvider(settings.waypointRewardSettings, agent, agent.navigator);
             _movementReward = new MovementRewardProvider(settings.movementRewardSettings, agent.drone.Rigidbody);
             _obstaclePenalty = new ObstaclePenaltyProvider(settings.obstaclePenaltySettings, agent.drone.Rigidbody);
             _stateReward = new DroneStateRewardProvider(settings.stateRewardSettings, droneState);
+            _logsEnabled = false;
         }
 
         public override float CalculateReward()
@@ -68,18 +92,32 @@ namespace RL.Rewards
 
             if (_settings.stateRewardEnabled)
                 reward += _stateReward.CalculateReward();
-
-            if (TimeLeft == 0)
-                return UpdateRewards(reward, true);
             
-            if (_waypointReward.IsFinalReward || _obstaclePenalty.IsFinalReward || _movementReward.IsFinalReward ||
-                _stateReward.IsFinalReward)
-                return UpdateRewards(reward, true);
+            var isFinal = _waypointReward.IsFinalReward ||
+                          _obstaclePenalty.IsFinalReward ||
+                          _movementReward.IsFinalReward ||
+                          _stateReward.IsFinalReward;
 
-            if (_settings.termination.maxPenalty != 0 && CumulativeReward + reward < _settings.termination.maxPenalty)
-                return UpdateRewards(reward, true);
-
-            return UpdateRewards(reward);
+            var lowBalance = _settings.termination.maxPenalty != 0 &&
+                             CumulativeReward + reward < _settings.termination.maxPenalty;
+            var timeout = TimeLeft <= 0;
+            
+            var isFinalReward = timeout || isFinal || lowBalance;
+            UpdateRewards(reward, isFinalReward);
+            
+            if (_logsEnabled && isFinalReward)
+            {
+                Debug.LogFormat("[Agent Reward] '{0}': final reward {1:F2} | {2}{3}{4}{5}{6}{7}",
+                    _agentName, CumulativeReward,
+                    _waypointReward.IsFinalReward ? "WP " : "",
+                    _obstaclePenalty.IsFinalReward ? "OBS " : "",
+                    _movementReward.IsFinalReward ? "MOV " : "",
+                    _stateReward.IsFinalReward ? "ST " : "",
+                    lowBalance ? "LOW-REW " : "",
+                    timeout ? "TIME" : "");
+            }
+            
+            return LastReward;
         }
 
         public override void Reset()
@@ -116,6 +154,14 @@ namespace RL.Rewards
                 CumulativeReward,
                 finalRewardLabel
             );
+        }
+        
+        public override void DrawGizmos()
+        {
+           if (_settings.obstaclePenaltyEnabled)
+               _obstaclePenalty.DrawGizmos();
+           if (_settings.waypointRewardEnabled)
+               _waypointReward.DrawGizmos();
         }
     }
 }

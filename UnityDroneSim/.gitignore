@@ -78,7 +78,7 @@ crashlytics-build.properties
 /[Aa]ssets/Third Party/*
 
 # User layout
-/UserSettings/
+/UserSettings/*
 
 #ML Agents stuff
 */ML-Agents/Timers*

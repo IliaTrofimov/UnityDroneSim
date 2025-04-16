@@ -10,16 +10,16 @@ namespace RL.RewardsSettings
     [Serializable]
     public class MovementRewardSettings
     {
-        [Range(0f, 50f)]
+        [Range(0f, 10f)]
         [Tooltip("Reward for moving somehow.")]
-        public float movementReward = 10;
+        public float movementReward = 0.05f;
 
-        [Range(-50f, 0f)]
+        [Range(-10f, 0f)]
         [Tooltip("Penalty for staying on the ground for too long.")]
-        public float noMovementPenalty = -10;
+        public float noMovementPenalty = -0.01f;
 
         [Range(0f, 1f)]
         [Tooltip("Maximal speed of the agent considered as 'idle'.")]
-        public float idleSpeed = 0.01f;
+        public float idleSpeed = 0.05f;
     }
 }
