@@ -20,9 +20,15 @@ namespace RL.Rewards
         public virtual string RewardName => RewardTypeName;
 
 
-        protected RewardProvider() { RewardTypeName = GetType().Name.Replace("Provider", ""); }
+        protected RewardProvider()
+        {
+            RewardTypeName = GetType().Name.Replace("Provider", "").Replace("Reward", "");
+        }
 
-        protected RewardProvider(string rewardName) { RewardTypeName = rewardName; }
+        protected RewardProvider(string rewardName)
+        {
+            RewardTypeName = rewardName;
+        }
 
 
         /// <summary>Calculate current reward based on agent and environment state.</summary>

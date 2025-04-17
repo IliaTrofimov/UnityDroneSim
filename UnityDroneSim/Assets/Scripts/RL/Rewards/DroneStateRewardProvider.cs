@@ -17,7 +17,7 @@ namespace RL.Rewards
         public DroneStateRewardProvider(DroneStateRewardSettings settings, DroneStateManager droneState)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _droneState = droneState;
+            _droneState = droneState ?? throw new ArgumentNullException(nameof(droneState));
         }
 
         public override float CalculateReward()

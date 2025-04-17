@@ -17,7 +17,7 @@ namespace RL.Rewards
         public MovementRewardProvider(MovementRewardSettings settings, Rigidbody agentRigidBody)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _agentRigidBody = agentRigidBody;
+            _agentRigidBody = agentRigidBody ?? throw new ArgumentNullException(nameof(_agentRigidBody));
         }
 
         public override float CalculateReward()

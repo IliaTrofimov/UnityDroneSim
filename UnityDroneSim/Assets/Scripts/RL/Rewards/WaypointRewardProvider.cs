@@ -22,13 +22,9 @@ namespace RL.Rewards
 
         public WaypointRewardProvider(WaypointRewardSettings settings, Agent agent, WaypointNavigator navigator)
         {
-            _settings = settings ??
-                        throw new ArgumentNullException(nameof(settings),
-                            $"Cannot create {nameof(WaypointRewardProvider)} without {nameof(WaypointRewardSettings)} parameter."
-                        );
-
-            _agent = agent;
-            _navigator = navigator;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _agent = agent ?? throw new ArgumentNullException(nameof(agent));
+            _navigator = navigator ?? throw new ArgumentNullException(nameof(navigator));
         }
 
 

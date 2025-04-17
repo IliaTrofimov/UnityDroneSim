@@ -25,7 +25,7 @@ namespace RL.Rewards
         
         private float _startTime;
 
-        public int RewardsCount => 4;
+        public int RewardsCount => 5;
 
         /// <summary>Time left to force restart of the episode.</summary>
         /// <remarks>Episode length is set int <see cref="TrainingSettings"/>.<see cref="TerminationConditions"/>.</remarks>
@@ -58,6 +58,7 @@ namespace RL.Rewards
             _movementReward = new MovementRewardProvider(settings.movementRewardSettings, agent.drone.Rigidbody);
             _obstaclePenalty = new ObstaclePenaltyProvider(settings.obstaclePenaltySettings, agent.drone.Rigidbody);
             _stateReward = new DroneStateRewardProvider(settings.stateRewardSettings, droneState);
+            _heightReward = new HeightRewardProvider(settings.heightRewardSettings, agent);
             _logsEnabled = logsEnabled;
             _agentName = agentName;
         }
@@ -66,17 +67,8 @@ namespace RL.Rewards
             TrainingSettings settings,
             DroneAgent agent,
             DroneStateManager droneState)
-            : base("DroneSumReward")
+            : this(settings, agent, droneState, false, agent.gameObject.name)
         {
-            if (!settings)
-                throw new ArgumentNullException(nameof(settings));
-
-            _settings = settings;
-            _waypointReward = new WaypointRewardProvider(settings.waypointRewardSettings, agent, agent.navigator);
-            _movementReward = new MovementRewardProvider(settings.movementRewardSettings, agent.drone.Rigidbody);
-            _obstaclePenalty = new ObstaclePenaltyProvider(settings.obstaclePenaltySettings, agent.drone.Rigidbody);
-            _stateReward = new DroneStateRewardProvider(settings.stateRewardSettings, droneState);
-            _logsEnabled = false;
         }
 
         public override float CalculateReward()

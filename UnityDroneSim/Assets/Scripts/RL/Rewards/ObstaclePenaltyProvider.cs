@@ -22,12 +22,8 @@ namespace RL.Rewards
 
         public ObstaclePenaltyProvider(ObstaclePenaltySettings settings, Rigidbody agentRigidBody)
         {
-            _settings = settings ??
-                        throw new ArgumentNullException(nameof(settings),
-                            $"Cannot create {nameof(ObstaclePenaltySettings)} without {nameof(WaypointRewardSettings)} parameter."
-                        );
-
-            _agentRigidBody = agentRigidBody;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _agentRigidBody = agentRigidBody ?? throw new ArgumentNullException(nameof(agentRigidBody));
             _collisionLayerMask = LayerMask.GetMask("Default");
         }
 

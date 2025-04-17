@@ -25,6 +25,8 @@ namespace RL
         private DroneStateManager     _droneState;
         private Rigidbody             _droneRigidBody;
         private bool                  _logsEnabled;
+        
+        private bool IsInitialized => _droneState && drone && _droneRigidBody && navigator;
 
         /// <summary>Agent is using heuristics instead of neural network.</summary>
         public bool IsHeuristicsOnly { get; private set; }
@@ -55,18 +57,14 @@ namespace RL
         public LogsMode logsMode = LogsMode.HeuristicOnly;
 
 
-        public override void Initialize()
+        protected override void OnEnable()
         {
-            ExceptionHelper.ThrowIfComponentIsMissing(this, drone, nameof(drone));
-            ExceptionHelper.ThrowIfComponentIsMissing(this, navigator, nameof(navigator));
-
-            if (navigator.drone != drone)
-                throw new UnityException("WaypointNavigator's target drone is not the same as Agent's drone.");
-
-            _inputsController = drone.GetComponent<DroneInputsController>();
-            _droneState = drone.GetComponent<DroneStateManager>();
-            _droneRigidBody = drone.Rigidbody;
-
+            InitComponents();
+            base.OnEnable();
+        }
+        
+        public override void Initialize()
+        {   
             var behaviour = GetComponent<BehaviorParameters>();
             if (behaviour == null)
             {
@@ -87,9 +85,11 @@ namespace RL
             _logsEnabled = logsMode == LogsMode.Always || logsMode == LogsMode.HeuristicOnly && IsHeuristicsOnly;
             InitRewardsProvider();
         }
-
+        
         public void InitRewardsProvider()
         {
+            if (!IsInitialized) InitComponents();
+            
             if (!trainingSettings)
             {
                 if (_logsEnabled)
@@ -109,6 +109,20 @@ namespace RL
                 : new DroneAgentRewardProvider(trainingSettings, this, _droneState);
         }
 
+        private void InitComponents()
+        {
+            ExceptionHelper.ThrowIfComponentIsMissing(this, drone, nameof(drone));
+            ExceptionHelper.ThrowIfComponentIsMissing(this, navigator, nameof(navigator));
+
+            if (navigator.drone != drone)
+                throw new UnityException("WaypointNavigator's target drone is not the same as Agent's drone.");
+
+            _inputsController = drone.GetComponent<DroneInputsController>();
+            _droneState = drone.GetComponent<DroneStateManager>();
+            _droneRigidBody = drone.Rigidbody;
+        }
+
+        
         private void OnDrawGizmos()
         {
             if (!displayRewards) return;
