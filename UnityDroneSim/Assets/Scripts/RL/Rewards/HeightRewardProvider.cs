@@ -15,31 +15,31 @@ namespace RL.Rewards
         private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
         private Ray _rayDown;
      
-        public bool IsInHeightRange {get; private set;}
-        
+        public bool IsInHeightRange { get; private set; }
+        public float Height {get; private set;}
+
         public HeightRewardProvider(HeightRewardSettings settings, Agent agent)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _agent = agent;
+            _agent = agent ?? throw new ArgumentNullException(nameof(agent));
             _layerMask = LayerMask.GetMask("Default");
             _rayDown = new Ray(agent.transform.position, Vector3.down);
         }
         
         public override float CalculateReward()
         {
-            float height;
             if (_settings.useRaycastHeight)
             {
                 _rayDown.origin = _agent.transform.position;
                 var hits = Physics.RaycastNonAlloc(_rayDown, _raycastHits, _settings.maxHeight * 2, _layerMask);
-                height = hits == 0 ? _settings.maxHeight + 1 : _raycastHits[0].distance;
+                Height = hits == 0 ? _settings.maxHeight + 1 : _raycastHits[0].distance;
             }
             else
             {
-                height = _agent.transform.position.y;
+                Height = _agent.transform.position.y;
             }
 
-            if (height < _settings.minHeight || height > _settings.maxHeight)
+            if (Height < _settings.minHeight || Height > _settings.maxHeight)
             {
                 IsInHeightRange = false;
                 return UpdateRewards(_settings.outOfHeightRangePenalty);
@@ -51,10 +51,13 @@ namespace RL.Rewards
 
         public override void DrawGizmos()
         {
-            var options = new GizmoOptions(IsInHeightRange ? Color.cyan : Color.red, capSize: 0);
+            var options = new GizmoOptions(IsInHeightRange ? Color.cyan : Color.red, capSize: 0)
+            {
+                LabelPlacement = GizmoLabelPlacement.Center
+            };
             VectorDrawer.DrawDirection(_agent.transform.position, 
-                Vector3.down * _settings.maxHeight, 
-                "",
+                Vector3.down * Height, 
+                $"height: {Height:F1}\nR: {LastReward:F3}",
                 options);
         }
     }
