@@ -112,10 +112,9 @@ namespace UI
         private DroneControls _controls;
 
         [Header("Cameras")]
-        public bool isFirstPersonView;
-
-        public Camera cameraFpv;
-        public Camera cameraTpv;
+        [Min(0)] 
+        public int selectedCamera = 0;
+        public CameraSwitcher cameraSwitcher;
 
         [Header("Target")] 
         public DroneComputerBase drone;
@@ -137,15 +136,8 @@ namespace UI
             _inputsController = drone.GetComponent<DroneInputsController>();
             _droneRigidbody = drone.Rigidbody;
             _droneStateManager = drone.gameObject.GetComponent<DroneStateManager>();
-            
-            if (cameraFpv && cameraTpv)
-            {
-                cameraFpv.enabled = isFirstPersonView;
-                cameraTpv.enabled = !isFirstPersonView;
-                cameraFpv.targetDisplay = 0;
-                cameraTpv.targetDisplay = 0;
-            }
 
+            cameraSwitcher.TrySetCamera(selectedCamera);
             InitializeElements();
         }
 
@@ -167,11 +159,7 @@ namespace UI
 
         private void OnValidate()
         {
-            if (cameraFpv && cameraTpv)
-            {
-                cameraFpv.enabled = isFirstPersonView;
-                cameraTpv.enabled = !isFirstPersonView;
-            }
+            cameraSwitcher.TrySetCamera(selectedCamera);
 
             if (_elementsAreInitialized)
             {
@@ -183,6 +171,8 @@ namespace UI
 
         private void Update()
         {
+            selectedCamera = cameraSwitcher.CurrentCameraIndex;
+            
             if (!enabled) return;
 
             if (_controls.Default.EnableDrone.WasPressedThisFrame() && drone)
@@ -632,11 +622,7 @@ namespace UI
         
         private void SwitchView()
         {
-            if (!cameraFpv || !cameraTpv) return;
-
-            cameraFpv.enabled = !cameraFpv.enabled;
-            cameraTpv.enabled = !cameraTpv.enabled;
-            isFirstPersonView = cameraFpv.enabled;
+            cameraSwitcher.SwitchNext();
         }
     }
 }
