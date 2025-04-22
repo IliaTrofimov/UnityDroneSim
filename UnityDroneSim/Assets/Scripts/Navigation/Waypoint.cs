@@ -19,7 +19,7 @@ namespace Navigation
 
         [Tooltip("Position (world coordinates) of the waypoint.")]
         public Vector3 position;
-
+        
         public Waypoint(string name) : this(name, 0.5f, Vector3.zero) { }
 
         public Waypoint(string name, Vector3 position) : this(name, 0.5f, position) { }
@@ -30,8 +30,7 @@ namespace Navigation
             this.radius = radius;
             this.position = position;
         }
-
-
+        
         public bool ComparePosition(Transform current, out float distance)
         {
             distance = Vector3.Distance(current.position, position);

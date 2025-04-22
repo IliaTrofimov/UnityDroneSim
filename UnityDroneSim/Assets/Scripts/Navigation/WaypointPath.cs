@@ -16,7 +16,6 @@ namespace Navigation
         [SerializeField]
         [Tooltip("List of all waypoints. Can be changed only in Inspector.")]
         private List<Waypoint> waypoints = new();
-
         
         public IReadOnlyList<Waypoint> Waypoints => waypoints;
         public Waypoint this[int index] => waypoints[index];
