@@ -145,7 +145,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2831775930481360494
 RectTransform:
   m_ObjectHideFlags: 0
@@ -656,7 +656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 10
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 4
@@ -1321,7 +1321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7224097484723223815
 Transform:
   m_ObjectHideFlags: 0
@@ -1377,9 +1377,9 @@ MonoBehaviour:
   enableControlsPanel: 1
   enableNavigationPanel: 1
   enableRewardsPanel: 1
-  isFirstPersonView: 1
-  cameraFpv: {fileID: 183652124163679249}
-  cameraTpv: {fileID: 5916842903688114248}
+  selectedCamera: 0
+  cameraSwitcher:
+    cameras: []
   drone: {fileID: 1773305771786904982}
   droneAgent: {fileID: 3733350635086191512}
   navigator: {fileID: 5834208892645119488}
