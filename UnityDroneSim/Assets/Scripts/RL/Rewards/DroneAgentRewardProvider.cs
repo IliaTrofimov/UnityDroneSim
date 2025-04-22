@@ -24,7 +24,7 @@ namespace RL.Rewards
         private readonly string _agentName;
         
         private float _startTime;
-
+        
         public int RewardsCount => 5;
 
         /// <summary>Time left to force restart of the episode.</summary>
@@ -41,7 +41,7 @@ namespace RL.Rewards
                 return float.PositiveInfinity;
             }
         }
-
+        
         public DroneAgentRewardProvider(
             TrainingSettings settings,
             DroneAgent agent,
@@ -164,6 +164,24 @@ namespace RL.Rewards
                _waypointReward.DrawGizmos();
            if (_settings.heightRewardEnabled)
                _heightReward.DrawGizmos();
+        }
+        
+        /// <summary>
+        /// Calculate drone's flight altitude.
+        /// This method uses <see cref="HeightRewardProvider"/>.Height property to get accurate height.
+        /// </summary>
+        public float GetDroneAltitude()
+        {
+            return _heightReward.Height;
+        }
+        
+        /// <summary>
+        /// Count visited waypoints in this episode.
+        /// This method uses <see cref="WaypointRewardProvider"/>.WaypointsReached property to get value.
+        /// </summary>
+        public float GetReachedWaypoints()
+        {
+            return _waypointReward.WaypointsReached;
         }
     }
 }

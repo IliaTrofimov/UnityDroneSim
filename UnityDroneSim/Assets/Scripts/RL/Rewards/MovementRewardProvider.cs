@@ -2,6 +2,7 @@ using System;
 using RL.RewardsSettings;
 using Unity.Mathematics;
 using UnityEngine;
+using Utils;
 
 
 namespace RL.Rewards
@@ -17,17 +18,22 @@ namespace RL.Rewards
         public MovementRewardProvider(MovementRewardSettings settings, Rigidbody agentRigidBody)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _agentRigidBody = agentRigidBody ?? throw new ArgumentNullException(nameof(_agentRigidBody));
+            _agentRigidBody = agentRigidBody ?? throw new ArgumentNullException(nameof(agentRigidBody));
         }
 
         public override float CalculateReward()
         {
-            var speed = math.abs(_agentRigidBody.linearVelocity.magnitude);
-            return UpdateRewards(
-                speed > _settings.idleSpeed 
-                ? _settings.movementReward 
-                : _settings.noMovementPenalty
-            );
+            var speed = _agentRigidBody.linearVelocity.magnitude;
+            var angularSpeed = math.abs(_agentRigidBody.YawVelocity());
+
+            var reward = speed > _settings.idleLinearSpeed
+                ? _settings.movementReward
+                : _settings.noMovementPenalty;
+
+            if (angularSpeed > _settings.maxAngularSpeed)
+                reward += _settings.angularSpeedPenalty;
+           
+            return UpdateRewards(reward);
         }
     }
 }

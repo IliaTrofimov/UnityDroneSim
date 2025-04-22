@@ -1,3 +1,4 @@
+using System;
 using Drone;
 using Exceptions;
 using Navigation;
@@ -15,7 +16,8 @@ using UtilsDebug;
 namespace RL
 {
     /// <summary>
-    /// AI agent for flying drone. Uses <see cref="DroneInputsController"/> to pass controls for <see cref="DroneComputerBase"/>.
+    /// AI agent that controls drone <see cref="DroneComputerBase"/> sending inputs to <see cref="DroneInputsController"/>.
+    /// Agent uses <see cref="DroneAgentRewardProvider"/> to calculate its rewards.
     /// </summary>
     public class DroneAgent : Agent
     {
@@ -24,6 +26,8 @@ namespace RL
         private DroneInputsController _inputsController;
         private DroneStateManager     _droneState;
         private Rigidbody             _droneRigidBody;
+        private GameObject            _trailObject;
+        private TrailRenderer         _trailRenderer;
         private bool                  _logsEnabled;
         
         private bool IsInitialized => _droneState && drone && _droneRigidBody && navigator;
@@ -44,18 +48,30 @@ namespace RL
 
         [Tooltip("Place where drone will start new episode.")]
         public SpawnPoint spawnPoint;
+
+        [Tooltip("Use local space for velocity observations.")]
+        public bool useLocalCoordinates;
         
         
         [Header("Training parameters")]
         [Tooltip("Training parameters. Can be overridden by parent DroneTrainingManager component.")]
         public TrainingSettings trainingSettings;
 
-        [Tooltip("Display current cumulative reward value near drone object.")]
-        public bool displayRewards = true;
-        
         [Tooltip("When to print debug messages.")]
         public LogsMode logsMode = LogsMode.HeuristicOnly;
+        
+        [Tooltip("Automatically reset episode if final state is reached even in heuristics mode.")]
+        public bool resetEpisodeInHeuristic = false;
+        
+        [Tooltip("Display current cumulative reward value near drone object.")]
+        public bool displayRewards = true;
 
+        [Tooltip("Display trail behind drone. Trail will be cleared after each new episode.")]
+        public bool displayTrail = true;
+        
+        [Tooltip("This object will be used to create trail (must contain TrailRenderer component inside).")]
+        public GameObject trailPrefab;
+        
 
         protected override void OnEnable()
         {
@@ -109,6 +125,26 @@ namespace RL
                 : new DroneAgentRewardProvider(trainingSettings, this, _droneState);
         }
 
+        private void InitTrailRenderer()
+        {
+            if (!displayTrail || !trailPrefab) return;
+            
+            if (!_trailRenderer)
+            {
+                var trailObject = Instantiate(trailPrefab, drone.gameObject.transform);
+                _trailRenderer = trailObject.GetComponent<TrailRenderer>();
+            } 
+            
+            _trailRenderer.time = trainingSettings.termination.trainingEpisodeTime > 0 
+                ? trainingSettings.termination.trainingEpisodeTime
+                : 60f;
+
+            _trailRenderer.Clear();
+            _trailRenderer.autodestruct = true;
+            _trailRenderer.enabled = true;
+            _trailRenderer.emitting = true;
+        }
+
         private void InitComponents()
         {
             ExceptionHelper.ThrowIfComponentIsMissing(this, drone, nameof(drone));
@@ -131,7 +167,7 @@ namespace RL
                 RewardProvider?.TimeLeft >= 0
                     ? $"R: {GetCumulativeReward():F0}\nt: {RewardProvider.TimeLeft:F0} s"
                     : $"R: {GetCumulativeReward():F0}\n",
-                new GizmoOptions { LabelColor = IsHeuristicsOnly ? Color.yellow : Color.white, LabelOutline = true }
+                new GizmoOptions { LabelColor = Color.white, LabelOutline = true }
             );
         }
         
@@ -149,6 +185,9 @@ namespace RL
             drone.ResetStabilizers();
             navigator.ResetWaypoint();
             RewardProvider.Reset();
+
+            InitTrailRenderer();
+            
             base.OnEpisodeBegin();
 
             if (_logsEnabled)
@@ -157,31 +196,45 @@ namespace RL
 
         public override void CollectObservations(VectorSensor sensor)
         {
-            float distance = 0, direction = 0;
+            var distance = 0f;
+            var heading = Vector2.zero;
             if (navigator.CurrentWaypoint.HasValue)
             {
                 distance = navigator.GetCurrentDistance(drone.transform.position);
-                direction = drone.transform.NormalizedHeadingTo(navigator.CurrentWaypoint.Value.position);
+                heading = drone.transform.HeadingAnglesTo(navigator.CurrentWaypoint.Value.position);
             }
 
-            sensor.AddObservation(_droneState.AnyMotorsDestroyed);
-            sensor.AddObservation(_droneState.Landed);
-            sensor.AddObservation(distance);
-            sensor.AddObservation(direction);
-            sensor.AddObservation(_droneRigidBody.linearVelocity.x);
-            sensor.AddObservation(_droneRigidBody.linearVelocity.y);
-            sensor.AddObservation(_droneRigidBody.linearVelocity.z);
-            sensor.AddObservation(_droneRigidBody.angularVelocity.x);
-            sensor.AddObservation(_droneRigidBody.angularVelocity.y);
-            sensor.AddObservation(_droneRigidBody.angularVelocity.z);
+            sensor.AddObservation(_droneState.AnyMotorsDestroyed);    // x1
+            sensor.AddObservation(_droneState.Landed);                // x1
+            sensor.AddObservation(distance);                          // x1
+            sensor.AddObservation(heading);                           // x2
+            sensor.AddObservation(RewardProvider.GetDroneAltitude()); // x1
+
+            if (useLocalCoordinates)
+            {
+                sensor.AddObservation(drone.transform.InverseTransformVector(
+                    _droneRigidBody.linearVelocity)
+                );                                                      // x3
+                sensor.AddObservation(_droneRigidBody.PitchVelocity()); // x1  
+                sensor.AddObservation(_droneRigidBody.YawVelocity());   // x1
+                sensor.AddObservation(_droneRigidBody.RollVelocity());  // x1 [TOTAL 12] 
+            }
+            else
+            {
+                sensor.AddObservation(_droneRigidBody.linearVelocity);  // x3
+                sensor.AddObservation(_droneRigidBody.angularVelocity); // x3 [TOTAL 12] 
+            }
         }
 
         public override void OnActionReceived(ActionBuffers actions)
         {
-            var reward = RewardProvider.CalculateReward();
-            AddReward(reward);
-            if (RewardProvider.IsFinalReward)
+            // All rewards are summed up inside
+            AddReward(RewardProvider.CalculateReward());
+            
+            if (RewardProvider.IsFinalReward && (!IsHeuristicsOnly || resetEpisodeInHeuristic))
             {
+                if (_logsEnabled)
+                    Debug.LogFormat("DroneAgent '{0}': ended episode (total reward {1:F2}).", drone.name, GetCumulativeReward()); 
                 EndEpisode();
                 return;
             }

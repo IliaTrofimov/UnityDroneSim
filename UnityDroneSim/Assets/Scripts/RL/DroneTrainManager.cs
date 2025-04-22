@@ -16,7 +16,7 @@ namespace RL
     public class DroneTrainManager : MonoBehaviour
     {
         private DroneAgent[] _droneAgents;
-
+        
         [Tooltip("Global training parameters.")]
         public TrainingSettings settings;
 
@@ -25,6 +25,16 @@ namespace RL
         
         [Tooltip("Selected spawn point for all drones.")]
         public SpawnPoint spawn;
+
+        public bool useLocalCoordinates;
+        
+        
+        [Header("Visualization")]
+        [Tooltip("Enable/disable trails for all drones.")]
+        public bool displayTrails = true;
+        
+        [Tooltip("This object will be used to create trails. Must contain TrailRenderer component inside.")]
+        public GameObject trailPrefab;
         
         /// <summary>List all agents inside child scene objects.</summary>
         public IReadOnlyCollection<DroneAgent> DroneAgents => _droneAgents;
@@ -39,7 +49,25 @@ namespace RL
         {
             UpdateDrones();
         }
-        
+
+        public void OnValidate()
+        {
+            if (!trailPrefab)
+            {
+                trailPrefab = null;
+                return;
+            }
+         
+            if (_droneAgents == null) return;
+            
+            foreach (var agent in _droneAgents)
+            {
+                agent.displayTrail = displayTrails;
+                agent.trailPrefab = trailPrefab;
+                agent.useLocalCoordinates = useLocalCoordinates;
+            }
+        }
+
         [ContextMenu("Update drone agents")]
         public void UpdateDrones()
         {
@@ -52,10 +80,22 @@ namespace RL
 
             foreach (var agent in _droneAgents)
             {
+                agent.useLocalCoordinates = useLocalCoordinates;
+
                 if (settings)
                 {
                     agent.trainingSettings = settings;
                     agent.InitRewardsProvider();
+                }
+                
+                if (trailPrefab && displayTrails)
+                {
+                    agent.displayTrail = displayTrails;
+                    agent.trailPrefab = trailPrefab;
+                }
+                if (!displayTrails)
+                {
+                    agent.displayTrail = false;
                 }
 
                 if (path) agent.navigator.ResetPath(path);

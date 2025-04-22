@@ -9,7 +9,7 @@ namespace RL
     // this script must start before RenderTextureSensorComponent so it can set properties for the sensor
     
     /// <summary>
-    /// Helper script for managing <see cref="RenderTexture"/> for given <see cref="RenderTextureSensorComponent"/>.
+    /// Helper script for managing <see cref="RenderTexture"/> for given <see cref="CameraSensorComponent"/>.
     /// </summary>
     /// <remarks>Will automatically create textures and assign them to the sensor and the camera.</remarks>
     [DisallowMultipleComponent]
@@ -45,12 +45,6 @@ namespace RL
                 _depthCamera.targetTexture = RenderTexture.GetTemporary(_sensor.Width, _sensor.Height, 1, colorFormat);
                 _depthCamera.targetTexture.name = $"DepthSensorTexture_{gameObject.GetInstanceID():x8}";
                 _depthCamera.targetTexture.filterMode = filterMode;
-                Debug.LogFormat(
-                    "[{0}] camera '{1}:{2:x8}' - renderTexture '{3:x8}' {4}x{5} {6} (Temporary)",
-                    gameObject.name,
-                    _depthCamera.name, _depthCamera.GetInstanceID(),
-                    _depthCamera.targetTexture.GetInstanceID(),
-                    _sensor.Width, _sensor.Height, colorFormat);
             }
             else
             {
@@ -58,12 +52,6 @@ namespace RL
                 _depthCamera.targetTexture.name = $"DepthSensorTexture_{gameObject.GetInstanceID():x8}";
                 _depthCamera.targetTexture.filterMode = filterMode;
                 _depthCamera.targetTexture.Create();
-                Debug.LogFormat(
-                    "[{0}] camera '{1}:{2:x8}' - renderTexture '{3:x8}' {4}x{5} {6} (Permanent)",
-                    gameObject.name,
-                    _depthCamera.name, _depthCamera.GetInstanceID(),
-                    _depthCamera.targetTexture.GetInstanceID(),
-                    _sensor.Width, _sensor.Height, colorFormat);
             }
 
             if (debugCanvas != null)

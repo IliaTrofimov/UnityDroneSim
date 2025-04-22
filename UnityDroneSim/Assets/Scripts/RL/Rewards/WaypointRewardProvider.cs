@@ -20,6 +20,15 @@ namespace RL.Rewards
         private          float                  _waypointDistance;
         private          float                  _approachSpeed;
 
+        public int WaypointsReached => _lastWaypointIndex;
+        
+        public float ApproachSpeed => _approachSpeed;
+        
+        public float WaypointDistance => _waypointDistance;
+        
+        public bool IsLookingAtWaypoint { get; private set; }
+        
+        
         public WaypointRewardProvider(WaypointRewardSettings settings, Agent agent, WaypointNavigator navigator)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -42,7 +51,8 @@ namespace RL.Rewards
                 UpdateRewards(_settings.waypointReward);
             }
 
-            _waypointDistance = Vector3.Distance(_agent.transform.position, _navigator.CurrentWaypoint.Value.position);
+            var direction = _navigator.CurrentWaypoint.Value.position - _agent.transform.position;
+            _waypointDistance = direction.magnitude;
             _approachSpeed = (_lastDistance - _waypointDistance) / Time.deltaTime;
             _lastDistance = _waypointDistance;
             
@@ -77,8 +87,14 @@ namespace RL.Rewards
             VectorDrawer.DrawLine(
                 _agent.transform.position,
                 _navigator.CurrentWaypoint.Value.position, 
-                $"Wpt.: {_waypointDistance:F1}\nSpd.: {_approachSpeed:F2}\nR: {LastReward:F3}",
+                $"Wpt_{WaypointsReached}: {_waypointDistance:F1}\nSpd.: {_approachSpeed:F2}\nR: {LastReward:F3}",
                 options);
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+            _lastWaypointIndex = 0;
         }
     }
 }

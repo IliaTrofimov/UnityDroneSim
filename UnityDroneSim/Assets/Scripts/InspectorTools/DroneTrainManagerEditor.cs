@@ -208,10 +208,11 @@ namespace InspectorTools
 
         private void InitSummaryTable()
         { 
-            if (InitRewardsArrays(_droneTrainManager.DroneAgents.Count, 2))
+            if (InitRewardsArrays(_droneTrainManager.DroneAgents.Count, 3))
             {
                 _rewardsNames[0] = "Last";
                 _rewardsNames[1] = "Cumulative";
+                _rewardsNames[2] = "# Waypoints";
             }
 
             var agentIdx = 0;
@@ -219,6 +220,7 @@ namespace InspectorTools
             {
                 _rewardsTable[agentIdx, 0] = agent.RewardProvider.LastReward;
                 _rewardsTable[agentIdx, 1] = agent.RewardProvider.CumulativeReward;
+                _rewardsTable[agentIdx, 2] = agent.RewardProvider.GetReachedWaypoints();
                 agentIdx++;
             }
         }
