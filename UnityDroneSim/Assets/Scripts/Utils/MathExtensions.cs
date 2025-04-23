@@ -77,13 +77,34 @@ namespace Utils
         public static float AbsSqrt(float value) => math.sqrt(math.abs(value));
         
         /// <summary>
-        /// Angles (rotation along X axis, and Y axis) between current position and target.
+        /// Angles (rotation along X axis, and Y axis in local space) between current position and target.
         /// </summary>
-        public static Vector2 HeadingAnglesTo(this Transform current, Vector3 target)
+        /// <remarks>
+        /// X value means vertical angle to the target,
+        /// Y value means horizontal angle (see default Unity coordinate system).
+        /// </remarks>
+        /// <returns>Normalized angles in range [-1, 1].</returns>
+        public static Vector2 NormalizedHeadingAnglesTo(this Transform current, Vector3 target)
         {
             var drLocal = current.InverseTransformDirection(current.position - target);
             var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
             var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) / Mathf.PI;
+            return new Vector2(angleHor, angleVert);
+        }
+        
+        /// <summary>
+        /// Angles (rotation along X axis, and Y axis in local space) between current position and target.
+        /// </summary>
+        /// <remarks>
+        /// X value means vertical angle to the target,
+        /// Y value means horizontal angle (see default Unity coordinate system).
+        /// </remarks>
+        /// <returns>Angles in degrees in range [-180, 180].</returns>
+        public static Vector2 HeadingAnglesTo(this Transform current, Vector3 target)
+        {
+            var drLocal = current.InverseTransformDirection(current.position - target);
+            var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) * Mathf.Rad2Deg;
+            var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) * Mathf.Rad2Deg;
             return new Vector2(angleHor, angleVert);
         }
     }

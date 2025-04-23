@@ -201,7 +201,7 @@ namespace RL
             if (navigator.CurrentWaypoint.HasValue)
             {
                 distance = navigator.GetCurrentDistance(drone.transform.position);
-                heading = drone.transform.HeadingAnglesTo(navigator.CurrentWaypoint.Value.position);
+                heading = drone.transform.NormalizedHeadingAnglesTo(navigator.CurrentWaypoint.Value.position);
             }
 
             sensor.AddObservation(_droneState.AnyMotorsDestroyed);    // x1
