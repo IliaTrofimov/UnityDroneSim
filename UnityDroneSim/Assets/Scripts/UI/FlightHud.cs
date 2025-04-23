@@ -406,7 +406,7 @@ namespace UI
             {
                 _foldObservations.enabledSelf = true;
                 if (_controls.Default.ObservationsPanel.WasPressedThisFrame())
-                    _foldObservations.value = !_foldRewards.value;
+                    _foldObservations.value = !_foldObservations.value;
 
                 if (!_foldObservations.value)
                     return true;
