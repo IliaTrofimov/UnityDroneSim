@@ -26,6 +26,7 @@ namespace RL
         [Tooltip("Selected spawn point for all drones.")]
         public SpawnPoint spawn;
 
+        [Tooltip("Use local space for velocity observations.")]
         public bool useLocalCoordinates;
         
         
@@ -50,7 +51,7 @@ namespace RL
             UpdateDrones();
         }
 
-        public void OnValidate()
+        private void OnValidate()
         {
             if (!trailPrefab)
             {
@@ -68,6 +69,12 @@ namespace RL
             }
         }
 
+        private void FixedUpdate()
+        {
+            
+        }
+
+
         [ContextMenu("Update drone agents")]
         public void UpdateDrones()
         {
@@ -76,6 +83,11 @@ namespace RL
             {
                 Debug.LogWarningFormat("TrainManager '{0}': cannot find any DroneAgent inside children objects.", name);
                 return;
+            }
+
+            if (!settings)
+            {
+                Debug.LogWarningFormat("TrainManager '{0}': missing TrainingSettings object. Agents must assign their own settings.", name);
             }
 
             foreach (var agent in _droneAgents)
@@ -98,16 +110,20 @@ namespace RL
                     agent.displayTrail = false;
                 }
 
-                if (path) agent.navigator.ResetPath(path);
-              
-                if (spawn) agent.spawnPoint = spawn;
+                if (path)
+                {
+                    agent.navigator.ResetPath(path);
+                }
+                if (spawn)
+                {
+                    agent.spawnPoint = spawn;
+                }
                 
                 var stateManager = agent.drone.GetComponent<DroneStateManager>();
                 if (stateManager)
                 {
                     stateManager.hullBreakSpeed = settings.termination.hullBreakSpeed;
                     stateManager.motorBreakSpeed = settings.termination.motorBreakSpeed;
-                    //stateManager.enableEffects = false;
                     stateManager.enableBrokenMotorsPhysics = false;
                 }
                 else
