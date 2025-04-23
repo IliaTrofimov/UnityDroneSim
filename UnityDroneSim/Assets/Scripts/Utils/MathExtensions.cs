@@ -86,10 +86,37 @@ namespace Utils
         /// <returns>Normalized angles in range [-1, 1].</returns>
         public static Vector2 NormalizedHeadingAnglesTo(this Transform current, Vector3 target)
         {
-            var drLocal = current.InverseTransformDirection(current.position - target);
-            var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
-            var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) / Mathf.PI;
-            return new Vector2(angleHor, angleVert);
+            var direction3d = target - current.position;
+            var directionHor = new Vector2(direction3d.z, direction3d.x).normalized;
+            var directionVer = new Vector2(direction3d.z, direction3d.y).normalized;
+            var fwd = new Vector2(current.forward.z, current.forward.x);
+            var up = new Vector2(current.up.z, current.up.y);
+            
+            var dotHor = Vector2.Dot(fwd, directionHor);
+            var dotVer = Vector2.Dot(up, directionVer);
+            
+            return new Vector2(math.acos(dotVer) / math.PI - 0.5f, math.acos(dotHor) / math.PI);
+
+            //var drLocal = current.InverseTransformDirection(current.position - target);
+            //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
+            //var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) / Mathf.PI;
+            //return new Vector2(angleHor, angleVert);
+        }
+        
+        public static Vector2 HeadingDotProductsTo(this Transform current, Vector3 target)
+        {
+            var direction3d = target - current.position;
+            var directionHor = new Vector2(direction3d.z, direction3d.x).normalized;
+            var directionVer = new Vector2(direction3d.z, direction3d.y).normalized;
+            var fwd = new Vector2(current.forward.z, current.forward.x);
+            var up = new Vector2(current.up.z, current.up.y);
+            
+            return new Vector2(Vector2.Dot(up, directionVer) - 0.5f, Vector2.Dot(fwd, directionHor));
+
+            //var drLocal = current.InverseTransformDirection(current.position - target);
+            //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
+            //var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) / Mathf.PI;
+            //return new Vector2(angleHor, angleVert);
         }
         
         /// <summary>
@@ -102,10 +129,12 @@ namespace Utils
         /// <returns>Angles in degrees in range [-180, 180].</returns>
         public static Vector2 HeadingAnglesTo(this Transform current, Vector3 target)
         {
-            var drLocal = current.InverseTransformDirection(current.position - target);
-            var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) * Mathf.Rad2Deg;
-            var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) * Mathf.Rad2Deg;
-            return new Vector2(angleHor, angleVert);
+            return NormalizedHeadingAnglesTo(current, target) * 180f;
+            
+            //var drLocal = current.InverseTransformDirection(current.position - target);
+            //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) * Mathf.Rad2Deg;
+            //var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) * Mathf.Rad2Deg;
+            //return new Vector2(angleHor, angleVert);
         }
     }
 }
