@@ -780,12 +780,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b1d3c90ce5b4c5bafd3d33a20050933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudUIDocument: {fileID: 522279402520145981}
   startExpanded: 1
   enableMovementPanel: 1
   enableControlsPanel: 1
   enableNavigationPanel: 1
   enableRewardsPanel: 1
+  enableObservationsPanel: 1
   selectedCamera: 0
   cameraSwitcher:
     cameras:

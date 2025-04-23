@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using Drone;
 using Exceptions;
 using Navigation;
@@ -21,6 +21,23 @@ namespace RL
     /// </summary>
     public class DroneAgent : Agent
     {
+        public static readonly IReadOnlyList<string> ScalarObservationNames = new[]
+        {
+            "IsDestroyed",
+            "IsLanded",
+            "Waypoint.dist.",
+            "Waypoint.heading.vert",
+            "Waypoint.heading.hor",
+            "Altitude",
+            "Lin.velocity.x",
+            "Lin.velocity.y",
+            "Lin.velocity.z",
+            "Ang.velocity.x",
+            "Ang.velocity.y",
+            "Ang.velocity.z"
+        };
+        
+        
         public enum LogsMode { Never, HeuristicOnly, Always }
         
         private DroneInputsController _inputsController;
@@ -72,7 +89,7 @@ namespace RL
         [Tooltip("This object will be used to create trail (must contain TrailRenderer component inside).")]
         public GameObject trailPrefab;
         
-
+        
         protected override void OnEnable()
         {
             InitComponents();

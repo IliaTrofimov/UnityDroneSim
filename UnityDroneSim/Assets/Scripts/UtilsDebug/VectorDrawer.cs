@@ -114,7 +114,7 @@ namespace UtilsDebug
                     var outlineColor = options.LabelColor.grayscale > 0.5f ? Color.black : Color.white;
                     Handles.Label(origin,
                         label,
-                        new GUIStyle("label")
+                        new GUIStyle()
                         {
                             normal = { textColor = outlineColor }, // shadow effect
                             onHover = { textColor = Color.black }, // shadow always black on hovering
@@ -128,11 +128,11 @@ namespace UtilsDebug
 
                 Handles.Label(origin,
                     label,
-                    new GUIStyle("label")
+                    new GUIStyle()
                     {
                         normal = { textColor = options.LabelColor },
                         contentOffset = new Vector2(2, -7),
-                        fontStyle = options.LabelStyle
+                        fontStyle = options.LabelStyle,
                     }
                 );
             }
@@ -149,7 +149,7 @@ namespace UtilsDebug
                 DrawLabel(from, label, options);
                 break;
             case GizmoLabelPlacement.End:
-                DrawLabel(from, label, options);
+                DrawLabel(to, label, options);
                 break;
             case GizmoLabelPlacement.Center:
                 DrawLabel((from + to) / 2f, label, options);

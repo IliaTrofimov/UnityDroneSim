@@ -135,3 +135,14 @@
     padding-left: 5px;
     padding-top: 2px;
 }
+
+.observation-value {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-wrap: wrap;
+}
+
+.observation-name {
+    color: rgb(202, 202, 202);
+    -unity-font-style: bold;
+}

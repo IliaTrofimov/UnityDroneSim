@@ -102,6 +102,15 @@ namespace Inputs
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""ObservationsPanel"",
+                    ""type"": ""Button"",
+                    ""id"": ""a281ef4a-ea61-4acf-91be-30d1575daf47"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Repair"",
                     ""type"": ""Button"",
                     ""id"": ""dacb879a-4c2e-4de6-ba8a-95cd36bf386a"",
@@ -340,6 +349,17 @@ namespace Inputs
                     ""action"": ""RewardsPanel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""072ad644-6743-48ce-88e7-abe32923d78e"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ObservationsPanel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -356,6 +376,7 @@ namespace Inputs
             m_Default_MovementPanel = m_Default.FindAction("MovementPanel", throwIfNotFound: true);
             m_Default_NavigationPanel = m_Default.FindAction("NavigationPanel", throwIfNotFound: true);
             m_Default_RewardsPanel = m_Default.FindAction("RewardsPanel", throwIfNotFound: true);
+            m_Default_ObservationsPanel = m_Default.FindAction("ObservationsPanel", throwIfNotFound: true);
             m_Default_Repair = m_Default.FindAction("Repair", throwIfNotFound: true);
             m_Default_EnableDrone = m_Default.FindAction("EnableDrone", throwIfNotFound: true);
         }
@@ -432,6 +453,7 @@ namespace Inputs
         private readonly InputAction m_Default_MovementPanel;
         private readonly InputAction m_Default_NavigationPanel;
         private readonly InputAction m_Default_RewardsPanel;
+        private readonly InputAction m_Default_ObservationsPanel;
         private readonly InputAction m_Default_Repair;
         private readonly InputAction m_Default_EnableDrone;
         public struct DefaultActions
@@ -446,6 +468,7 @@ namespace Inputs
             public InputAction @MovementPanel => m_Wrapper.m_Default_MovementPanel;
             public InputAction @NavigationPanel => m_Wrapper.m_Default_NavigationPanel;
             public InputAction @RewardsPanel => m_Wrapper.m_Default_RewardsPanel;
+            public InputAction @ObservationsPanel => m_Wrapper.m_Default_ObservationsPanel;
             public InputAction @Repair => m_Wrapper.m_Default_Repair;
             public InputAction @EnableDrone => m_Wrapper.m_Default_EnableDrone;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
@@ -481,6 +504,9 @@ namespace Inputs
                 @RewardsPanel.started += instance.OnRewardsPanel;
                 @RewardsPanel.performed += instance.OnRewardsPanel;
                 @RewardsPanel.canceled += instance.OnRewardsPanel;
+                @ObservationsPanel.started += instance.OnObservationsPanel;
+                @ObservationsPanel.performed += instance.OnObservationsPanel;
+                @ObservationsPanel.canceled += instance.OnObservationsPanel;
                 @Repair.started += instance.OnRepair;
                 @Repair.performed += instance.OnRepair;
                 @Repair.canceled += instance.OnRepair;
@@ -515,6 +541,9 @@ namespace Inputs
                 @RewardsPanel.started -= instance.OnRewardsPanel;
                 @RewardsPanel.performed -= instance.OnRewardsPanel;
                 @RewardsPanel.canceled -= instance.OnRewardsPanel;
+                @ObservationsPanel.started -= instance.OnObservationsPanel;
+                @ObservationsPanel.performed -= instance.OnObservationsPanel;
+                @ObservationsPanel.canceled -= instance.OnObservationsPanel;
                 @Repair.started -= instance.OnRepair;
                 @Repair.performed -= instance.OnRepair;
                 @Repair.canceled -= instance.OnRepair;
@@ -548,6 +577,7 @@ namespace Inputs
             void OnMovementPanel(InputAction.CallbackContext context);
             void OnNavigationPanel(InputAction.CallbackContext context);
             void OnRewardsPanel(InputAction.CallbackContext context);
+            void OnObservationsPanel(InputAction.CallbackContext context);
             void OnRepair(InputAction.CallbackContext context);
             void OnEnableDrone(InputAction.CallbackContext context);
         }

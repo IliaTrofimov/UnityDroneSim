@@ -78,6 +78,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ObservationsPanel",
+                    "type": "Button",
+                    "id": "a281ef4a-ea61-4acf-91be-30d1575daf47",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Repair",
                     "type": "Button",
                     "id": "dacb879a-4c2e-4de6-ba8a-95cd36bf386a",
@@ -314,6 +323,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RewardsPanel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "072ad644-6743-48ce-88e7-abe32923d78e",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ObservationsPanel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
