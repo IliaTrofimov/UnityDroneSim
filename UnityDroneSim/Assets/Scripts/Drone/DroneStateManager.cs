@@ -33,6 +33,7 @@ namespace Drone
 
         /// <summary>Drone has landed on the ground safely.</summary>
         public bool Landed => landed;
+        
 
         [Header("Debug")] 
         public bool enableDebugMessages = true;
@@ -146,14 +147,14 @@ namespace Drone
 
         private bool CheckLanding(float speed, Vector3 contactNormal)
         {
-            var dot = 0f;
-            if (speed > hullBreakSpeed || (dot = Vector3.Dot(contactNormal, Vector3.up)) < landingDotProduct)
+            if (speed > hullBreakSpeed)
             {
                 landed = false;
                 return false;
             }
 
-            if (!landed) // prevent log spamming
+            var dot = Vector3.Dot(contactNormal, Vector3.up);
+            if (!landed)
             {
                 DebugLog("Landed [{0}]: drone.vel={1:F2} m/s, normal={2:F2}, dot={3:F2}/{4:F2}",
                     gameObject.name,
@@ -162,9 +163,9 @@ namespace Drone
                     dot,
                     landingDotProduct
                 );
-                landed = true;
             }
-
+            
+            landed = dot >= landingDotProduct;
             return true;
         }
 
