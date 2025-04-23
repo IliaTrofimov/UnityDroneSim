@@ -35,8 +35,8 @@ namespace RL.RewardsSettings
         
         
         [Header("Looking at waypoint")]
-        [Range(10f, 180f)]
-        public float lookAtWaypointAngle = 90;
+        [Range(0f, 1f)]
+        public float lookAtWaypointAngle = 0.5f;
         
         [Range(-10f, 0f)]
         [Tooltip("Penalty for looking away from the next waypoint.")]
