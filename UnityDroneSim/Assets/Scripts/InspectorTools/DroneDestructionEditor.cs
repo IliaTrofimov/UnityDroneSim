@@ -19,7 +19,7 @@ namespace InspectorTools
             using (new EditorGUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Repair all motors"))
-                    script.RepairAllMotors();
+                    script.RepairAll();
 
                 if (GUILayout.Button("Break all motors"))
                     script.BreakAllMotors();
