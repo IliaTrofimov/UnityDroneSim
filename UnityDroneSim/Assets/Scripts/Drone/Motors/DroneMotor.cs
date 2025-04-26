@@ -1,7 +1,9 @@
+using System;
 using InspectorTools;
 using Unity.Mathematics;
 using UnityEngine;
 using Utils;
+using UtilsDebug;
 
 
 namespace Drone.Motors
@@ -15,12 +17,16 @@ namespace Drone.Motors
         /// <summary>Get current force vector. Shortcut for <c>transform.up * totalForce</c>.</summary>
         public virtual Vector3 ForceVector => enabled ? transform.up * liftForce : Vector3.zero;
 
-        public float PropellerAngularSpeed => propellerAngleDelta;
-        public float PropellerLinearSpeed  => propellerAngleDelta * propellerAngleDelta;
+        public float PropellerAngularSpeed => _propellerAngleDelta / Time.deltaTime;
+        public float PropellerLinearSpeed  => PropellerAngularSpeed * PropellerRadius;
         public float PropellerRadius       { get; private set; }
 
 
         [Header("Force values")]
+        [ReadOnlyField]
+        [Tooltip("Total lift force to be applied by this motor.")]
+        public float liftForce;
+        
         [Range(0f, 5f)]
         [Tooltip("A factor to be applied to torque produced by motor.")]
         public float torqueFactor = 1f;
@@ -39,72 +45,71 @@ namespace Drone.Motors
         [Tooltip("A factor to be applied to the roll correction. Left motors must have positive value.")]
         public int rollFactor;
 
-        [ReadOnlyField]
-        [Tooltip("Total lift force to be applied by this motor.")]
-        public float liftForce;
-
-
         [Header("Animations")]
-        [Tooltip("Turns on/off propellers animations.")]
-        public bool animatePropellers = true;
-
-        [Range(0f, 100f)]
-        [Tooltip("Propeller rotation speed multiplier.")]
-        public float animationSpeed = 0.5f;
-
+        [Range(0f, 1000f)]
+        [Tooltip("Propeller rotation speed multiplier. Set 0 to disable all animations.")]
+        public float animationSpeed = 900f;
+        
         [Range(0f, 10f)]
-        [Tooltip("Minimal propeller's rotation speed (degrees per frame) before stopping.")]
-        public float idleRotationSpeed = 1f;
-
+        [Tooltip("Minimal force required to rotate propeller.")]
+        public float forceThreshold = 0.1f;
+        
         [Tooltip("The propeller object. Animation will be done here.")]
         public GameObject propeller;
 
-        [SerializeField] [ReadOnlyField] 
-        protected float propellerAngleDelta;
-        private float _propellerInertia;
+        private float _propellerAngleDelta;
         private float _propellerSpeedFactor;
-
+        
         private void Start() => UpdatePropellerSpeedFactor();
 
         private void OnValidate()
         {
-            if (!animatePropellers) return;
-
             UpdatePropellerSpeedFactor();
         }
 
         private void UpdatePropellerSpeedFactor()
         {
-            var radius = 0.5f;
+            PropellerRadius = 1f;
             if (propeller != null && propeller.TryGetDimensions(out float diameter))
-                PropellerRadius = radius = diameter / 2;
+                PropellerRadius = diameter / 2;
 
             // Force ~ 0.5*k*w^2*R^4 => w ~ R^(-2)*(2Force/k)^0.5 = sqrt(Force)*C
             // C = R^(-2) * animationSpeed
-            _propellerSpeedFactor = math.pow(radius, -2) * math.sqrt(animationSpeed);
+            _propellerSpeedFactor = math.pow(PropellerRadius, -2) * math.sqrt(animationSpeed);
         }
 
         protected virtual void Update()
         {
-            if (!animatePropellers || !enabled) return;
+            if (!enabled || !propeller || animationSpeed <= 1e-5f) return;
 
             var forceSign = math.sign(liftForce) * yawFactor;
-            _propellerInertia = Mathf.Lerp(_propellerInertia, idleRotationSpeed * forceSign, Time.deltaTime);
-
-            if (liftForce != 0)
+            
+            if (math.abs(liftForce) >= forceThreshold)
             {
-                _propellerInertia = Mathf.Lerp(_propellerInertia, idleRotationSpeed * forceSign, Time.deltaTime);
-                propellerAngleDelta = MathExtensions.AbsSqrt(liftForce) * _propellerSpeedFactor * Time.deltaTime *
-                                      forceSign;
+                _propellerAngleDelta = MathExtensions.AbsSqrt(liftForce) * 
+                                       _propellerSpeedFactor * 
+                                       Time.deltaTime * 
+                                       forceSign;
             }
             else
             {
-                _propellerInertia = Mathf.Lerp(_propellerInertia, 0, Time.deltaTime);
-                propellerAngleDelta = 0;
+                // make propeller stop gently
+                _propellerAngleDelta = Mathf.LerpUnclamped(_propellerAngleDelta, 0, Time.deltaTime);
             }
+            
+            propeller.transform.Rotate(0, _propellerAngleDelta, 0);
+        }
 
-            propellerAngleDelta += _propellerInertia;
-            propeller.transform.Rotate(0, propellerAngleDelta, 0);
+        private void OnDrawGizmosSelected()
+        {
+            VectorDrawer.DrawPointCube(transform.position, $"{PropellerAngularSpeed/360f:F1} rot/s",
+                new GizmoOptions()
+                {
+                    CapSize = PropellerRadius / 5,
+                    Color = Color.red,
+                    LabelColor = Color.red,
+                    LabelOutline = true
+                });
         }
 
 

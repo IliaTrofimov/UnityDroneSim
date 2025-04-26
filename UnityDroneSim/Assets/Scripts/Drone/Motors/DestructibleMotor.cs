@@ -31,7 +31,7 @@ namespace Drone.Motors
         private void FixedUpdate()
         {
             // If propeller is spinning fast - use static (non-rotating) collider
-            if (math.abs(propellerAngleDelta) > staticColliderSpeed)
+            if (math.abs(PropellerAngularSpeed) > staticColliderSpeed)
             {
                 dynamicRotorCollider.enabled = false;
                 staticRotorCollider.enabled = true;
