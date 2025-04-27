@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c3e711f384b44849e8d6db2c9b6903d, type: 3}
+  m_Name: RaycasterDrone
+  m_EditorClassIdentifier: 
+  termination:
+    trainingEpisodeTime: 60
+    maxPenalty: -30
+    hullBreakSpeed: 3
+    motorBreakSpeed: 3
+  stateRewardEnabled: 1
+  stateRewardSettings:
+    destructionPenalty: -30
+    finishOnDestruction: 1
+    landingReward: 0
+    finishOnLanding: 0
+  movementRewardEnabled: 1
+  movementRewardSettings:
+    idleLinearSpeed: 0.5
+    movementReward: 0.01
+    noMovementPenalty: -0.5
+    maxAngularSpeed: 2
+    angularSpeedPenalty: -0.05
+  waypointRewardEnabled: 1
+  waypointRewardSettings:
+    finishReward: 50
+    waypointReward: 10
+    minimalApproachSpeed: 0.1
+    movingToWaypointReward: 0.1
+    movingAwayFromWaypointPenalty: -0.2
+    lookAtWaypointAngle: 0.9
+    lookAwayPenalty: -0.1
+    lookAtReward: 0
+  obstaclePenaltyEnabled: 1
+  obstaclePenaltySettings:
+    nearObstaclePenalty: -0.1
+    freeSpaceRadius: 0.8
+    obstacleDetectionRange: 30
+    reactionTime: 2
+  heightRewardEnabled: 1
+  heightRewardSettings:
+    useRaycastHeight: 0
+    minHeight: 1
+    maxHeight: 8
+    outOfHeightRangePenalty: -0.05
+    heightReward: 0.01
