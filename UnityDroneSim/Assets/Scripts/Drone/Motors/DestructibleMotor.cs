@@ -26,7 +26,6 @@ namespace Drone.Motors
 
 
         private bool _isDestroyed;
-        private TrailRenderer _trailRenderer;
 
         private void FixedUpdate()
         {
@@ -62,7 +61,6 @@ namespace Drone.Motors
             _isDestroyed = false;
             dynamicRotorCollider.enabled = false;
             staticRotorCollider.enabled = true;
-            Destroy(_trailRenderer);
         }
     }
 }

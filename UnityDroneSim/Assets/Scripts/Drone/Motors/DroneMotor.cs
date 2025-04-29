@@ -1,4 +1,3 @@
-using System;
 using InspectorTools;
 using Unity.Mathematics;
 using UnityEngine;
@@ -14,12 +13,15 @@ namespace Drone.Motors
     /// </remarks>
     public class DroneMotor : MonoBehaviour
     {
+        private float _propellerAngleDelta;
+        private float _propellerSpeedFactor;
+        
         /// <summary>Get current force vector. Shortcut for <c>transform.up * totalForce</c>.</summary>
-        public virtual Vector3 ForceVector => enabled ? transform.up * liftForce : Vector3.zero;
+        public Vector3 ForceVector => enabled ? transform.up * liftForce : Vector3.zero;
 
         public float PropellerAngularSpeed => _propellerAngleDelta / Time.deltaTime;
         public float PropellerLinearSpeed  => PropellerAngularSpeed * PropellerRadius;
-        public float PropellerRadius       { get; private set; }
+        public float PropellerRadius { get; private set; }
 
 
         [Header("Force values")]
@@ -56,9 +58,7 @@ namespace Drone.Motors
         
         [Tooltip("The propeller object. Animation will be done here.")]
         public GameObject propeller;
-
-        private float _propellerAngleDelta;
-        private float _propellerSpeedFactor;
+        
         
         private void Start() => UpdatePropellerSpeedFactor();
 
