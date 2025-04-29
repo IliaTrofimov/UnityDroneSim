@@ -47,6 +47,9 @@ namespace RL
         private TrailRenderer         _trailRenderer;
         private bool                  _logsEnabled;
         
+        private Quaternion _initialRotation;
+        private Vector3 _initialPosition;
+        
         private bool IsInitialized => _droneState && drone && _droneRigidBody && navigator;
 
         /// <summary>Agent is using heuristics instead of neural network.</summary>
@@ -94,6 +97,12 @@ namespace RL
         {
             InitComponents();
             base.OnEnable();
+        }
+
+        private void Start()
+        {
+            _initialRotation = drone.transform.rotation;
+            _initialPosition = drone.transform.position;
         }
         
         public override void Initialize()
@@ -197,14 +206,22 @@ namespace RL
         {
             _droneRigidBody.linearVelocity = Vector3.zero;
             _droneRigidBody.angularVelocity = Vector3.zero;
-            _droneState.RepairAllMotors();
-            spawnPoint.MoveInsideSpawnPoint(drone.transform);
+            _droneState.RepairAll();
             drone.ResetStabilizers();
             navigator.ResetWaypoint();
             RewardProvider.Reset();
-
-            InitTrailRenderer();
             
+            if (spawnPoint)
+            {
+                spawnPoint.MoveInsideSpawnPoint(drone.transform);
+            }
+            else
+            {
+                drone.transform.rotation = _initialRotation;
+                drone.transform.position = _initialPosition;
+            }
+            
+            InitTrailRenderer();
             base.OnEpisodeBegin();
 
             if (_logsEnabled)

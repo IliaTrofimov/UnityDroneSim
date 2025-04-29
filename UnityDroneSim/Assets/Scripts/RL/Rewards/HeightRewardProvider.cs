@@ -57,7 +57,7 @@ namespace RL.Rewards
             };
             VectorDrawer.DrawDirection(_agent.transform.position, 
                 Vector3.down * Height, 
-                $"height: {Height:F1}\nR: {LastReward:F3}",
+                $"Height: {Height:F1}\nR: {LastReward:F3}",
                 options);
         }
     }
