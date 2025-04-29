@@ -95,7 +95,10 @@ namespace Utils
             var dotHor = Vector2.Dot(fwd, directionHor);
             var dotVer = Vector2.Dot(up, directionVer);
             
-            return new Vector2(math.acos(dotVer) / math.PI - 0.5f, math.acos(dotHor) / math.PI);
+            return new Vector2(
+                math.acos(math.clamp(dotVer, -1, 1)) / math.PI - 0.5f,
+                math.acos(math.clamp(dotHor, -1, 1)) / math.PI
+                );
 
             //var drLocal = current.InverseTransformDirection(current.position - target);
             //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
