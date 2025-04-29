@@ -693,9 +693,13 @@ MonoBehaviour:
   drone: {fileID: 1773305771786904982}
   navigator: {fileID: 5834208892645119488}
   spawnPoint: {fileID: 0}
+  useLocalCoordinates: 0
   trainingSettings: {fileID: 0}
-  displayRewards: 1
   logsMode: 1
+  resetEpisodeInHeuristic: 0
+  displayRewards: 1
+  displayTrail: 1
+  trailPrefab: {fileID: 0}
 --- !u!114 &6167146603061894535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1371,12 +1375,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b1d3c90ce5b4c5bafd3d33a20050933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudUIDocument: {fileID: 4656026445908732955}
   startExpanded: 1
   enableMovementPanel: 1
   enableControlsPanel: 1
   enableNavigationPanel: 1
   enableRewardsPanel: 1
+  enableObservationsPanel: 1
   selectedCamera: 0
   cameraSwitcher:
     cameras: []
@@ -1595,6 +1599,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
+      propertyPath: animationSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
       propertyPath: animatePropellers
       value: 1
       objectReference: {fileID: 0}
@@ -1778,6 +1787,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: D_MotorFL
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: animationSpeed
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -2080,6 +2094,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
+      propertyPath: animationSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
       propertyPath: animatePropellers
       value: 1
       objectReference: {fileID: 0}
@@ -2273,6 +2292,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rollFactor
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
+        type: 3}
+      propertyPath: animationSpeed
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4246803394129085672, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
