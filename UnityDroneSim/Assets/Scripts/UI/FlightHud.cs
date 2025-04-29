@@ -241,7 +241,7 @@ namespace UI
             if (_controls.Default.ControlsPanel.WasPressedThisFrame())
                 _foldControls.value = !_foldControls.value;
 
-            if (_foldControls.value)
+            if (!_foldControls.value)
                 return true;
             
             _valThrottle.Value = _inputsController.throttle;
@@ -255,7 +255,7 @@ namespace UI
                 _valDroneFailure.Value = _droneStateManager.AnyMotorsDestroyed;
                 if (_droneStateManager.AnyMotorsDestroyed && _controls.Default.Repair.WasPressedThisFrame())
                 {
-                    _droneStateManager.RepairAllMotors();
+                    _droneStateManager.RepairAll();
                     drone.ResetStabilizers();
                 }
             }
