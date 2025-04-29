@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using Drone.Motors;
-using InspectorTools;
 using UnityEngine;
 
 
@@ -16,34 +16,32 @@ namespace Drone
     [RequireComponent(typeof(DroneComputerBase))]
     public class DroneStateManager : MonoBehaviour
     {
-        [SerializeField, ReadOnlyField]
-        private int destroyedMotorsCount;
-        
-        [SerializeField, ReadOnlyField] 
-        private bool landed;
-       
         private DroneComputerBase _droneComputer;
         private readonly Dictionary<int, MotorDestructionInfo> _motorsLookup = new(4);
+        private int _destroyedMotorsCount;
+        private bool _landed;
 
+        private TagHandle? _instantDeathColliderTagHandle;
+
+        
         /// <summary>All motors have been destroyed.</summary>
-        public bool AllMotorsDestroyed => destroyedMotorsCount == _motorsLookup.Count;
+        public bool AllMotorsDestroyed => _destroyedMotorsCount == _motorsLookup.Count;
 
         /// <summary>Some motors have been destroyed.</summary>
-        public bool AnyMotorsDestroyed => destroyedMotorsCount > 0;
+        public bool AnyMotorsDestroyed => _destroyedMotorsCount > 0;
 
         /// <summary>Drone has landed on the ground safely.</summary>
-        public bool Landed => landed;
+        public bool Landed => _landed;
         
 
         [Header("Debug")] 
         public bool enableDebugMessages = true;
 
+        
         [Header("Physics")]
         [Tooltip("Colliders with this tag will instantly destroy drone upon collision.")]
         public string instantDeathColliderTag;
-
-        private TagHandle? _instantDeathColliderTagHandle;
-
+        
         [Range(0.1f, 1f)]
         [Tooltip("Minimal value for the dot product of world UP and drone UP vectors to make safe landing.")]
         public float landingDotProduct = 0.55f;
@@ -129,7 +127,7 @@ namespace Drone
         {
             if (!Landed) return;
 
-            landed = false;
+            _landed = false;
             DebugLog("Take-off [{0}]: drone.vel={1:F2} m/s", gameObject.name, collision.relativeVelocity.magnitude);
         }
 
@@ -151,7 +149,7 @@ namespace Drone
 
             if (dotContact >= landingDotProduct && dotLocal >= landingDotProduct)
             {
-                if (!landed)
+                if (!_landed)
                 {
                     DebugLog("Landed [{0}]: drone.vel={1:F2} m/s, normal={2:F2}, dotContact={3:F2}, dotLocal={4:F2} > {5:F2}",
                         gameObject.name,
@@ -162,11 +160,11 @@ namespace Drone
                         landingDotProduct
                     );   
                 }
-                landed = true;
+                _landed = true;
             }
             else
             {
-                landed = false;
+                _landed = false;
             }
         }
 
@@ -220,7 +218,7 @@ namespace Drone
         {
             if (motorInfo.IsDestroyed) return;
 
-            destroyedMotorsCount++;
+            _destroyedMotorsCount++;
             motorInfo.Motor.enabled = false;
             motorInfo.IsDestroyed = true;
 
@@ -263,7 +261,7 @@ namespace Drone
         {
             if (!motorInfo.IsDestroyed) return;
 
-            destroyedMotorsCount--;
+            _destroyedMotorsCount--;
             motorInfo.Motor.transform.SetParent(motorInfo.InitialParent, true);
             motorInfo.Motor.transform.localPosition = motorInfo.InitialLocalPosition;
             motorInfo.Motor.transform.localScale = motorInfo.InitialLocalScale;

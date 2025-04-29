@@ -24,6 +24,9 @@ namespace Drone
 
         private DroneControls _controls;
 
+        [Tooltip("Lower output control values to make more precise movements.")]
+        public bool preciseMovement;
+        
         [Tooltip("Turn on/off reading inputs from user.")]
         public bool manualInput = true;
 
@@ -73,42 +76,56 @@ namespace Drone
 
         private void ReadInputs()
         {
-            var rotation = _controls.Default.Rotation.ReadValue<Vector3>();
-            pitch = rotation.x;
-            yaw = rotation.y;
-            roll = rotation.z;
-            throttle = _controls.Default.Throttle.ReadValue<float>();
-
-            var lastStab = stabilizerMode;
             if (_controls.Default.FullStabilization.WasPressedThisFrame())
                 ToggleStabilization();
-
-            if (lastStab != stabilizerMode)
-                Debug.LogFormat("Drone {0} stabilizer mode: {1}", name, stabilizerMode);
+            if (_controls.Default.PreciseMode.WasPressedThisFrame())
+                preciseMovement = !preciseMovement;
+            
+            var rotation = _controls.Default.Rotation.ReadValue<Vector3>();
+            throttle = _controls.Default.Throttle.ReadValue<float>();
+            
+            if (preciseMovement)
+            {
+                pitch = rotation.x / 2f;
+                yaw = rotation.y / 2f;
+                roll = rotation.z / 2f;   
+            }
+            else
+            {
+                pitch = rotation.x;
+                yaw = rotation.y;
+                roll = rotation.z;
+            }
         }
 
         private void ReadLegacyInputs()
         {
-            pitch = Input.GetAxis("Pitch");
-            yaw = Input.GetAxis("Yaw");
-            roll = Input.GetAxis("Roll");
-            throttle = Input.GetAxis("Throttle");
-
-            var lastStab = stabilizerMode;
             if (Input.GetKey(KeyCode.Space))
                 ToggleStabilization();
-
-            if (lastStab != stabilizerMode)
-                Debug.LogFormat("Drone {0} stabilizer mode: {1}", name, stabilizerMode);
+            if (Input.GetKey(KeyCode.LeftShift))
+                preciseMovement = !preciseMovement;
+            
+            throttle = Input.GetAxis("Throttle");   
+            if (preciseMovement)
+            {
+                pitch = Input.GetAxis("Pitch") / 2f;
+                yaw = Input.GetAxis("Yaw") / 2f;
+                roll = Input.GetAxis("Roll") / 2f;
+            }
+            else
+            {
+                pitch = Input.GetAxis("Pitch");
+                yaw = Input.GetAxis("Yaw");
+                roll = Input.GetAxis("Roll");
+            }
         }
 
         private void ToggleStabilization()
         {
-            if (stabilizerMode.HasFlag(DroneStabilizerMode.StabAltitude))
-                stabilizerMode = DroneStabilizerMode.None;
+            if (stabilizerMode == DroneStabilizerMode.None)
+                stabilizerMode = FULL_STAB;
             else
-                stabilizerMode = DroneStabilizerMode.StabAltitude | DroneStabilizerMode.StabPitchRoll |
-                                 DroneStabilizerMode.StabYaw;
+                stabilizerMode = DroneStabilizerMode.None;
         }
 
         /// <summary>Set control inputs manually.</summary>
@@ -122,7 +139,5 @@ namespace Drone
         }
 
         public bool IsFullStabilization() => stabilizerMode == FULL_STAB;
-
-        public void SetFullStabilization() { stabilizerMode = FULL_STAB; }
     }
 }
