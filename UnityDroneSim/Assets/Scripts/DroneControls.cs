@@ -57,6 +57,15 @@ namespace Inputs
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""PreciseMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e767801-3871-46a7-bd98-79c7f24fe2df"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""CameraMode"",
                     ""type"": ""Button"",
                     ""id"": ""22e3676f-bf05-4b15-aeeb-70c3ca69982c"",
@@ -241,6 +250,17 @@ namespace Inputs
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": """",
+                    ""id"": ""1e071606-90f6-4643-8f09-dc5c1dbd52e8"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PreciseMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": ""1D Axis"",
                     ""id"": ""6de315e5-99e1-429e-ac2f-f6f844632fa6"",
                     ""path"": ""1DAxis"",
@@ -371,6 +391,7 @@ namespace Inputs
             m_Default_Throttle = m_Default.FindAction("Throttle", throwIfNotFound: true);
             m_Default_Rotation = m_Default.FindAction("Rotation", throwIfNotFound: true);
             m_Default_FullStabilization = m_Default.FindAction("FullStabilization", throwIfNotFound: true);
+            m_Default_PreciseMode = m_Default.FindAction("PreciseMode", throwIfNotFound: true);
             m_Default_CameraMode = m_Default.FindAction("CameraMode", throwIfNotFound: true);
             m_Default_ControlsPanel = m_Default.FindAction("ControlsPanel", throwIfNotFound: true);
             m_Default_MovementPanel = m_Default.FindAction("MovementPanel", throwIfNotFound: true);
@@ -448,6 +469,7 @@ namespace Inputs
         private readonly InputAction m_Default_Throttle;
         private readonly InputAction m_Default_Rotation;
         private readonly InputAction m_Default_FullStabilization;
+        private readonly InputAction m_Default_PreciseMode;
         private readonly InputAction m_Default_CameraMode;
         private readonly InputAction m_Default_ControlsPanel;
         private readonly InputAction m_Default_MovementPanel;
@@ -463,6 +485,7 @@ namespace Inputs
             public InputAction @Throttle => m_Wrapper.m_Default_Throttle;
             public InputAction @Rotation => m_Wrapper.m_Default_Rotation;
             public InputAction @FullStabilization => m_Wrapper.m_Default_FullStabilization;
+            public InputAction @PreciseMode => m_Wrapper.m_Default_PreciseMode;
             public InputAction @CameraMode => m_Wrapper.m_Default_CameraMode;
             public InputAction @ControlsPanel => m_Wrapper.m_Default_ControlsPanel;
             public InputAction @MovementPanel => m_Wrapper.m_Default_MovementPanel;
@@ -489,6 +512,9 @@ namespace Inputs
                 @FullStabilization.started += instance.OnFullStabilization;
                 @FullStabilization.performed += instance.OnFullStabilization;
                 @FullStabilization.canceled += instance.OnFullStabilization;
+                @PreciseMode.started += instance.OnPreciseMode;
+                @PreciseMode.performed += instance.OnPreciseMode;
+                @PreciseMode.canceled += instance.OnPreciseMode;
                 @CameraMode.started += instance.OnCameraMode;
                 @CameraMode.performed += instance.OnCameraMode;
                 @CameraMode.canceled += instance.OnCameraMode;
@@ -526,6 +552,9 @@ namespace Inputs
                 @FullStabilization.started -= instance.OnFullStabilization;
                 @FullStabilization.performed -= instance.OnFullStabilization;
                 @FullStabilization.canceled -= instance.OnFullStabilization;
+                @PreciseMode.started -= instance.OnPreciseMode;
+                @PreciseMode.performed -= instance.OnPreciseMode;
+                @PreciseMode.canceled -= instance.OnPreciseMode;
                 @CameraMode.started -= instance.OnCameraMode;
                 @CameraMode.performed -= instance.OnCameraMode;
                 @CameraMode.canceled -= instance.OnCameraMode;
@@ -572,6 +601,7 @@ namespace Inputs
             void OnThrottle(InputAction.CallbackContext context);
             void OnRotation(InputAction.CallbackContext context);
             void OnFullStabilization(InputAction.CallbackContext context);
+            void OnPreciseMode(InputAction.CallbackContext context);
             void OnCameraMode(InputAction.CallbackContext context);
             void OnControlsPanel(InputAction.CallbackContext context);
             void OnMovementPanel(InputAction.CallbackContext context);
