@@ -1,42 +1,44 @@
 # Unity Drone Simulator
 
-My attempt on creating self-flying quadcopter in Unity with ML-Agents. Main progress is on develop branch, important milestones are marked with tags in git tree.
+Компьютерная модель квадрокоптера с ИИ-автопилотом на базе [Unity ML Agents](https://github.com/Unity-Technologies/ml-agents).
 
+## Особенности реализации
+Данный проект включает в себя компоненты, отвечающие за корректную реализацию полёта квадрокоптера, и компоненты для проведения обучения с подкреплением.
 
-## Features
-This project is not finished yet, so many things can and will be added and improved. For now there are several features that I have implemented.
+### Физическая модель квадрокоптера
 
-**PID stabilized controls**
+Для управлением квадрокоптером используется компонент `DroneInputsController`, который способен принимать ввод как от клавиатуры (через новую Input System и старый Input Manager), так и программно от других модулей через свой метод `SetInputs(throttle, pitch, yaw, roll)`. Каждый из 4-х винтов создаёт подъёмную силу и применяет её к `Rigidbody` квадрокоптера с помощью `AddForceAtPosition()`. Реактивный момент вращения иммитируется одним вызовом `AddTorque()` (здесь используется сумма всех подъёмных сил, умноженная на константу). Все силы сразу может применить один компонент `QuadcopterComputer.CalculateMotorsForces(throttle, pitch, yaw, roll)` (такой подход видится более эффективным), или их можно по-очереди вычислить и применить в соотвестующих компонентах `DroneModtor.ApplyForce(rigidBody, throttle, pitch, yaw, roll)` (такая возможность есть, но она не использована фактически). 
 
-Qadcopter takes 4 float values as input. They are *throttle*, *pitch*, *yaw* and *roll*. To make drone more stable these controls are being fed to corresponding [PID controllers](https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller) before the actual motors. For each control value there is a dedicated PID:
-1. _Throttle_ PID stabilizes climb speed so drone will stay at one height if no controls are applied and will ascend/descend with constant speed if control is positive or negative.
-2. _Pitch_ and _Roll_ PIDs stabilze rotation along X and Z axis (see Unity's coordinates system). This will prevent drone from overturning.
-3. _Yaw_ PID stabilizes rotation speed along Y axis.
+Дополнительно реализованы [ПИД-стабилизаторы](https://ru.wikipedia.org/wiki/%D0%9F%D0%98%D0%94-%D1%80%D0%B5%D0%B3%D1%83%D0%BB%D1%8F%D1%82%D0%BE%D1%80) для всех 4-х компонентов управляющего вектора. Стабилизация применяется к выходным управляющим сигналам из `DroneInputsController` в компоненте `QuadcopterComputer`, результирующие сигналы далее подаются в `CalculateMotorsForces()`. Различные варианты стабилизаторов есть в папке Drone/Stability. Также стабилизацию можно отключить.
 
-**Quadcopter components destruction**
+Модель состояния квадрокоптера реализована классом `DroneStateManager`. Дрон может находиться в состояниях: посадка, авария, полёт. В зависимости от типа и скорости коллизии с другими объектами будет выбран соотвествующий статус. 
 
-Four drone propellers can be destroyed and detached from the frame if collided with enough force. Drone can barely fly and control itself with broken motors.
+### Обучение с подкреплением
 
-**Depth map sensor**
+Вся логика связанная с обучением находится в паке RL. Агент реализован классом `DroneAgent`. Для своей работы он требует наличия компонентов `DroneInputsController` для управления, `QuadcopterComputer` для применения сил, `WaypointNavigator` для отслеживания текущего маршрута. Агент вычилсяет награду в `OnActionReceived()` с помощью класса `DroneAgentRewardProvider`, который инкапсулирует вычисление различных частей суммарной награды (все отдельные награды находятся в RL/Rewards). Для контроля параллельного  обучения множества агентов можно воспользоваться компонентами `DroneTrainingManager` (быстрая настройка всех агентов, задание парметров среды) и `DroneTrainingStatistics` (вывод статистики по наградам).
 
-Scene depth can be observed using URP full screen shader. This shader is than used in ML Agents' `RenderTextureSensor` component to send depth date to the neural network.
+## Агенты
+1. **Drone_Raycaster** - использует несколько `RayPerceptionSensor3D` для имитации работы лидара. Наиболее прост в обучении.
+2. **Drone_DepthSensor** - использует `CameraSensor` для обработки карты глубины. Карта глубины получается из z-буффера в шейдере `DepthMap` (см. папку Rendering). Для обучения желательно установить маленький размер выходного изображения. Обучается гораздо дольше.
 
+Все агенты также имеют набор из 12 скалярных наблюдений, они вычисляются в `DroneAgent.CollectObservations()`:
+ 1. `IsLanded` : [0, 1]
+ 2. `IsDestroyed` : [0, 1]
+ 3. `WaypointDistance` : [0, inf] или нормализованное значение
+ 4. `WaypointHeading.x`, `WaypointHeading.y` : [-180, 180] или нормализованное значение - азимут и зенит
+ 5. `Altitude` : [0, inf] или нормализованное значение
+ 6. `LinearVelocity.x`, `LinearVelocity.y`, `LinearVelocity.z` : [0, inf] или нормализованное значение
+ 7. `AngularVelocity.x`, `AngularVelocity.y`, `AngularVelocity.z` : [0, inf] или нормализованное значение
 
-## Examples
-Playable drone UI:
+В `DroneAgent.ObservationSettings` можно задать парамеры нормализация наблюдений. Для отладки удобно исползовать ненормализованные значения, для обучения - строго нормализованные.
 
-<img width="789" alt="Playable drone UI" src="https://github.com/user-attachments/assets/2fe9b63a-ecf9-4bfd-a30f-814ccda44f44" />
+Управление для всех агентов одинаковое:
+ 1. `throttle` : [-1, 1] - базовое значение подъёмной силы, при использовании ПИД задаёт желаемую вертикальную скорость
+ 2. `pitch`, `roll` : [-1, 1] - повороты относительно продольной и поперечной осей, при использовании ПИД задают желаемые углы поворота
+ 3. `yaw` : [-1, 1] - поворот относительно вертикально оси, при использовании ПИД задаёт желаемыую скорость поворота
 
-Raycast AI drone prefab:
+## Запуск
+Работоспособность проверена в Unity 6. Для работы необходимо открыть одну из имеющихся сцен (Pillars и Road готовы для обучения агентов, остальные для проверки функционала). Все агенты упакованы с отдельные префабы в Prefabs/Drones. Некоторые сторонние компоненты и пакеты, а также текстуры не были включены в репозиторий для экономии места. Пакеты можно самостоятельно найти и скачать (они не влияют на работу), текстуры и материалы придётся заменить на свои.
 
-<img width="789" alt="Lidar drone" src="https://github.com/user-attachments/assets/49cea489-74f0-42cd-982c-bac963b7563e" />
-
-GridSensor AI drone prefab (thanks to [mbaske](https://github.com/mbaske/grid-sensor) repository):
-
-<img width="789" alt="Снимок экрана 2025-04-08 в 01 05 20" src="https://github.com/user-attachments/assets/89ea7227-7f7d-458f-8cba-0762bfc0c545" />
-<img width="453" alt="Снимок экрана 2025-04-08 в 01 05 34" src="https://github.com/user-attachments/assets/391e6d24-0ebc-444f-8bfb-00dee0a61152" />
-
-Sample scene view:
-
-<img width="789" alt="Снимок экрана 2025-04-08 в 01 01 55" src="https://github.com/user-attachments/assets/e3b0ade9-5904-4033-89b3-041da86d3de2" />
-
+# PS
+Изначально проект разрабатывался как форк [Berkeley UnityDroneSim](https://github.com/UAVs-at-Berkeley/UnityDroneSim), но в ходе работы почти весь оригинальный код был заменён, поэтому я отвязал исходный репозиторий.
