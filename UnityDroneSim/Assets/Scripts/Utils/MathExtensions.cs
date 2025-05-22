@@ -45,6 +45,16 @@ namespace Utils
         public static Vector3 Abs(this Vector3 vector) =>
             new(math.abs(vector.x), math.abs(vector.y), math.abs(vector.z));
 
+        public static Vector3 AxialAngularVelocity(this Rigidbody rigidBody)
+        {
+            return new Vector3
+            {
+                x = Vector3.Dot(rigidBody.rotation * Vector3.right, rigidBody.angularVelocity), 
+                y = Vector3.Dot(rigidBody.rotation * Vector3.up, rigidBody.angularVelocity), 
+                z = Vector3.Dot(rigidBody.rotation * Vector3.forward, rigidBody.angularVelocity)
+            };
+        }
+        
         /// <summary>Get rotation speed of the Rigidbody in rad/s along X axis.</summary>
         public static float PitchVelocity(this Rigidbody rigidBody) =>
             Vector3.Dot(rigidBody.rotation * Vector3.right, rigidBody.angularVelocity);
@@ -60,84 +70,95 @@ namespace Utils
         /// <summary>Returns new Euler angles of transform with values wrapped between [0, 179] degrees.</summary>
         public static Vector3 WrapEulerRotation180(this Transform transform)
         {
-            var eulerRotation = transform.eulerAngles;
-            var x = eulerRotation.x;
-            var y = eulerRotation.y;
-            var z = eulerRotation.z;
-
-            if (x >= 180f) x -= 360f;
-            if (y >= 180f) y -= 360f;
-            if (z >= 180f) z -= 360f;
-            
-            return new Vector3(x, y, z);
+            return WrapEulerRotation180(transform.eulerAngles);
         }
+
+        public static float WrapEulerRotation180(float angle)
+        {
+            return angle >= 180f 
+                ? angle - 360f 
+                : angle <= -180 
+                    ? angle + 360f 
+                    : angle;
+        }
+        
+        public static float WrapEulerRotation90(float angle)
+        {
+            return angle >= 90 
+                ? angle - 180f 
+                : angle <= -90 
+                    ? angle + 180 
+                    : angle;
+        }
+        
+        public static Vector3 WrapEulerRotation180(Vector3 angles)
+        {
+            return new Vector3(WrapEulerRotation180(angles.x), WrapEulerRotation180(angles.y), WrapEulerRotation180(angles.z));
+        }
+
         
         /// <summary>Returns square root of absolute value.</summary>
         /// <returns>√(abs(value))</returns>
         public static float AbsSqrt(float value) => math.sqrt(math.abs(value));
         
         /// <summary>
-        /// Angles (rotation along X axis, and Y axis in local space) between current position and target.
+        /// Polar (θ) and azimuthal (φ) angles of spherical coordinates between current position and target.
         /// </summary>
         /// <remarks>
-        /// X value means vertical angle to the target,
-        /// Y value means horizontal angle (see default Unity coordinate system).
+        /// * θ corresponds to vertical rotation (along local X axis) needed to look at the target.<br/>
+        /// * φ corresponds to horizontal rotation (along local Y axis) needed to look at the target.<br/>
+        /// * all angles are calculated with radians and then normalized.<br/>
+        /// * value 0 means that target is right ahead.<br/>
+        /// * values ±1 means that target is right behind (180 degrees turn is needed to look at it).<br/>
+        /// * values ±0.5 means that target is to the left/right (90 degrees turn is needed).
         /// </remarks>
-        /// <returns>Normalized angles in range [-1, 1].</returns>
+        /// <returns>Vector2 where x is normalized angle φ [-1, 1] and y is angle θ [-0.5, 0.5].</returns>
         public static Vector2 NormalizedHeadingAnglesTo(this Transform current, Vector3 target)
         {
-            var direction3d = target - current.position;
-            var directionHor = new Vector2(direction3d.z, direction3d.x).normalized;
-            var directionVer = new Vector2(direction3d.z, direction3d.y).normalized;
-            var fwd = new Vector2(current.forward.z, current.forward.x);
-            var up = new Vector2(current.up.z, current.up.y);
-            
-            var dotHor = Vector2.Dot(fwd, directionHor);
-            var dotVer = Vector2.Dot(up, directionVer);
-            
-            return new Vector2(
-                math.acos(math.clamp(dotVer, -1, 1)) / math.PI - 0.5f,
-                math.acos(math.clamp(dotHor, -1, 1)) / math.PI
-                );
-
-            //var drLocal = current.InverseTransformDirection(current.position - target);
-            //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
-            //var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) / Mathf.PI;
-            //return new Vector2(angleHor, angleVert);
-        }
-        
-        public static Vector2 HeadingDotProductsTo(this Transform current, Vector3 target)
-        {
-            var direction3d = target - current.position;
-            var directionHor = new Vector2(direction3d.z, direction3d.x).normalized;
-            var directionVer = new Vector2(direction3d.z, direction3d.y).normalized;
-            var fwd = new Vector2(current.forward.z, current.forward.x);
-            var up = new Vector2(current.up.z, current.up.y);
-            
-            return new Vector2(Vector2.Dot(up, directionVer) - 0.5f, Vector2.Dot(fwd, directionHor));
-
-            //var drLocal = current.InverseTransformDirection(current.position - target);
-            //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) / Mathf.PI;
-            //var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) / Mathf.PI;
-            //return new Vector2(angleHor, angleVert);
+            var dR = target - current.position;
+            var relativeDr = current.InverseTransformDirection(dR);
+            var angleVert = -WrapEulerRotation90(math.atan2(relativeDr.y, relativeDr.z) / math.PI);
+            var angleHor = WrapEulerRotation180( math.atan2(relativeDr.x, relativeDr.z) / math.PI);
+            return new Vector2(angleHor, angleVert);
         }
         
         /// <summary>
-        /// Angles (rotation along X axis, and Y axis in local space) between current position and target.
+        /// Polar (θ) and azimuthal (φ) angles of spherical coordinates between current position and target.
         /// </summary>
         /// <remarks>
-        /// X value means vertical angle to the target,
-        /// Y value means horizontal angle (see default Unity coordinate system).
+        /// * θ corresponds to vertical rotation (along local X axis) needed to look at the target.<br/>
+        /// * φ corresponds to horizontal rotation (along local Y axis) needed to look at the target.<br/>
         /// </remarks>
-        /// <returns>Angles in degrees in range [-180, 180].</returns>
+        /// <returns>Vector2 where x is angle φ [-180, 180] and y is angle θ [-90, 90].</returns>
         public static Vector2 HeadingAnglesTo(this Transform current, Vector3 target)
         {
-            return NormalizedHeadingAnglesTo(current, target) * 180f;
-            
-            //var drLocal = current.InverseTransformDirection(current.position - target);
-            //var angleHor = Mathf.Atan2(drLocal.x, drLocal.z) * Mathf.Rad2Deg;
-            //var angleVert = Mathf.Atan2(-drLocal.y, drLocal.z) * Mathf.Rad2Deg;
-            //return new Vector2(angleHor, angleVert);
+            var dR = target - current.position;
+            var relativeDr = current.InverseTransformDirection(dR);
+            var angleVert = -WrapEulerRotation90(math.atan2(relativeDr.y, relativeDr.z) * math.TODEGREES);
+            var angleHor = WrapEulerRotation180(math.atan2(relativeDr.x, relativeDr.z) * math.TODEGREES);
+            return new Vector2(angleHor, angleVert);
+        }
+
+        public static string GetTimeString(float seconds)
+        {
+            if (seconds >= 3600f)
+            {
+                int h = (int)(seconds / 3600f);
+                int m = (int)((seconds - h*3600f) / 60);
+                int s = (int)(seconds - h*3600f - m*60);
+                return $"{h}h {m}m {s}s";
+            }
+            else if (seconds >= 60)
+            {
+                int m = (int)(seconds / 60f);
+                int s = (int)(seconds - m * 60);
+                return $"{m}m {s}s";
+            }
+            else if (seconds >= 1)
+            {
+                return $"{seconds:F2}s";
+            }
+            return $"{seconds * 1000:F2}ms";
         }
     }
 }
