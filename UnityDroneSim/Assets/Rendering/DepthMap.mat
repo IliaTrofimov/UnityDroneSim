@@ -43,7 +43,7 @@ Material:
     - _ENABLEOVERLAYS: 1
     - _ENABLEPOSTERIZATION: 1
     - _JUSTCOLOR: 0
-    - _PosterizationSteps: 16
+    - _PosterizationSteps: 64
     - _overlayTheshold: 3
     - _steps: 24
     m_Colors: []
