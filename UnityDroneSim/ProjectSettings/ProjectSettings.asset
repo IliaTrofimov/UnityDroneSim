@@ -141,7 +141,8 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 1.0
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: -944628639613478452, guid: ac6316d7e22b24784817cfa57c1b728b, type: 3}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -740,13 +741,13 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 3
   captureStartupLogs: {}
-  activeInputHandler: 2
+  activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: f5ab7608-6f2e-49df-9cdc-f46c67824220
+  cloudProjectId: 9e1462ca-255d-4668-8497-aaacc23784f7
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: DroneSim
-  organizationId: shredderit
+  organizationId: unity_elztjwrunhpmcw
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
   hmiLoadingImage: {fileID: 0}

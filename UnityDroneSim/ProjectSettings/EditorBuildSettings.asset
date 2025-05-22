@@ -4,7 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Road.unity
+    guid: b514a629a278e49f8a4136e455b099e6
+  - enabled: 0
+    path: Assets/Scenes/Pillars.unity
+    guid: 9aaf0f1e98b174dada2ad2f10811945b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: ac6316d7e22b24784817cfa57c1b728b,
       type: 3}
