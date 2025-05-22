@@ -11,12 +11,24 @@ namespace RL.Rewards
     {
         private readonly HeightRewardSettings _settings;
         private readonly Agent _agent;
-        private readonly int _layerMask;
+
         private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
+        private readonly int _layerMask;
         private Ray _rayDown;
+        
+        private GizmoOptions _debugGizmo = new (Color.cyan, capSize: 0)
+        {
+            LabelPlacement = GizmoLabelPlacement.Center,
+            LabelSize = 0.75f,
+            VectCapSize = 0.05f
+        };
      
+        /// <summary>Agent had correct height during last environment step.</summary>
         public bool IsInHeightRange { get; private set; }
+        
+        /// <summary>Agent's height.</summary>
         public float Height {get; private set;}
+        
 
         public HeightRewardProvider(HeightRewardSettings settings, Agent agent)
         {
@@ -51,14 +63,13 @@ namespace RL.Rewards
 
         public override void DrawGizmos()
         {
-            var options = new GizmoOptions(IsInHeightRange ? Color.cyan : Color.red, capSize: 0)
-            {
-                LabelPlacement = GizmoLabelPlacement.Center
-            };
+            _debugGizmo.Color = IsInHeightRange ? Color.cyan : Color.red;
+            _debugGizmo.LabelColor = IsInHeightRange ? Color.cyan : Color.red;
+
             VectorDrawer.DrawDirection(_agent.transform.position, 
                 Vector3.down * Height, 
-                $"Height: {Height:F1}\nR: {LastReward:F3}",
-                options);
+                $"Height: {Height:F1} m\nR: {LastReward:F3}",
+                _debugGizmo);
         }
     }
 }

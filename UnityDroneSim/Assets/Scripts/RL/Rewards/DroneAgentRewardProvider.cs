@@ -14,6 +14,7 @@ namespace RL.Rewards
     /// </summary>
     public class DroneAgentRewardProvider : RewardProvider, ICompositeRewardProvider
     {
+        private string x;
         private readonly TrainingSettings         _settings;
         private readonly WaypointRewardProvider   _waypointReward;
         private readonly MovementRewardProvider   _movementReward;
@@ -182,6 +183,11 @@ namespace RL.Rewards
         public float GetReachedWaypoints()
         {
             return _waypointReward.WaypointsReached;
+        }
+
+        public bool IsWaypointReachedAtThisStep()
+        {
+            return _waypointReward.IsWaypointReachedAtThisStep;
         }
     }
 }
