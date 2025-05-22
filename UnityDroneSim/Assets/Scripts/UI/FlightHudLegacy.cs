@@ -331,7 +331,7 @@ namespace UI
                     GUILayout.Label($"{navigator.transform.position:F3}", _textStyle);
                 }
 
-                if (navigator.IsFinished || !navigator.CurrentWaypoint.HasValue)
+                if (navigator.IsFinished || navigator.CurrentWaypoint == null)
                 {
                     using (new GUILayout.VerticalScope())
                     {
@@ -347,14 +347,14 @@ namespace UI
                             _textStyle
                         );
 
-                        GUILayout.Label($"{navigator.CurrentWaypoint.Value.position:F3}", _textStyle);
+                        GUILayout.Label($"{navigator.CurrentWaypoint?.position:F3}", _textStyle);
                     }
 
                     using (new GUILayout.VerticalScope())
                     {
                         GUILayout.Label("Distance", _textStyle);
                         GUILayout.Label(
-                            $"{Vector3.Distance(navigator.transform.position, navigator.CurrentWaypoint.Value.position):F3}",
+                            $"{Vector3.Distance(navigator.transform.position, navigator.CurrentWaypoint.position):F3}",
                             _textStyle
                         );
                     }

@@ -43,6 +43,7 @@ namespace UI
         private Label _lblWaypointIndex;
         private Label _lblWaypointPosition;
         private Label _lblWaypointDistance;
+        private Label _lblWaypointDirection;
 
         private Label _lblVelocity;
         private Label _lblYSpdTarget;
@@ -62,6 +63,7 @@ namespace UI
         private VisualElement _panelObservationsNames;
 
         private Toggle _tglStabilization;
+        private Toggle _tglPreciseMode;
         private Label  _lblStatus;
         private Slider _sldThrottle;
         private Slider _sldPitch;
@@ -82,6 +84,7 @@ namespace UI
         private readonly TrackedVector3            _valWaypointPos       = new(FLOAT_CHANGE_EPS_PRECISE);
         private readonly TrackedObject<int>        _valWaypointNumber    = new();
         private readonly TrackedObject<int>        _valWaypointsCount    = new();
+        private readonly TrackedVector2            _valWaypointDirection = new(0.1f);
         private readonly TrackedFloat              _valWaypointDist      = new(FLOAT_CHANGE_EPS);
         private readonly TrackedObject<bool>       _valDroneFailure      = new(false);
         private readonly TrackedObject<bool>       _valDroneEnabled      = new(false);
@@ -101,7 +104,8 @@ namespace UI
         private readonly TrackedFloat        _valYaw           = new(FLOAT_CHANGE_EPS);
         private readonly TrackedFloat        _valRoll          = new(FLOAT_CHANGE_EPS);
         private readonly TrackedObject<bool> _valStabilization = new();
-        
+        private readonly TrackedObject<bool> _valPrecise       = new();
+
         private readonly TrackedFloat   _valRewardCumulative  = new(1e-4f);
         private readonly TrackedFloat   _valRewardLast  = new(1e-5f);
 
@@ -249,6 +253,7 @@ namespace UI
             _valYaw.Value = _inputsController.yaw;
             _valRoll.Value = _inputsController.roll;
             _valStabilization.Value = _inputsController.IsFullStabilization();
+            _valPrecise.Value = _inputsController.preciseMovement;
 
             if (_droneStateManager)
             {
@@ -305,8 +310,9 @@ namespace UI
 
                 _valPosition.Value = drone.transform.position;
                 _valWaypointsCount.Value = navigator.WaypointsCount;
+                _valWaypointDirection.Value = navigator.GetCurrentHeading(drone.transform, normalized: false);
 
-                if (navigator.IsFinished || !navigator.CurrentWaypoint.HasValue)
+                if (navigator.IsFinished || navigator.CurrentWaypoint == null)
                 {
                     _valWaypointNumber.Value = navigator.WaypointsCount;
                     _valWaypointPos.Value = Vector3.zero;
@@ -314,10 +320,9 @@ namespace UI
                 }
                 else
                 {
-                    _valWaypointNumber.Value = navigator.CurrentWaypointIndex + 1;
-                    _valWaypointPos.Value = navigator.CurrentWaypoint.Value.position;
-                    _valWaypointDist.Value =
-                        (drone.transform.position - navigator.CurrentWaypoint.Value.position).magnitude;
+                    _valWaypointNumber.Value = navigator.CurrentWaypointIndex;
+                    _valWaypointPos.Value = navigator.CurrentWaypoint.position;
+                    _valWaypointDist.Value = navigator.GetCurrentDistance(drone.transform.position);
                 }
 
                 return true;
@@ -423,11 +428,12 @@ namespace UI
                     
                     foreach (var observation in _agentVectorObservations)
                     {
-                        var valueLabel = new Label(observation.ToString("F3"));
+                        var (label, format) = droneAgent.ScalarObservationsLabels[index];
+                        var valueLabel = new Label(string.Format(format, observation));
                         valueLabel.AddToClassList("observation-value");
                         _panelObservations.Add(valueLabel);
-                        
-                        var nameLabel = new Label(DroneAgent.ScalarObservationNames[index]);
+
+                        var nameLabel = new Label(label);
                         nameLabel.AddToClassList("observation-name");
                         _panelObservationsNames.Add(nameLabel);
                         
@@ -439,7 +445,9 @@ namespace UI
                     foreach (var observation in _agentVectorObservations)
                     {
                         if (_panelObservations[index] is Label valueLabel)
-                            valueLabel.text = observation.ToString("F3");
+                        {
+                            valueLabel.text = string.Format(droneAgent.ScalarObservationsLabels[index].format, observation);
+                        }
                         index++;
                     }
                 }
@@ -468,6 +476,7 @@ namespace UI
             _lblWaypointIndex     = _hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointIndex");
             _lblWaypointPosition  = _hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointPosition");
             _lblWaypointDistance  = _hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDistance");
+            _lblWaypointDirection = _hudUIDocument.rootVisualElement.Q<Label>("lbl_WaypointDirection");
 
             _panelRewards = _hudUIDocument.rootVisualElement.Q<VisualElement>("panel_RewardsList");
             _lblRewardCumulative = _hudUIDocument.rootVisualElement.Q<Label>("lbl_RewardCumulative");
@@ -484,6 +493,7 @@ namespace UI
             _lblRollActual  = _hudUIDocument.rootVisualElement.Q<Label>("lbl_RollActual");
 
             _tglStabilization = _hudUIDocument.rootVisualElement.Q<Toggle>("tgl_Stabilization");
+            _tglPreciseMode   = _hudUIDocument.rootVisualElement.Q<Toggle>("tgl_PreciseMode");
             _lblStatus        = _hudUIDocument.rootVisualElement.Q<Label>("lbl_Status");
             _sldThrottle      = _hudUIDocument.rootVisualElement.Q<Slider>("sld_Throttle");
             _sldPitch         = _hudUIDocument.rootVisualElement.Q<Slider>("sld_Pitch");
@@ -504,31 +514,35 @@ namespace UI
             try
             {
                 _foldControls.text = string.Format(_foldControls.text,
-                    _controls.Default.ControlsPanel.controls[0].displayName
+                    _controls.Default.ControlsPanel.controls[0].name
                 );
 
                 _foldNavigation.text = string.Format(_foldNavigation.text,
-                    _controls.Default.NavigationPanel.controls[0].displayName
+                    _controls.Default.NavigationPanel.controls[0].name
                 );
 
                 _foldMovement.text = string.Format(_foldMovement.text,
-                    _controls.Default.MovementPanel.controls[0].displayName
+                    _controls.Default.MovementPanel.controls[0].name
                 );
 
                 _foldRewards.text = string.Format(_foldRewards.text,
-                    _controls.Default.RewardsPanel.controls[0].displayName
+                    _controls.Default.RewardsPanel.controls[0].name
                 );
                 
                 _foldObservations.text = string.Format(_foldObservations.text,
-                    _controls.Default.ObservationsPanel.controls[0].displayName
+                    _controls.Default.ObservationsPanel.controls[0].name
                 );
                 
                 _tglStabilization.text = string.Format(_tglStabilization.text,
-                    _controls.Default.FullStabilization.controls[0].displayName
+                    _controls.Default.FullStabilization.controls[0].name
+                );
+
+                _tglPreciseMode.text = string.Format(_tglPreciseMode.text,
+                    _controls.Default.PreciseMode.controls[0].name
                 );
 
                 _lblDroneEnabled.text = string.Format(_lblDroneEnabled.text,
-                    _controls.Default.EnableDrone.controls[0].displayName
+                    _controls.Default.EnableDrone.controls[0].name
                 );
                 
                 _lblStatus.text = string.Format(_lblStatus.text, _controls.Default.Repair.controls[0].displayName);
@@ -550,6 +564,7 @@ namespace UI
             _valWaypointDist.ValueChanged += WaypointDistanceChangeHandler;
             _valWaypointNumber.ValueChanged += WaypointNumberChangeHandler;
             _valWaypointsCount.ValueChanged += WaypointsCountChangeHandler;
+            _valWaypointDirection.ValueChanged += WaypointDirectionChangeHandler;
 
             _valVelocity.ValueChanged += VelocityChangeHandler;
             _valYSpdActual.ValueChanged += YSpdActualChangeHandler;
@@ -566,6 +581,7 @@ namespace UI
             _valYaw.ValueChanged += YawChangeHandler;
             _valRoll.ValueChanged += RollChangeHandler;
             _valStabilization.ValueChanged += StabilizationChangeHandler;
+            _valPrecise.ValueChanged += PreciseModeChangeHandler;
             _valDroneFailure.ValueChanged += DroneFailureChangeHandler;
             _valDroneEnabled.ValueChanged += DroneEnabledChangeHandler;
             
@@ -574,6 +590,7 @@ namespace UI
             
             _btnSwitchView.RegisterCallback<PointerDownEvent>(ViewChangedHandler);
             _tglStabilization.RegisterValueChangedCallback(ToggleStabilizationClickHandler);
+            _tglPreciseMode.RegisterValueChangedCallback(TogglePrecisionMode);
         }
 
         private void ClearValuesChangedEventHandlers()
@@ -583,6 +600,7 @@ namespace UI
             _valWaypointDist.ValueChanged -= WaypointDistanceChangeHandler;
             _valWaypointNumber.ValueChanged -= WaypointNumberChangeHandler;
             _valWaypointsCount.ValueChanged -= WaypointsCountChangeHandler;
+            _valWaypointDirection.ValueChanged -= WaypointDirectionChangeHandler;
 
             _valVelocity.ValueChanged -= VelocityChangeHandler;
             _valYSpdActual.ValueChanged -= YSpdActualChangeHandler;
@@ -599,6 +617,7 @@ namespace UI
             _valYaw.ValueChanged -= YawChangeHandler;
             _valRoll.ValueChanged -= RollChangeHandler;
             _valStabilization.ValueChanged -= StabilizationChangeHandler;
+            _valPrecise.ValueChanged -= PreciseModeChangeHandler;
             _valDroneFailure.ValueChanged -= DroneFailureChangeHandler;
             _valDroneEnabled.ValueChanged -= DroneEnabledChangeHandler;
             
@@ -607,6 +626,7 @@ namespace UI
             
             _btnSwitchView.UnregisterCallback<PointerDownEvent>(ViewChangedHandler);
             _tglStabilization.UnregisterValueChangedCallback(ToggleStabilizationClickHandler);
+            _tglPreciseMode.UnregisterValueChangedCallback(TogglePrecisionMode);
         }
 
         private static void UpdateNumericLabel<T>(T value, Label targetLabel, string format = "F2")
@@ -637,6 +657,11 @@ namespace UI
             if (max <= 0) _lblWaypointIndex.text = "NONE";
             else if (max == current) _lblWaypointIndex.text = $"{current}/{max} FINISHED";
             else _lblWaypointIndex.text = $"{current}/{max}";
+        }
+        
+        private void WaypointDirectionChangeHandler(Vector2 newValue, Vector2 oldValue)
+        {
+            _lblWaypointDirection.text = $"h: {newValue.x:F1}° v: {newValue.y:F1}°";
         }
 
         private void VelocityChangeHandler(Vector3 newValue, Vector3 oldValue) =>
@@ -688,6 +713,8 @@ namespace UI
 
         private void StabilizationChangeHandler(bool newValue, bool oldValue) => _tglStabilization.value = newValue;
 
+        private void PreciseModeChangeHandler(bool newValue, bool oldValue) => _tglPreciseMode.value = newValue;
+        
         private void DroneFailureChangeHandler(bool newValue, bool previousValue)
         {
             _lblStatus.style.display = newValue ? DisplayStyle.Flex : DisplayStyle.None;
@@ -706,6 +733,11 @@ namespace UI
         private void ToggleStabilizationClickHandler(ChangeEvent<bool> evt)
         {
             StabilizationChangeHandler(evt.newValue, evt.previousValue);
+        }
+        
+        private void TogglePrecisionMode(ChangeEvent<bool> evt)
+        {
+            PreciseModeChangeHandler(evt.newValue, evt.previousValue);
         }
         
         private void SwitchView()
