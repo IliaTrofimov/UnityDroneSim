@@ -99,20 +99,7 @@ namespace Drone.Motors
             
             propeller.transform.Rotate(0, _propellerAngleDelta, 0);
         }
-
-        private void OnDrawGizmosSelected()
-        {
-            VectorDrawer.DrawPointCube(transform.position, $"{PropellerAngularSpeed/360f:F1} rot/s",
-                new GizmoOptions()
-                {
-                    CapSize = PropellerRadius / 5,
-                    Color = Color.red,
-                    LabelColor = Color.red,
-                    LabelOutline = true
-                });
-        }
-
-
+        
         /// <summary>Apply lift force and create torque for given Rigidbody.</summary>
         /// <returns>Calculated <c>liftForce</c> value.</returns>
         public float ApplyForce(Rigidbody rigidBody, float throttle, float pitch, float yaw, float roll)
