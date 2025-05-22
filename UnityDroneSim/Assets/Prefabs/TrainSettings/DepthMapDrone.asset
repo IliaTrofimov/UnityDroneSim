@@ -23,7 +23,7 @@ MonoBehaviour:
     finishOnDestruction: 1
     landingReward: 0
     finishOnLanding: 0
-  movementRewardEnabled: 1
+  movementRewardEnabled: 0
   movementRewardSettings:
     idleLinearSpeed: 0.1
     movementReward: 0.001
@@ -37,7 +37,7 @@ MonoBehaviour:
     minimalApproachSpeed: 0.1
     movingToWaypointReward: 0.1
     movingAwayFromWaypointPenalty: -0.2
-    lookAtWaypointAngle: 0.5
+    lookAtWaypointAngle: 45
     lookAwayPenalty: -0.01
     lookAtReward: 0.001
   obstaclePenaltyEnabled: 1
@@ -48,7 +48,7 @@ MonoBehaviour:
     reactionTime: 3
   heightRewardEnabled: 1
   heightRewardSettings:
-    useRaycastHeight: 0
+    useRaycastHeight: 1
     minHeight: 1
     maxHeight: 8
     outOfHeightRangePenalty: -0.01

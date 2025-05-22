@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: RaycasterDrone
   m_EditorClassIdentifier: 
   termination:
-    trainingEpisodeTime: 60
+    endEpisodeAfterEachWaypoint: 0
+    resetStateAfterEachWaypoint: 0
+    trainingEpisodeTime: 120
     maxPenalty: -30
     hullBreakSpeed: 3
     motorBreakSpeed: 3
@@ -34,22 +36,22 @@ MonoBehaviour:
   waypointRewardSettings:
     finishReward: 50
     waypointReward: 10
-    minimalApproachSpeed: 0.1
-    movingToWaypointReward: 0.1
-    movingAwayFromWaypointPenalty: -0.2
-    lookAtWaypointAngle: 0.9
-    lookAwayPenalty: -0.1
-    lookAtReward: 0
+    minimalApproachSpeed: 0.5
+    movingToWaypointReward: 0.12
+    movingAwayFromWaypointPenalty: -0.3
+    lookAtWaypointAngle: 40
+    lookAwayPenalty: -0.15
+    lookAtReward: 0.01
   obstaclePenaltyEnabled: 1
   obstaclePenaltySettings:
-    nearObstaclePenalty: -0.1
+    nearObstaclePenalty: -0.08
     freeSpaceRadius: 0.8
     obstacleDetectionRange: 30
-    reactionTime: 2
+    reactionTime: 3
   heightRewardEnabled: 1
   heightRewardSettings:
     useRaycastHeight: 0
     minHeight: 1
-    maxHeight: 8
-    outOfHeightRangePenalty: -0.05
-    heightReward: 0.01
+    maxHeight: 6.2
+    outOfHeightRangePenalty: -0.09
+    heightReward: 0
