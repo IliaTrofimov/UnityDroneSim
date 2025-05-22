@@ -18,11 +18,11 @@
                     </engine:VisualElement>
                     <engine:VisualElement style="flex-grow: 1;">
                         <engine:Label text="Distance" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" />
-                        <engine:Label text="12.01" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointDistance" style="-unity-text-align: upper-right; min-width: 50px;" />
+                        <engine:Label text="12.01" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointDistance" style="-unity-text-align: upper-left; min-width: 50px;" />
                     </engine:VisualElement>
-                    <engine:VisualElement style="flex-grow: 1; display: none;">
-                        <engine:Label text="Direction" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" parse-escape-sequences="true" style="-unity-text-align: upper-center; height: 28px;" />
-                        <engine:Label text="R | U | F" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointDirection" style="-unity-text-align: lower-left;" />
+                    <engine:VisualElement style="flex-grow: 1; display: flex;">
+                        <engine:Label text="Direction" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" parse-escape-sequences="true" style="-unity-text-align: upper-left; height: 28px;" />
+                        <engine:Label text="h: 212° v: 12°" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" name="lbl_WaypointDirection" style="-unity-text-align: lower-left;" />
                     </engine:VisualElement>
                 </engine:VisualElement>
             </engine:Foldout>
@@ -73,7 +73,10 @@
             <engine:Label text="DroneInputsController component is not attached" name="lbl_ControlsFallback" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" class="label-fallback" style="visibility: hidden;" />
             <engine:VisualElement name="panel_Controls" class="panel-bottom panel" style="flex-grow: 1; flex-direction: column;">
                 <engine:Label name="lbl_Status" text="Control failure - repair ({0})" enable-rich-text="false" emoji-fallback-support="false" double-click-selects-word="false" triple-click-selects-line="false" display-tooltip-when-elided="false" style="display: none; -unity-font-style: bold; color: rgb(255, 85, 85); -unity-text-align: upper-center;" />
-                <engine:Toggle name="tgl_Stabilization" toggle-on-label-click="true" text="Stabilization ({0})" value="false" focusable="false" style="flex-direction: row-reverse; flex-shrink: 0; min-height: initial; height: initial; flex-grow: 1; margin-bottom: 0; padding-bottom: 0;" />
+                <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+                    <engine:Toggle name="tgl_Stabilization" toggle-on-label-click="true" text="Stabilization ({0})" value="false" focusable="false" style="flex-direction: row-reverse; flex-shrink: 0; min-height: initial; height: initial; flex-grow: 1; margin-bottom: 0; padding-bottom: 0;" />
+                    <engine:Toggle name="tgl_PreciseMode" toggle-on-label-click="true" text="Precision ({0})" value="false" focusable="false" style="flex-direction: row-reverse; flex-shrink: 0; min-height: initial; height: initial; flex-grow: 1; margin-bottom: 0; padding-bottom: 0; display: flex; visibility: visible;" />
+                </engine:VisualElement>
                 <engine:VisualElement name="panel_ControlsSliders" style="flex-grow: 1; flex-direction: row; flex-shrink: 0; align-items: stretch; justify-content: space-between; align-content: flex-start;">
                     <engine:Slider label="Throttle" value="0.5" high-value="1" name="sld_Throttle" low-value="-1" direction="Vertical" fill="false" page-size="0" show-input-field="false" inverted="false" enabled="true" focusable="false" class="slider-controls" />
                     <engine:Slider label="Pitch" value="0.5" high-value="1" name="sld_Pitch" low-value="-1" direction="Vertical" fill="false" page-size="0" show-input-field="false" inverted="false" enabled="true" focusable="false" class="slider-controls" />
