@@ -10,6 +10,11 @@ namespace RL.RewardsSettings
     [Serializable]
     public class TerminationConditions
     {
+        [Header("Premature episode termination")]
+        public bool endEpisodeAfterEachWaypoint;
+        public bool resetStateAfterEachWaypoint;
+
+        [Header("Default episode termination")]
         [Range(0, 120)]
         [Tooltip("Max training episode time in seconds. Leave to make episode infinite.")]
         public float trainingEpisodeTime = 30;

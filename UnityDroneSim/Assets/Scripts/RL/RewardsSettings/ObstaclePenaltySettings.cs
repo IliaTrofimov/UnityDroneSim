@@ -10,9 +10,9 @@ namespace RL.RewardsSettings
     [Serializable]
     public class ObstaclePenaltySettings
     {
-        [Range(-50f, 0f)]
+        [Range(-10f, 0f)]
         [Tooltip("Penalty for moving towards an obstacle.")]
-        public float nearObstaclePenalty = -10;
+        public float nearObstaclePenalty = -0.5f;
 
         [Range(0.01f, 10f)]
         [Tooltip(

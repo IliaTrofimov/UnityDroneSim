@@ -1,7 +1,9 @@
 using System;
 using RL.RewardsSettings;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
+using UtilsDebug;
 
 
 namespace RL.Rewards
@@ -15,18 +17,22 @@ namespace RL.Rewards
         private readonly Rigidbody               _agentRigidBody;
         private readonly int                     _collisionLayerMask;
 
-        public bool    IsNearObstacle   { get; private set; }
-        public float   ObstacleDistance { get; private set; }
+        private GizmoOptions _debugGizmo = new (Color.red, capSize: 0)
+        {
+            LabelPlacement = GizmoLabelPlacement.Center,
+            LabelSize = 0.75f,
+            VectCapSize = 0.5f
+        };
+        
+        public bool IsNearObstacle   { get; private set; }
+        public float ObstacleDistance { get; private set; }
         public Vector3 ObstaclePosition { get; private set; }
 
+        
         public ObstaclePenaltyProvider(ObstaclePenaltySettings settings, Rigidbody agentRigidBody)
         {
-            _settings = settings ??
-                        throw new ArgumentNullException(nameof(settings),
-                            $"Cannot create {nameof(ObstaclePenaltySettings)} without {nameof(WaypointRewardSettings)} parameter."
-                        );
-
-            _agentRigidBody = agentRigidBody;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _agentRigidBody = agentRigidBody ?? throw new ArgumentNullException(nameof(agentRigidBody));
             _collisionLayerMask = LayerMask.GetMask("Default");
         }
 
@@ -34,10 +40,8 @@ namespace RL.Rewards
         public override float CalculateReward()
         {
             var position = _agentRigidBody.position;
-            var speed = _agentRigidBody.linearVelocity.magnitude;
-            var nearRadius = math.clamp(speed * Time.fixedDeltaTime, 0, _settings.freeSpaceRadius);
 
-            if (Physics.CheckSphere(position, nearRadius, _collisionLayerMask))
+            if (Physics.CheckSphere(position, _settings.freeSpaceRadius, _collisionLayerMask))
             {
                 IsNearObstacle = true;
                 ObstacleDistance = _settings.freeSpaceRadius;
@@ -49,7 +53,7 @@ namespace RL.Rewards
             var ray = new Ray(position, _agentRigidBody.linearVelocity);
             var maxDistance = _settings.obstacleDetectionRange;
             if (_settings.reactionTime > 0)
-                maxDistance = math.min(maxDistance, speed * _settings.reactionTime);
+                maxDistance = math.min(maxDistance, _agentRigidBody.linearVelocity.magnitude * _settings.reactionTime);
 
             if (Physics.SphereCast(ray, _settings.freeSpaceRadius, out var hit, maxDistance, _collisionLayerMask))
             {
@@ -61,6 +65,28 @@ namespace RL.Rewards
             ObstaclePosition = new Vector3(float.NaN, float.NaN, float.NaN);
             ObstacleDistance = -1;
             return UpdateRewards(0);
+        }
+
+        public override void DrawGizmos()
+        {
+            if (IsNearObstacle)
+            { 
+                var color = Gizmos.color;
+                Gizmos.color = new Color(1, 0,0, 0.1f);
+                Gizmos.DrawSphere(_agentRigidBody.position, _settings.freeSpaceRadius);
+                Gizmos.color = new Color(1, 0,0, 1);
+                Gizmos.DrawWireSphere(_agentRigidBody.position, _settings.freeSpaceRadius);
+                Gizmos.color = color;
+                
+            }
+            else if (ObstacleDistance > 0)
+            {
+                VectorDrawer.DrawLine(
+                    _agentRigidBody.position,
+                    ObstaclePosition, 
+                    $"Obst.: {ObstacleDistance:F1} m\nR: {LastReward:F3}",
+                    _debugGizmo);
+            }
         }
     }
 }

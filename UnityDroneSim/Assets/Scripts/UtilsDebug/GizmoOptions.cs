@@ -15,7 +15,10 @@ namespace UtilsDebug
         public GizmoLabelPlacement LabelPlacement;
         public FontStyle           LabelStyle;
         public bool                LabelOutline;
-
+        public float               LabelSize;
+        public float               VectCapSize;
+        
+        
         public GizmoOptions(
             Color color,
             float capSize = 0.1f,
@@ -31,6 +34,8 @@ namespace UtilsDebug
             this.LabelColor = labelColor ?? color;
             this.VectSize = vectSize;
             LabelOutline = false;
+            LabelSize = 1;
+            VectCapSize = 0.05f;
         }
     }
 }

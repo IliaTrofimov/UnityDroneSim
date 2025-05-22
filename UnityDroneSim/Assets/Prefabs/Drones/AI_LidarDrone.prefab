@@ -25,14 +25,14 @@ Transform:
   m_GameObject: {fileID: 575735067621391318}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.285}
+  m_LocalPosition: {x: 0, y: 0, z: 0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8425121556825810556}
   - {fileID: 858563816021999694}
+  - {fileID: 8572154579284112092}
   - {fileID: 1711253869886002978}
-  - {fileID: 6493150989010790536}
   m_Father: {fileID: 777801661626272832}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &927095870572814408
@@ -82,17 +82,17 @@ MonoBehaviour:
   m_SensorName: LidarUp
   m_DetectableTags: []
   m_RaysPerDirection: 2
-  m_MaxRayDegrees: 70
-  m_SphereCastRadius: 0.5
-  m_RayLength: 50
+  m_MaxRayDegrees: 45
+  m_SphereCastRadius: 0.25
+  m_RayLength: 4
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_ObservationStacks: 1
   m_AlternatingRayOrder: 0
   m_UseBatchedRaycasts: 1
-  rayHitColor: {r: 1, g: 0, b: 0, a: 1}
-  rayMissColor: {r: 1, g: 1, b: 1, a: 0.2}
+  rayHitColor: {r: 1, g: 0.27877468, b: 0, a: 1}
+  rayMissColor: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_StartVerticalOffset: 0
   m_EndVerticalOffset: 0
 --- !u!1 &1427504242421977469
@@ -142,17 +142,17 @@ MonoBehaviour:
   m_SensorName: LidarDown
   m_DetectableTags: []
   m_RaysPerDirection: 2
-  m_MaxRayDegrees: 70
-  m_SphereCastRadius: 0.5
-  m_RayLength: 50
+  m_MaxRayDegrees: 45
+  m_SphereCastRadius: 0.25
+  m_RayLength: 4
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_ObservationStacks: 1
   m_AlternatingRayOrder: 0
   m_UseBatchedRaycasts: 1
-  rayHitColor: {r: 1, g: 0, b: 0, a: 1}
-  rayMissColor: {r: 1, g: 1, b: 1, a: 0.2}
+  rayHitColor: {r: 0.754717, g: 0.2101369, b: 0, a: 1}
+  rayMissColor: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_StartVerticalOffset: 0
   m_EndVerticalOffset: 0
 --- !u!1 &2123406263539656086
@@ -256,7 +256,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -365,7 +365,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -373,6 +373,66 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2200298311031139405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8572154579284112092}
+  - component: {fileID: 7427912956359602833}
+  m_Layer: 9
+  m_Name: LidarCenterFar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8572154579284112092
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2200298311031139405}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5119108548629246676}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7427912956359602833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2200298311031139405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bb6b867a41448888c1cd4f99643ad71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SensorName: LidarCenterFar
+  m_DetectableTags: []
+  m_RaysPerDirection: 2
+  m_MaxRayDegrees: 10
+  m_SphereCastRadius: 0.5
+  m_RayLength: 60
+  m_RayLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_ObservationStacks: 1
+  m_AlternatingRayOrder: 0
+  m_UseBatchedRaycasts: 1
+  rayHitColor: {r: 0.5943396, g: 0, b: 0, a: 1}
+  rayMissColor: {r: 1, g: 1, b: 1, a: 0.69803923}
+  m_StartVerticalOffset: 0
+  m_EndVerticalOffset: 0
 --- !u!1 &2719353348116634319
 GameObject:
   m_ObjectHideFlags: 0
@@ -545,7 +605,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &3924176781811904241
+--- !u!1 &4052928047050849212
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -553,58 +613,126 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6493150989010790536}
-  - component: {fileID: 131097497428392663}
+  - component: {fileID: 2111551191918672092}
+  - component: {fileID: 5766909826427539272}
+  - component: {fileID: 3978290828590886860}
   m_Layer: 9
-  m_Name: LidarGround
-  m_TagString: Untagged
+  m_Name: FPV
+  m_TagString: DroneBase
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6493150989010790536
+--- !u!4 &2111551191918672092
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3924176781811904241}
+  m_GameObject: {fileID: 4052928047050849212}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1789}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.010599971, z: 0.10349989}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5119108548629246676}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &131097497428392663
+  m_Father: {fileID: 8619939789935774926}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &5766909826427539272
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4052928047050849212}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.051
+  far clip plane: 500
+  field of view: 70
+  orthographic: 0
+  orthographic size: 0.98125
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &3978290828590886860
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3924176781811904241}
+  m_GameObject: {fileID: 4052928047050849212}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bb6b867a41448888c1cd4f99643ad71, type: 3}
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SensorName: LidarGround
-  m_DetectableTags: []
-  m_RaysPerDirection: 1
-  m_MaxRayDegrees: 10
-  m_SphereCastRadius: 0.05
-  m_RayLength: 20
-  m_RayLayerMask:
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 0
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  m_ObservationStacks: 1
-  m_AlternatingRayOrder: 0
-  m_UseBatchedRaycasts: 1
-  rayHitColor: {r: 1, g: 0, b: 0, a: 1}
-  rayMissColor: {r: 1, g: 1, b: 1, a: 0.2}
-  m_StartVerticalOffset: 0
-  m_EndVerticalOffset: 0
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &4182574772434913097
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 10
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 4
@@ -711,10 +839,20 @@ MonoBehaviour:
   drone: {fileID: 1773305771786904982}
   navigator: {fileID: 5834208892645119488}
   spawnPoint: {fileID: 0}
-  rewardSettings: {fileID: 11400000, guid: 9b74d9ff1007a493ea66380fe1b15cca, type: 2}
+  observationsSettings:
+    useLocalCoordinates: 1
+    useNormalization: 1
+    maxVelocityNormalization: 20
+    maxAngularVelocityNormalization: 6
+    maxAltitudeNormalization: 20
+    maxWaypointDistanceNormalization: 30
+  useAdditionalObservations: 0
+  trainingSettings: {fileID: 0}
+  logsMode: 1
+  resetEpisodeInHeuristic: 0
   displayRewards: 1
-  freeSpaceRadius: 1
-  obstacleDetectionDistance: 15
+  displayTrail: 1
+  trailPrefab: {fileID: 0}
 --- !u!114 &6167146603061894535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -727,7 +865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecisionPeriod: 5
+  DecisionPeriod: 1
   DecisionStep: 0
   TakeActionsBetweenDecisions: 1
 --- !u!1 &5080202655946929120
@@ -831,7 +969,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -940,7 +1078,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -948,6 +1086,134 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5921280323456273942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7918238890506439406}
+  - component: {fileID: 5594381876971431089}
+  - component: {fileID: 3906407636002010014}
+  m_Layer: 9
+  m_Name: 3PV
+  m_TagString: DroneBase
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7918238890506439406
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5921280323456273942}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.043619405, y: -0, z: -0, w: 0.9990483}
+  m_LocalPosition: {x: 0, y: 0.44999993, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8619939789935774926}
+  m_LocalEulerAnglesHint: {x: 5, y: 0, z: 0}
+--- !u!20 &5594381876971431089
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5921280323456273942}
+  m_Enabled: 0
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 500
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &3906407636002010014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5921280323456273942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 0
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &7181929161792296690
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +1247,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8619939789935774926}
   - {fileID: 777801661626272832}
   - {fileID: 342809845396875306}
   - {fileID: 2253572441573144778}
@@ -1029,6 +1296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27de840379ac4b24ca838e9da53b8316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preciseMovement: 0
   manualInput: 0
   useLegacyInputs: 0
   stabilizerMode: 7
@@ -1049,9 +1317,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8571162416980300483}
-  showForceVectors: 0
-  clampNegativeForce: 1
   controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
+  pidController: 1
+  clampNegativeForce: 1
+  showForceVectors: 0
   motorFrontLeft: {fileID: 735657432093211137}
   motorFrontRight: {fileID: 7021292104955613104}
   motorRearLeft: {fileID: 8522830723373279982}
@@ -1068,8 +1337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5341c4bb9b3c4ef18ed722003aa8e936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedMotorsCount: 0
-  landed: 0
   enableDebugMessages: 0
   instantDeathColliderTag: WorldEdge
   landingDotProduct: 0.2
@@ -1183,7 +1450,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 1
@@ -1202,7 +1469,7 @@ GameObject:
   - component: {fileID: 858563816021999694}
   - component: {fileID: 8532523748310842327}
   m_Layer: 9
-  m_Name: LidarCenter
+  m_Name: LidarCenterNear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1235,12 +1502,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bb6b867a41448888c1cd4f99643ad71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SensorName: LidarCenter
+  m_SensorName: LidarCenterNear
   m_DetectableTags: []
-  m_RaysPerDirection: 3
-  m_MaxRayDegrees: 70
-  m_SphereCastRadius: 0.5
-  m_RayLength: 50
+  m_RaysPerDirection: 7
+  m_MaxRayDegrees: 80
+  m_SphereCastRadius: 0.25
+  m_RayLength: 4
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -1248,9 +1515,90 @@ MonoBehaviour:
   m_AlternatingRayOrder: 0
   m_UseBatchedRaycasts: 1
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
-  rayMissColor: {r: 1, g: 1, b: 1, a: 0.2}
+  rayMissColor: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_StartVerticalOffset: 0
   m_EndVerticalOffset: 0
+--- !u!1 &8116782721350671093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8619939789935774926}
+  - component: {fileID: 6397218346224300270}
+  - component: {fileID: 6049985164115389759}
+  m_Layer: 9
+  m_Name: Debug UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8619939789935774926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116782721350671093}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2111551191918672092}
+  - {fileID: 7918238890506439406}
+  m_Father: {fileID: 3687313545292754829}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6397218346224300270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116782721350671093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 7c2244890f43a40c2a7ff2709209e975, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: c8d80f7fd50e1410bbd738eb9a49ccee,
+    type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+--- !u!114 &6049985164115389759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116782721350671093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b1d3c90ce5b4c5bafd3d33a20050933, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startExpanded: 1
+  enableMovementPanel: 1
+  enableControlsPanel: 1
+  enableNavigationPanel: 1
+  enableRewardsPanel: 1
+  enableObservationsPanel: 1
+  selectedCamera: 0
+  cameraSwitcher:
+    cameras:
+    - {fileID: 5766909826427539272}
+    - {fileID: 5594381876971431089}
+  drone: {fileID: 1773305771786904982}
+  droneAgent: {fileID: 3733350635086191512}
+  navigator: {fileID: 5834208892645119488}
 --- !u!1001 &704149469932317213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1377,7 +1725,7 @@ PrefabInstance:
     - target: {fileID: 5478640821368717531, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120418005160450932, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1397,12 +1745,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8637574527542137469, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1563,7 +1911,7 @@ PrefabInstance:
     - target: {fileID: 5478640821368717531, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120418005160450932, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1583,12 +1931,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8750466123751004787, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1862,7 +2210,7 @@ PrefabInstance:
     - target: {fileID: 5478640821368717531, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120418005160450932, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -1882,12 +2230,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8637574527542137469, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
@@ -2073,12 +2421,12 @@ PrefabInstance:
     - target: {fileID: 6159405709828979613, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811529818146510885, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8637574527542137469, guid: aff2bfce970e2431c9db5f243de40f03,
         type: 3}

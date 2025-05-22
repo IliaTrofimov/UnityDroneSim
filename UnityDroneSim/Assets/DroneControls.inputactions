@@ -33,6 +33,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "PreciseMode",
+                    "type": "Button",
+                    "id": "5e767801-3871-46a7-bd98-79c7f24fe2df",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CameraMode",
                     "type": "Button",
                     "id": "22e3676f-bf05-4b15-aeeb-70c3ca69982c",
@@ -63,6 +72,24 @@
                     "name": "NavigationPanel",
                     "type": "Button",
                     "id": "d0080f43-f41b-4b0e-99f0-ad8404552ef4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RewardsPanel",
+                    "type": "Button",
+                    "id": "34cbb244-f386-4d5a-9c3b-88e6d88bf00a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ObservationsPanel",
+                    "type": "Button",
+                    "id": "a281ef4a-ea61-4acf-91be-30d1575daf47",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -199,6 +226,17 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "",
+                    "id": "1e071606-90f6-4643-8f09-dc5c1dbd52e8",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PreciseMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "1D Axis",
                     "id": "6de315e5-99e1-429e-ac2f-f6f844632fa6",
                     "path": "1DAxis",
@@ -294,6 +332,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "EnableDrone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6c828d8-13df-4489-9775-9285f605bd14",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RewardsPanel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "072ad644-6743-48ce-88e7-abe32923d78e",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ObservationsPanel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -26,12 +26,11 @@ namespace Drone.Motors
 
 
         private bool _isDestroyed;
-        private TrailRenderer _trailRenderer;
 
         private void FixedUpdate()
         {
             // If propeller is spinning fast - use static (non-rotating) collider
-            if (math.abs(propellerAngleDelta) > staticColliderSpeed)
+            if (math.abs(PropellerAngularSpeed) > staticColliderSpeed)
             {
                 dynamicRotorCollider.enabled = false;
                 staticRotorCollider.enabled = true;
@@ -62,7 +61,6 @@ namespace Drone.Motors
             _isDestroyed = false;
             dynamicRotorCollider.enabled = false;
             staticRotorCollider.enabled = true;
-            Destroy(_trailRenderer);
         }
     }
 }

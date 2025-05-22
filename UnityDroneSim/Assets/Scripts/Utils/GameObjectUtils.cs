@@ -1,4 +1,11 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 
 namespace Utils
@@ -105,6 +112,51 @@ namespace Utils
             var result = TryGetDimensions(gameObject, out Vector3 axis);
             length = axis.magnitude;
             return result;
+        }
+
+        public static void DestroyChildren(this GameObject gameObject, bool immediate = false)
+        {
+            if (gameObject == null)
+                return;
+
+            const float maxT = 5000f;
+            var sw = Stopwatch.StartNew();
+            
+            while (gameObject.transform.childCount > 0 && sw.ElapsedMilliseconds <= maxT)
+                gameObject.transform.GetChild(0).gameObject.TryDestroy(immediate);
+
+            if (sw.ElapsedMilliseconds >= maxT)
+            {
+                Debug.LogWarningFormat("Destroying '{0}' children took more than {1:f0} ms", gameObject.name, maxT);
+            }
+        }
+        
+        public static void DestroyChildren(this Component component, bool immediate = false)
+        {
+            if (component == null)
+                return;
+
+            DestroyChildren(component.gameObject, immediate);
+        }
+        
+        public static void TryDestroy(this Component component, bool immediate = false)
+        {
+            if (component == null || !component.gameObject) return;
+            
+            if (!Application.isPlaying || immediate)
+                Object.DestroyImmediate(component.gameObject);
+            else 
+                Object.Destroy(component.gameObject);
+        }
+        
+        public static void TryDestroy(this GameObject gameObject, bool immediate = false)
+        {
+            if (gameObject == null ) return;
+            
+            if (!Application.isPlaying || immediate)
+                Object.DestroyImmediate(gameObject);
+            else 
+                Object.Destroy(gameObject);
         }
     }
 }

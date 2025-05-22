@@ -10,12 +10,21 @@ namespace RL.RewardsSettings
     [Serializable]
     public class DroneStateRewardSettings
     {
-        [Range(-1000, 0)]
+        [Header("Destruction state")]
+        [Range(-100, 0)]
         [Tooltip("Penalty for destroying drone.")]
         public float destructionPenalty;
 
-        [Range(0, 100)]
+        [Tooltip("Should finish episode on destroying drone.")]
+        public bool finishOnDestruction = true;
+        
+        
+        [Header("Landing state")]
+        [Range(0, 10)]
         [Tooltip("Reward for safely landing drone.")]
         public float landingReward;
+
+        [Tooltip("Should finish episode on landing drone.")]
+        public bool finishOnLanding;
     }
 }

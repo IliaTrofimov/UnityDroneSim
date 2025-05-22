@@ -123,16 +123,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c0d0d88fc24f70a417197ff9e8e409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  liftForce: 0
   torqueFactor: 0.003
   pitchFactor: 1
   yawFactor: 1
   rollFactor: 1
-  liftForce: 0
-  animatePropellers: 1
-  animationSpeed: 1.7
-  idleRotationSpeed: 4
+  animationSpeed: 900
+  forceThreshold: 0.1
   propeller: {fileID: 3615590271140427342}
-  propellerAngleDelta: 0
   dynamicRotorCollider: {fileID: 6159405709828979613}
   staticRotorCollider: {fileID: 7811529818146510885}
   staticColliderSpeed: 2
@@ -230,7 +228,7 @@ PrefabInstance:
     - target: {fileID: 4223087730109375303, guid: aa5757e55761d4fb190d86b914ab12b4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9914449
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4223087730109375303, guid: aa5757e55761d4fb190d86b914ab12b4,
         type: 3}
@@ -240,7 +238,7 @@ PrefabInstance:
     - target: {fileID: 4223087730109375303, guid: aa5757e55761d4fb190d86b914ab12b4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.13052616
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4223087730109375303, guid: aa5757e55761d4fb190d86b914ab12b4,
         type: 3}
@@ -255,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 4223087730109375303, guid: aa5757e55761d4fb190d86b914ab12b4,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4223087730109375303, guid: aa5757e55761d4fb190d86b914ab12b4,
         type: 3}

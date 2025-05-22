@@ -20,14 +20,23 @@ namespace RL.Rewards
         public virtual string RewardName => RewardTypeName;
 
 
-        protected RewardProvider() { RewardTypeName = GetType().Name.Replace("Provider", ""); }
+        protected RewardProvider()
+        {
+            RewardTypeName = GetType().Name.Replace("Provider", "").Replace("Reward", "");
+        }
 
-        protected RewardProvider(string rewardName) { RewardTypeName = rewardName; }
+        protected RewardProvider(string rewardName)
+        {
+            RewardTypeName = rewardName;
+        }
 
 
         /// <summary>Calculate current reward based on agent and environment state.</summary>
         /// <returns>Reward value.</returns>
         public abstract float CalculateReward();
+        
+        /// <summary>Call this method inside OnDrawGizmos to display additional information about reward.</summary>
+        public virtual void DrawGizmos() { }
 
         /// <summary>Reset all rewards values.</summary>
         public virtual void Reset() { LastReward = CumulativeReward = 0; }

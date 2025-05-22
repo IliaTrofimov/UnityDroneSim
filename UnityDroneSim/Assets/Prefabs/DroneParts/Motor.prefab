@@ -122,14 +122,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdcbc81bf1eb4ce599f26d33afca9f6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  liftForce: 0
   torqueFactor: 0.003
   pitchFactor: 0
   yawFactor: 0
   rollFactor: 0
-  liftForce: 0
-  animatePropellers: 1
-  animationSpeed: 1
-  idleRotationSpeed: 5
+  animationSpeed: 900
+  forceThreshold: 0.1
   propeller: {fileID: 3615590271140427342}
 --- !u!1001 &7503187583041297331
 PrefabInstance:
