@@ -3,6 +3,7 @@ using Drone;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Utils;
 
 
 namespace Navigation
@@ -15,19 +16,18 @@ namespace Navigation
     public class WaypointNavigator : MonoBehaviour
     {
         private readonly List<GameObject> _waypointsObjects = new();
-        private          GameObject       _waypointsParent;
-        private          LineRenderer     _pathRenderer;
-
-
-        public Waypoint? CurrentWaypoint => WaypointsCount > 0 && !IsFinished
+        
+        private GameObject _waypointsParent;
+        private LineRenderer _pathRenderer;
+        
+        public Waypoint CurrentWaypoint => WaypointsCount > 0 && !IsFinished
                 ? path[CurrentWaypointIndex]
                 : null;
 
         public int CurrentWaypointIndex { get; private set; }
 
-        public int  WaypointsCount => path?.WaypointsCount ?? 0;
-        public bool IsLoopPath     => isLoopPath;
-        public bool IsFinished     => CurrentWaypointIndex >= WaypointsCount;
+        public int WaypointsCount => path?.WaypointsCount ?? 0;
+        public bool IsFinished => CurrentWaypointIndex >= WaypointsCount;
 
 
         [Header("Target")]
@@ -83,7 +83,7 @@ namespace Navigation
             if (!enabled || IsFinished || WaypointsCount == 0) 
                 return;
 
-            if (path.Waypoints[CurrentWaypointIndex].ComparePosition(drone.transform, out var distance)) 
+            if (path.Waypoints[CurrentWaypointIndex].IsInRange(drone.transform.position)) 
                 NextWaypoint();
         }
 
@@ -161,17 +161,15 @@ namespace Navigation
         }
 
 
-        public bool NextWaypoint(out Waypoint waypoint)
+        public bool NextWaypoint()
         {
             if (!path || !enabled)
             {
-                waypoint = default;
                 return false;
             }
 
             if (!isLoopPath && CurrentWaypointIndex == path.WaypointsCount - 1)
             {
-                waypoint = CurrentWaypoint.Value;
                 CurrentWaypointIndex = path.WaypointsCount;
                 return false;
             }
@@ -180,15 +178,11 @@ namespace Navigation
                 CurrentWaypointIndex = 0;
             else
                 CurrentWaypointIndex++;
-
-            waypoint = path.Waypoints[CurrentWaypointIndex];
-
+            
             UpdateWaypointObjects();
             return true;
         }
-
-        public bool NextWaypoint() => NextWaypoint(out _);
-
+        
         public void ResetWaypoint() => CurrentWaypointIndex = 0;
 
         public void ResetPath(WaypointPath newPath)
@@ -197,11 +191,48 @@ namespace Navigation
             ResetWaypoint();
         }
 
+        /// <summary>Get distance to the next waypoint.</summary>
+        /// <returns>Actual distance if path contains at least 1 waypoint and path is not finished, else returns -1.</returns>
         public float GetCurrentDistance(Vector3 position)
         {
-            if (!CurrentWaypoint.HasValue) return 0;
+            if (CurrentWaypoint == null) return -1;
 
-            return Vector3.Distance(position, CurrentWaypoint.Value.position);
+            return Vector3.Distance(position, CurrentWaypoint.position);
         }
+        
+        /// <inheritdoc cref="GetCurrentDistance(Vector3)"/>
+        public float GetCurrentDistance()
+        {
+            if (CurrentWaypoint == null) return -1;
+            return Vector3.Distance(drone.transform.position, CurrentWaypoint.position);
+        }
+        
+        /// <summary>Get heading angles to the next waypoint.</summary>
+        /// <remarks>
+        /// See explanations at <see cref="MathExtensions.HeadingAnglesTo"/> or
+        /// <see cref="MathExtensions.NormalizedHeadingAnglesTo"/> for normalized version.
+        /// </remarks>
+        /// <returns>Actual heading angels if path contains at least 1 waypoint and path is not finished, else zeros.</returns>
+        public Vector2 GetCurrentHeading(Transform current, bool normalized = true)
+        {
+            if (CurrentWaypoint == null)
+                return Vector2.zero;
+            
+            return normalized
+                ? current.NormalizedHeadingAnglesTo(CurrentWaypoint.position)
+                : current.HeadingAnglesTo(CurrentWaypoint.position);
+        }
+        
+        /// <inheritdoc cref="GetCurrentHeading(Transform,bool)"/>
+        public Vector2 GetCurrentHeading(bool normalized = true)
+        {
+            if (CurrentWaypoint == null)
+                return Vector2.zero;
+            
+            return normalized
+                ? drone.transform.NormalizedHeadingAnglesTo(CurrentWaypoint.position)
+                :  drone.transform.HeadingAnglesTo(CurrentWaypoint.position);
+        }
+        
     }
 }

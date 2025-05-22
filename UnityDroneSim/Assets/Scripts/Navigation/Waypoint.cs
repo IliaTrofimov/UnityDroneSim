@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Utils;
 
 
 namespace Navigation
@@ -8,7 +9,7 @@ namespace Navigation
     /// Waypoint that contains its name, position and radius.
     /// </summary>
     [Serializable]
-    public struct Waypoint
+    public class Waypoint
     {
         [Tooltip("Name of the waypoint.")] 
         public string name;
@@ -30,11 +31,10 @@ namespace Navigation
             this.radius = radius;
             this.position = position;
         }
-        
-        public bool ComparePosition(Transform current, out float distance)
+
+        public bool IsInRange(Vector3 target)
         {
-            distance = Vector3.Distance(current.position, position);
-            return distance <= radius;
+            return Vector3.Distance(position,target) <= radius;
         }
     }
 }
