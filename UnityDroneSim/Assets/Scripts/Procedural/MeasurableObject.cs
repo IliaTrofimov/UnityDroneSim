@@ -1,3 +1,4 @@
+using System;
 using InspectorTools;
 using UnityEditor;
 using UnityEngine;
@@ -7,15 +8,27 @@ using UtilsDebug;
 
 namespace ProceduralRoad
 {
+    /// <summary>
+    /// Game object that can be measured along X, Y and Z axis.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MeasurableObject : MonoBehaviour
     {
         private Vector3 _actualCenter;
         
+        [SerializeField]
+        [Header("Measurements")]
+        [Tooltip("Show measurements gizmos.")]
+        protected bool showDebug;
+        
         [SerializeField, ReadOnlyField]
         [Tooltip("Object or/and its children have MeshFilters components attached.")]
         private bool hasMesh;
+        
+        [SerializeField, ReadOnlyField] 
+        [Tooltip("Distance between Min and Max points.")]
+        private float diagonal;
         
         [SerializeField, ReadOnlyField] 
         [Tooltip("Calculated dimensions of object. Objects without MeshFilter can't calculate their dimensions.")]
@@ -33,48 +46,26 @@ namespace ProceduralRoad
         public Vector3 ActualCenter => _actualCenter;
         public Vector3 MinPoint => minPoint;
         public Vector3 MaxPoint => maxPoint;
+        public float Diagonal => diagonal;
+
+
+        private void Awake() => ResetMeasurements();
         
-        private void OnEnable()
-        {
-            ResetMeasurements();
-        }
+        private void OnEnable() => ResetMeasurements();
 
         private void OnDrawGizmosSelected()
         {
-            if (!enabled || !hasMesh) return;
+            if (!enabled || !showDebug || !hasMesh) return;
             
             Handles.color = Color.yellow;
-            Handles.DrawWireCube(_actualCenter, dimensions);
-
-            var distMax = Vector3.Distance(Camera.current.transform.position, maxPoint);
-            var distMin = Vector3.Distance(Camera.current.transform.position, minPoint);
-            var distCenter = Vector3.Distance(Camera.current.transform.position, _actualCenter);
-            var label = $"{name}: {dimensions.x}x{dimensions.y}x{dimensions.z}";
-            var gizmoOptions = new GizmoOptions()
-            {
-                LabelColor = Color.yellow,
-                LabelOutline = true,
-                CapSize = 0
-            };
-            
-            if (distMax < distMin && distMax < distCenter)
-            {
-                VectorDrawer.DrawLabel(maxPoint, label, gizmoOptions);
-            }
-            else if (distMin < distMax && distMin < distCenter)
-            {
-                VectorDrawer.DrawLabel(minPoint, label, gizmoOptions);
-            }
-            else
-            {
-                VectorDrawer.DrawLabel(_actualCenter, label, gizmoOptions);
-            }
+            Handles.DrawWireCube(_actualCenter, Dimensions);
         }
+
 
         [ContextMenu("Reset measurements")]
         public bool ResetMeasurements()
         {
-            hasMesh = gameObject.TryGetDimensions(out dimensions);
+            hasMesh = gameObject.TryGetDimensions(out minPoint, out maxPoint);
 
             if (!hasMesh)
             {
@@ -85,7 +76,8 @@ namespace ProceduralRoad
             }
             else
             {
-                gameObject.TryGetDimensions(out minPoint, out maxPoint);
+                dimensions = (maxPoint - minPoint).Abs();
+                diagonal = dimensions.magnitude;
                 _actualCenter = (maxPoint + minPoint) / 2f;
             }
 
