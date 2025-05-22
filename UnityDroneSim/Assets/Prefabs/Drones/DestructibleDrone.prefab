@@ -1118,7 +1118,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 8571162416980300483}
   controlSettings: {fileID: 11400000, guid: 0763ac2f5795248eb9222ac5d503b7f6, type: 2}
-  enablePreciseControls: 0
   pidController: 1
   clampNegativeForce: 1
   showForceVectors: 0
