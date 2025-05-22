@@ -7,10 +7,10 @@ using UnityEngine;
 namespace InspectorTools
 {
     /// <summary>
-    /// Custom inspector editor for <see cref="DroneTrainManager"/>.
+    /// Custom inspector editor for <see cref="DroneTrainingStatistics"/>.
     /// </summary>
-    [CustomEditor(typeof(DroneTrainManager))]
-    public class DroneTrainManagerEditor : Editor
+    [CustomEditor(typeof(DroneTrainingStatistics))]
+    public class DroneTrainingStatisticsEditor : Editor
     {
         public enum TableMode { LastReward, CumulativeReward, Summary }
 
@@ -30,7 +30,7 @@ namespace InspectorTools
             GUILayout.ExpandWidth(true)
         };
         
-        private DroneTrainManager _droneTrainManager;
+        private DroneTrainingStatistics _trainingStatistics;
         private TableMode _tableMode;
         
         private float[,] _rewardsTable;
@@ -40,7 +40,7 @@ namespace InspectorTools
 
         private void OnEnable()
         {
-            _droneTrainManager = (DroneTrainManager)target;
+            _trainingStatistics = (DroneTrainingStatistics)target;
         }
         
         public override bool RequiresConstantRepaint() => Time.frameCount % REPAINT_RATE == 0;
@@ -51,10 +51,10 @@ namespace InspectorTools
             using (new EditorGUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Update drone agents"))
-                    _droneTrainManager.UpdateDrones();
+                    _trainingStatistics.UpdateDrones();
 
                 if (GUILayout.Button("Clear drone agents"))
-                    _droneTrainManager.ClearDrones();
+                    _trainingStatistics.ClearDrones();
             }
 
             EditorGUILayout.Space(10);
@@ -64,13 +64,13 @@ namespace InspectorTools
         private void RewardsStats()
         {
             _statsExpanded = EditorGUILayout.BeginFoldoutHeaderGroup(_statsExpanded, "Rewards Statistics");
-            if (!_statsExpanded || _droneTrainManager.DroneAgents == null)
+            if (!_statsExpanded || _trainingStatistics.DroneAgents == null)
             {
                 EditorGUILayout.EndFoldoutHeaderGroup();
                 return;
             }
 
-            if (_droneTrainManager.DroneAgents.Count == 0)
+            if (_trainingStatistics.DroneAgents.Count == 0)
             {
                 EditorGUILayout.HelpBox(
                     "Found no active drone agents in children nodes.\n" +
@@ -82,9 +82,9 @@ namespace InspectorTools
                 return;
             }
 
-            EditorGUILayout.LabelField($"Active drone agents count: {_droneTrainManager.DroneAgents.Count}");
+            EditorGUILayout.LabelField($"Active drone agents count: {_trainingStatistics.DroneAgents.Count}");
 
-            if ((_droneTrainManager.DroneAgents.First().RewardProvider?.RewardsCount ?? 0) == 0)
+            if ((_trainingStatistics.DroneAgents.First().RewardProvider?.RewardsCount ?? 0) == 0)
             {
                 EditorGUILayout.HelpBox(
                     "Drone agents doesn't have configured RewardsProviders.\n" +
@@ -135,7 +135,7 @@ namespace InspectorTools
             using (new EditorGUILayout.VerticalScope())
             {
                 EditorGUILayout.LabelField("", AgentColumnOptions);
-                foreach (var agent in _droneTrainManager.DroneAgents)
+                foreach (var agent in _trainingStatistics.DroneAgents)
                 {
                     if (EditorGUILayout.LinkButton(agent.drone.name, AgentColumnOptions))
                         EditorGUIUtility.PingObject(agent.drone);
@@ -162,12 +162,12 @@ namespace InspectorTools
 
         private void InitLastRewardsTable()
         {
-            InitRewardsArrays(_droneTrainManager.DroneAgents.Count,
-                _droneTrainManager.DroneAgents.First().RewardProvider.RewardsCount
+            InitRewardsArrays(_trainingStatistics.DroneAgents.Count,
+                _trainingStatistics.DroneAgents.First().RewardProvider.RewardsCount
             );
 
             var agentIdx = 0;
-            foreach (var agent in _droneTrainManager.DroneAgents)
+            foreach (var agent in _trainingStatistics.DroneAgents)
             {
                 var rewardIdx = 0;
                 foreach (var reward in agent.RewardProvider.GetRewards())
@@ -185,12 +185,12 @@ namespace InspectorTools
 
         private void InitCumulativeRewardsTable()
         {
-            InitRewardsArrays(_droneTrainManager.DroneAgents.Count,
-                _droneTrainManager.DroneAgents.First().RewardProvider.RewardsCount
+            InitRewardsArrays(_trainingStatistics.DroneAgents.Count,
+                _trainingStatistics.DroneAgents.First().RewardProvider.RewardsCount
             );
             
             var agentIdx = 0;
-            foreach (var agent in _droneTrainManager.DroneAgents)
+            foreach (var agent in _trainingStatistics.DroneAgents)
             {
                 var rewardIdx = 0;
                 foreach (var reward in agent.RewardProvider.GetRewards())
@@ -208,7 +208,7 @@ namespace InspectorTools
 
         private void InitSummaryTable()
         { 
-            if (InitRewardsArrays(_droneTrainManager.DroneAgents.Count, 3))
+            if (InitRewardsArrays(_trainingStatistics.DroneAgents.Count, 3))
             {
                 _rewardsNames[0] = "Last";
                 _rewardsNames[1] = "Cumulative";
@@ -216,7 +216,7 @@ namespace InspectorTools
             }
 
             var agentIdx = 0;
-            foreach (var agent in _droneTrainManager.DroneAgents)
+            foreach (var agent in _trainingStatistics.DroneAgents)
             {
                 _rewardsTable[agentIdx, 0] = agent.RewardProvider.LastReward;
                 _rewardsTable[agentIdx, 1] = agent.RewardProvider.CumulativeReward;
