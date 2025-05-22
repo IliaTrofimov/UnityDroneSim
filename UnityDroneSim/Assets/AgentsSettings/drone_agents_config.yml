@@ -119,14 +119,14 @@ behaviors:
   Drone_Raycaster_1:
     trainer_type: ppo
     max_steps: 5000000
-    time_horizon: 86
+    time_horizon: 128
     keep_checkpoints: 3
     checkpoint_interval: 250000
     summary_freq: 20000
 
     hyperparameters:
-      batch_size: 10
-      buffer_size: 100
+      batch_size: 128
+      buffer_size: 2048
       learning_rate: 3.0e-4
       learning_rate_schedule: linear
       beta: 5.5e-3
@@ -138,8 +138,43 @@ behaviors:
 
     network_settings:
       normalize: false
-      num_layers: 2
-      hidden_units: 128
+      num_layers: 3
+      hidden_units: 64
+      conditioning_type: none
+
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+  
+  # --------------------------------------
+  # Drone with raycast sensors (more raycasting sensors) 
+  # --------------------------------------
+  Drone_Raycaster_2:
+    trainer_type: ppo
+    max_steps: 10000000
+    time_horizon: 86
+    keep_checkpoints: 1
+    checkpoint_interval: 250000
+    summary_freq: 20000
+    threaded: true
+    
+    hyperparameters:
+      batch_size: 128
+      buffer_size: 12800
+      learning_rate: 2.5e-4
+      learning_rate_schedule: linear
+      beta: 3.0e-4
+      epsilon: 0.25
+      lambd: 0.96
+      num_epoch: 4
+      beta_schedule: linear
+      epsilon_schedule: linear
+    
+    network_settings:
+      normalize: false
+      num_layers: 4
+      hidden_units: 86
       conditioning_type: none
 
     reward_signals:
