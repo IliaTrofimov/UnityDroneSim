@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -10,10 +11,9 @@ namespace RL
 {
     public class PillarsTrainingEnvironment : DroneTrainingManager
     {
-        [Header("Procedural generation")] 
-        [Tooltip("Waypoint with given index will have random position each environment epoch.")]
-        [Min(-1)]
-        public int proceduralWaypointIndex = -1;
+        [Header("Procedural generation")]
+        [Tooltip("Waypoints will have random position (except final waypoint).")]
+        public bool enableRandomness = true;
         
         [Tooltip("Min X coordinate for procedural waypoint.")]
         [Range(-50, 50)]
@@ -39,32 +39,31 @@ namespace RL
         [Range(-20, 20)]
         public float waypointMaxZ;
         
+        [Tooltip("Waypoints with this indices will have fixed positions.")]
+        public List<int> fixedWaypointIndices;
         
         protected override IEnumerator ResetEnvironment()
         {
-            if (proceduralWaypointIndex < 0)
+            if (!enableRandomness || !path || path.WaypointsCount <= 0)
                 yield break;
-
-            if (!path || path.WaypointsCount <= proceduralWaypointIndex)
+            
+            for (int i = 0; i < path.WaypointsCount - 1; i++)
             {
-                Debug.LogErrorFormat("ProceduralRoadEnvironment '{0}': cannot generate Waypoint {1} position.",
-                    name, proceduralWaypointIndex);
-            }
-            else
-            {
-                var position = new Vector3
+                if (fixedWaypointIndices.Contains(i)) 
+                    continue;
+                    
+                path.Waypoints[i].position = new Vector3
                 {
                     x = Random.Range(waypointMinX, waypointMaxX),
                     y = Random.Range(waypointMinY, waypointMaxY),
                     z = Random.Range(waypointMinZ, waypointMaxZ)
-                };
-                path.Waypoints[proceduralWaypointIndex].position = position;
+                };   
             }
         }
 
         private void OnDrawGizmosSelected()
         {
-            if (proceduralWaypointIndex < 0 || !enabled)return;
+            if (!enableRandomness || !enabled) return;
             
             var center = new Vector3
             {
@@ -80,7 +79,7 @@ namespace RL
             };
 
             VectorDrawer.DrawPointCube(center,
-                "Procedural waypoint area",
+                "Procedural waypoints",
                 new GizmoOptions(Color.green, 0.2f)
                 {
                     LabelSize = 0.5f
