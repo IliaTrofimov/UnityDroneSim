@@ -132,11 +132,17 @@ namespace Drone
         /// <remarks>Values will always be clamped in [-1, 1] range.</remarks>
         public void SetInputs(float throttle, float pitch, float yaw, float roll)
         {
-            var clamp = preciseMovement ? 0.5f : 1.0f;
-            this.throttle = math.clamp(throttle, -clamp, clamp);
-            this.pitch = math.clamp(pitch, -clamp, clamp);
-            this.yaw = math.clamp(yaw, -clamp, clamp);
-            this.roll = math.clamp(roll, -clamp, clamp);
+            this.throttle = math.clamp(throttle, -1, 1);
+            this.pitch = math.clamp(pitch, -1, 1);
+            this.yaw = math.clamp(yaw, -1, 1);
+            this.roll = math.clamp(roll, -1, 1);
+
+            if (preciseMovement)
+            {
+                this.pitch /= 2;
+                this.yaw /= 2;
+                this.roll /= 2;
+            }
         }
 
         public bool IsFullStabilization() => stabilizerMode == FULL_STAB;
