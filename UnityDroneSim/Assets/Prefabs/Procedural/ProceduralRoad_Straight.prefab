@@ -401,10 +401,10 @@ MonoBehaviour:
   connectNextAtX: 0
   startConnectionWidth: 20
   finishConnectionWidth: 20
-  obstacleOffset: 9
+  obstacleOffset: 8
   startOffset: 5
-  finishOffset: 5
-  maxObstacles: 10
+  finishOffset: 2
+  maxObstacles: 15
   obstacleParent: {fileID: 4916878955950777039}
   obstaclesPool:
   - {fileID: 3776927031551083040, guid: 01ebed81774634b08ad6e5b8c82d3611, type: 3}
@@ -418,9 +418,10 @@ MonoBehaviour:
   - {fileID: 3776927031551083040, guid: 72f49eb1c1178478882999ff4b28bbfd, type: 3}
   - {fileID: 3776927031551083040, guid: 860b4e32d14b74c6294daa0c66b6b758, type: 3}
   - {fileID: 3776927031551083040, guid: 9e8d61d9db7404bd19391f5d9b00850b, type: 3}
-  - {fileID: 3776927031551083040, guid: 9e8d61d9db7404bd19391f5d9b00850b, type: 3}
+  - {fileID: 3776927031551083040, guid: ddc4d261e6b48417fbbfcf2d65add027, type: 3}
   - {fileID: 1461243217570989121, guid: 8f65636cba6df4cbe948bed4e1ee15aa, type: 3}
   - {fileID: 1461243217570989121, guid: b78eb21cd0dd04cfdb66968076677783, type: 3}
+  - {fileID: 1461243217570989121, guid: 4268163a8d360480e9fef97fe0f9f79b, type: 3}
   - {fileID: 1461243217570989121, guid: 4268163a8d360480e9fef97fe0f9f79b, type: 3}
 --- !u!1 &7686886921539364495
 GameObject:
