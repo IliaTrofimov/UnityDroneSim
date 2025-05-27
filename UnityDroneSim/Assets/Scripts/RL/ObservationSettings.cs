@@ -7,6 +7,9 @@ namespace RL
     [Serializable]
     public class ObservationSettings
     {
+        [Tooltip("Add IsLanded, IsBroken and ang. velocity observations.")]
+        public bool useAdditionalObservations = false;
+        
         [Tooltip("Use local space coordinates for some observations.")]
         public bool useLocalCoordinates = true;
 

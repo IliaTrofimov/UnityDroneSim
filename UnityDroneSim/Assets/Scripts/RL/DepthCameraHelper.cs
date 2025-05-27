@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 namespace RL
 {
-    // this script must start before RenderTextureSensorComponent so it can set properties for the sensor
-    
     /// <summary>
     /// Helper script for managing <see cref="RenderTexture"/> for given <see cref="CameraSensorComponent"/>.
     /// </summary>
