@@ -5,6 +5,7 @@ using Drone;
 using MBaske.Sensors.Grid;
 using Navigation;
 using RL.RewardsSettings;
+using Unity.MLAgents;
 using UnityEngine;
 using Utils;
 
@@ -90,6 +91,9 @@ namespace RL
 
         private IEnumerator ResetEnvironmentLoop()
         {
+            if (Academy.IsInitialized)
+                Academy.Instance.StatsRecorder.Add("Environment/Resets", 0, StatAggregationMethod.MostRecent);
+            
             for (var envEpoch = 1; ; envEpoch++)
             {
                 EnvironmentResetMonitor = false;
@@ -100,11 +104,14 @@ namespace RL
                 Debug.LogFormat("DroneTrainManager '{0}': environment reset #{1}, next reset in {2} ({3})", 
                     name, envEpoch, MathExtensions.GetTimeString(resetTime), resetInRealTime ? "real" : "scaled");
                 EnvironmentResetMonitor = true;
-
+                
                 yield return ResetEnvironment();
 
+                if (Academy.IsInitialized)
+                    Academy.Instance.StatsRecorder.Add("Environment/Resets", 1, StatAggregationMethod.MostRecent);
+                
                 foreach (var agent in _droneAgents)
-                    agent.EndEpisode();
+                    agent.EndEpisode(false);
             }
         }
 

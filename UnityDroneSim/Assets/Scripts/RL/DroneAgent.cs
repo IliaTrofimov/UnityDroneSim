@@ -24,7 +24,7 @@ namespace RL
     public class DroneAgent : Agent
     {
         public IReadOnlyList<(string label, string format)> ScalarObservationsLabels =>
-            DroneAgentObservationLabels.GetLabels(observationsSettings.useNormalization, useAdditionalObservations);
+            DroneAgentObservationLabels.GetLabels(observationsSettings.useNormalization, observationsSettings.useAdditionalObservations);
         
         
         public enum LogsMode { Never, HeuristicOnly, Always }
@@ -66,9 +66,6 @@ namespace RL
 
         [Tooltip("Scalar observations values parameters. Can be overridden by parent DroneTrainingManager component.")]
         public ObservationSettings observationsSettings;
-        
-        [Tooltip("Add IsLanded, IsBroken and ang. velocity observations.")]
-        public bool useAdditionalObservations = false;
         
         [Header("Training parameters")]
         [Tooltip("Training parameters. Can be overridden by parent DroneTrainingManager component.")]
@@ -190,14 +187,11 @@ namespace RL
             _droneState = drone.GetComponent<DroneStateManager>();
             _droneRigidBody = drone.Rigidbody;
         }
-        
 
-        public override void OnEpisodeBegin()
+        public void OnEpisodeBegin(bool shouldResetState)
         {
-            if (!_shouldResetState)
+            if (!shouldResetState)
             {
-                _shouldResetState = true;
-                RewardProvider.Reset();
                 base.OnEpisodeBegin();
                 return;
             }
@@ -207,7 +201,6 @@ namespace RL
             _droneState.RepairAll();
             drone.ResetStabilizers();
             navigator.ResetWaypoint();
-            RewardProvider.Reset();
             
             if (spawnPoint)
             {
@@ -225,6 +218,15 @@ namespace RL
             if (_logsEnabled)
                 Debug.LogFormat("DroneAgent '{0}': begin episode.", drone.name); 
         }
+
+        public override void OnEpisodeBegin() => OnEpisodeBegin(true);
+
+        public void EndEpisode(bool shouldSaveStats)
+        {
+            RewardProvider.Reset(shouldSaveStats);
+            EndEpisode();
+        }
+
         
         public override void CollectObservations(VectorSensor sensor)
         {
@@ -254,7 +256,7 @@ namespace RL
                 angularVelocity /= observationsSettings.maxAngularVelocityNormalization;
             }
 
-            if (useAdditionalObservations)
+            if (observationsSettings.useAdditionalObservations)
             {
                 sensor.AddObservation(_droneState.AnyMotorsDestroyed); // x1
                 sensor.AddObservation(_droneState.Landed);             // x1   
@@ -265,7 +267,7 @@ namespace RL
             sensor.AddObservation(altitude);                       // x2
             sensor.AddObservation(velocity);                       // x3
             
-            if (useAdditionalObservations)
+            if (observationsSettings.useAdditionalObservations)
             {
                 sensor.AddObservation(angularVelocity);                // x3 [TOTAL 12] 
             }
@@ -283,15 +285,14 @@ namespace RL
                 if (_logsEnabled)
                     Debug.LogFormat("DroneAgent '{0}': ended episode (total reward {1:F2}).", drone.name, GetCumulativeReward());
 
-                RecordAdditionalStats();
-                EndEpisode();
+                EndEpisode(true);
                 return;
             }
 
             if (RewardProvider.IsWaypointReachedAtThisStep() && trainingSettings.termination.endEpisodeAfterEachWaypoint)
             {
                 _shouldResetState = trainingSettings.termination.resetStateAfterEachWaypoint;
-                EndEpisode();
+                EndEpisode(true);
             }
 
             if (!IsHeuristicsOnly)
@@ -304,21 +305,6 @@ namespace RL
                     actions.ContinuousActions[3]
                 );
             }
-        }
-
-        private void RecordAdditionalStats()
-        {
-            if (!Academy.IsInitialized) return;
-
-            var maxWaypoints = navigator.WaypointsCount;
-            var reached = RewardProvider.GetReachedWaypoints();
-            var progress = reached / maxWaypoints;
-            var collision = _droneState.AnyMotorsDestroyed ? 1 : 0;
-            
-            Academy.Instance.StatsRecorder.Add("Waypoints Progress", progress);
-            Academy.Instance.StatsRecorder.Add("Waypoints Reached", reached);
-            Academy.Instance.StatsRecorder.Add("Waypoints Total", maxWaypoints, StatAggregationMethod.MostRecent);
-            Academy.Instance.StatsRecorder.Add("Collisions", collision, StatAggregationMethod.Sum);
         }
 
         public override void Heuristic(in ActionBuffers actionsOut)
