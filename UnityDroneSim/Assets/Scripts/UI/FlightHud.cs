@@ -428,6 +428,8 @@ namespace UI
                     
                     foreach (var observation in _agentVectorObservations)
                     {
+                        if (index >= droneAgent.ScalarObservationsLabels.Count) break;
+                        
                         var (label, format) = droneAgent.ScalarObservationsLabels[index];
                         var valueLabel = new Label(string.Format(format, observation));
                         valueLabel.AddToClassList("observation-value");
