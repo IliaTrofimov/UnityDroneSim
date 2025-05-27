@@ -1,11 +1,15 @@
+using Unity.MLAgents;
+
+
 namespace RL.Rewards
 {
     /// <summary>
     /// Calculates and stores AI agent rewards.
     /// </summary>
-    public abstract class RewardProvider
+    public abstract class RewardProvider 
     {
         protected readonly string RewardTypeName;
+        protected readonly string RewardStatsName;
 
         /// <summary>Last calculated reward.</summary>
         public float LastReward { get; protected set; }
@@ -23,6 +27,7 @@ namespace RL.Rewards
         protected RewardProvider()
         {
             RewardTypeName = GetType().Name.Replace("Provider", "").Replace("Reward", "");
+            RewardStatsName = "Environment/" + RewardTypeName;
         }
 
         protected RewardProvider(string rewardName)
@@ -30,24 +35,58 @@ namespace RL.Rewards
             RewardTypeName = rewardName;
         }
 
-
         /// <summary>Calculate current reward based on agent and environment state.</summary>
         /// <returns>Reward value.</returns>
-        public abstract float CalculateReward();
+        public virtual float CalculateReward()
+        {
+            (LastReward, IsFinalReward) = CalculateRewardInternal();
+            CumulativeReward += LastReward;
+            return LastReward;
+        }
+
+        public virtual void Reset(bool shouldSaveStats = true)
+        {
+            if (shouldSaveStats)
+                AddAcademyAvgStats(RewardStatsName, CumulativeReward);
+ 
+            LastReward = CumulativeReward = 0;
+            ResetInternal(shouldSaveStats);
+        }
+        
         
         /// <summary>Call this method inside OnDrawGizmos to display additional information about reward.</summary>
         public virtual void DrawGizmos() { }
 
         /// <summary>Reset all rewards values.</summary>
-        public virtual void Reset() { LastReward = CumulativeReward = 0; }
+        /// <param name="shouldSaveStats"></param>
+        protected virtual void ResetInternal(bool shouldSaveStats = true) { }
 
-        /// <summary>Shortcut for updating current and cumulative rewards.</summary>
-        protected float UpdateRewards(float currentReward, bool isFinalReward = false)
+        /// <summary>Calculate current reward based on agent and environment state.</summary>
+        /// <returns>Reward value.</returns>
+        protected abstract (float, bool) CalculateRewardInternal();
+
+        protected void AddAcademyAvgStats(string name, float value)
         {
-            LastReward = currentReward;
-            CumulativeReward += currentReward;
-            IsFinalReward = isFinalReward;
-            return currentReward;
+            if (!Academy.IsInitialized) return;
+            Academy.Instance.StatsRecorder.Add(name, value);
+        }
+        
+        protected void AddAcademyRecentStats(string name, float value)
+        {
+            if (!Academy.IsInitialized) return;
+            Academy.Instance.StatsRecorder.Add(name, value, StatAggregationMethod.MostRecent);
+        }
+        
+        protected void AddAcademyHistStats(string name, float value)
+        {
+            if (!Academy.IsInitialized) return;
+            Academy.Instance.StatsRecorder.Add(name, value, StatAggregationMethod.Histogram);
+        }
+        
+        protected void AddAcademySumStats(string name, float value)
+        {
+            if (!Academy.IsInitialized) return;
+            Academy.Instance.StatsRecorder.Add(name, value, StatAggregationMethod.Sum);
         }
 
         public override string ToString() =>

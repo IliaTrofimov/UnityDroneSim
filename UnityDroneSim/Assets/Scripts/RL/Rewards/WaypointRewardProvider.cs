@@ -36,6 +36,7 @@ namespace RL.Rewards
         
         private int _lastWaypointIndex;
         private float _lastDistance;
+        private int _reachedWaypointsTotal;
         
         public float WaypointDistance { get; private set; }
         public float ApproachSpeed { get; private set; }
@@ -50,29 +51,26 @@ namespace RL.Rewards
             _agent = agent ?? throw new ArgumentNullException(nameof(agent));
             _navigator = navigator ?? throw new ArgumentNullException(nameof(navigator));
         }
+        
 
-
-        public override float CalculateReward()
+        protected override (float, bool) CalculateRewardInternal()
         {
             if (_navigator.IsFinished)
             {
-                if (!IsWaypointReachedAtThisStep)
-                {
-                    IsWaypointReachedAtThisStep = true;
-                    WaypointsReached++;
-                }
-                return UpdateRewards(_settings.finishReward, true);
+                OnWaypointReached();
+                return (_settings.finishReward, true);
+            }
+            if (_navigator.CurrentWaypoint == null)
+            {
+                return (0, false);
             }
 
-            if (_navigator.CurrentWaypoint == null)
-                return UpdateRewards(0);
-
+            float reward = 0;
             if (_navigator.CurrentWaypointIndex != _lastWaypointIndex)
             {
-                WaypointsReached++;
-                IsWaypointReachedAtThisStep = true;
                 _lastWaypointIndex = _navigator.CurrentWaypointIndex;
-                UpdateRewards(_settings.waypointReward);
+                OnWaypointReached();
+                reward = _settings.waypointReward;
             }
             else
             {
@@ -81,30 +79,31 @@ namespace RL.Rewards
             
             Heading = _navigator.GetCurrentHeading(_agent.transform, normalized: false);
             WaypointDistance = _navigator.GetCurrentDistance();
-            ApproachSpeed = (_lastDistance - WaypointDistance) / Time.deltaTime;
+            ApproachSpeed = (_lastDistance - WaypointDistance) / Time.fixedDeltaTime;
             _lastDistance = WaypointDistance;
-            
-            float reward;
-
             IsLookingAtWaypoint = math.abs(Heading.x) <= _settings.lookAtWaypointAngle / 2;
-            if (!IsLookingAtWaypoint)
-                reward = _settings.lookAwayPenalty;
-            else
-                reward = _settings.lookAtReward;
+            
+            reward += IsLookingAtWaypoint ? _settings.lookAtReward : _settings.lookAwayPenalty;
             
             if (ApproachSpeed > _settings.minimalApproachSpeed)
             {
                 reward += _settings.movingToWaypointReward *
                           math.clamp(ApproachSpeed, 0, 1);
             }
-
-            if (ApproachSpeed < -_settings.minimalApproachSpeed)
+            else if (ApproachSpeed < -_settings.minimalApproachSpeed)
             {
                 reward += _settings.movingAwayFromWaypointPenalty *
                           math.clamp(math.abs(ApproachSpeed), 0, 1);
             }
+            return (reward, false);
+        }
 
-            return UpdateRewards(reward);
+        private void OnWaypointReached()
+        {
+            if (IsWaypointReachedAtThisStep) return;
+            
+            IsWaypointReachedAtThisStep = true;
+            WaypointsReached++;
         }
 
         public override void DrawGizmos()
@@ -158,9 +157,15 @@ namespace RL.Rewards
                 _waypointDirectionGizmo);
         }
 
-        public override void Reset()
+        protected override void ResetInternal(bool shouldSaveStats = true)
         {
-            base.Reset();
+            if (shouldSaveStats)
+            {
+                AddAcademyHistStats("Environment/Waypoints reached (progress)", WaypointsReached / (float)_navigator.WaypointsCount);
+                AddAcademyHistStats("Environment/Waypoints reached (absolute)", WaypointsReached);
+                AddAcademyRecentStats("Environment/Waypoints count", _navigator.WaypointsCount);
+            }
+            
             _lastWaypointIndex = 0;
             IsWaypointReachedAtThisStep = false;
             WaypointsReached = 0;

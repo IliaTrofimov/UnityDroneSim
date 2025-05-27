@@ -14,7 +14,6 @@ namespace RL.Rewards
     /// </summary>
     public class DroneAgentRewardProvider : RewardProvider, ICompositeRewardProvider
     {
-        private string x;
         private readonly TrainingSettings         _settings;
         private readonly WaypointRewardProvider   _waypointReward;
         private readonly MovementRewardProvider   _movementReward;
@@ -74,21 +73,22 @@ namespace RL.Rewards
 
         public override float CalculateReward()
         {
-            float reward = 0;
+            LastReward = 0;
+            
             if (_settings.movementRewardEnabled)
-                reward += _movementReward.CalculateReward();
+                LastReward += _movementReward.CalculateReward();
 
             if (_settings.waypointRewardEnabled)
-                reward += _waypointReward.CalculateReward();
+                LastReward += _waypointReward.CalculateReward();
 
             if (_settings.obstaclePenaltyEnabled)
-                reward += _obstaclePenalty.CalculateReward();
+                LastReward += _obstaclePenalty.CalculateReward();
 
             if (_settings.stateRewardEnabled)
-                reward += _stateReward.CalculateReward();
+                LastReward += _stateReward.CalculateReward();
             
             if (_settings.heightRewardEnabled)
-                reward += _heightReward.CalculateReward();
+                LastReward += _heightReward.CalculateReward();
             
             var isFinal = _waypointReward.IsFinalReward ||
                           _obstaclePenalty.IsFinalReward ||
@@ -97,13 +97,11 @@ namespace RL.Rewards
                           _heightReward.IsFinalReward;
 
             var lowBalance = _settings.termination.maxPenalty != 0 &&
-                             CumulativeReward + reward < _settings.termination.maxPenalty;
+                             CumulativeReward + LastReward < _settings.termination.maxPenalty;
             var timeout = TimeLeft <= 0;
             
-            var isFinalReward = timeout || isFinal || lowBalance;
-            UpdateRewards(reward, isFinalReward);
-            
-            if (_logsEnabled && isFinalReward)
+            IsFinalReward = timeout || isFinal || lowBalance;
+            if (_logsEnabled && IsFinalReward)
             {
                 Debug.LogFormat("[Agent Reward] '{0}': final reward {1:F2} | {2}{3}{4}{5}{6}{7}",
                     _agentName, CumulativeReward,
@@ -114,19 +112,32 @@ namespace RL.Rewards
                     lowBalance ? "LOW-REW " : "",
                     timeout ? "TIME" : "");
             }
-            
+
+            AddAcademySumStats("Environment/Timeout stops", timeout ? 1 : 0);
+            AddAcademySumStats("Environment/Low reward stops", lowBalance ? 1 : 0);
+
+            CumulativeReward += LastReward;
             return LastReward;
         }
 
-        public override void Reset()
+        public override void Reset(bool shouldSaveStats = true)
         {
             _startTime = Time.fixedTime;
-            _waypointReward.Reset();
-            _movementReward.Reset();
-            _obstaclePenalty.Reset();
-            _stateReward.Reset();
-            _heightReward.Reset();
-            base.Reset();
+            _waypointReward.Reset(shouldSaveStats);
+            _movementReward.Reset(shouldSaveStats);
+            _obstaclePenalty.Reset(shouldSaveStats);
+            _stateReward.Reset(shouldSaveStats);
+            _heightReward.Reset(shouldSaveStats);
+
+            if (shouldSaveStats)
+                AddAcademySumStats("Skipped Episodes", 1);
+            else
+            {
+                AddAcademySumStats("Skipped Episodes", 0);
+                AddAcademyHistStats("Environment/Final Cumulative Reward", CumulativeReward);
+            }
+            
+            LastReward = CumulativeReward = 0;
         }
 
         public IEnumerable<RewardProvider> GetRewards()
@@ -166,7 +177,9 @@ namespace RL.Rewards
            if (_settings.heightRewardEnabled)
                _heightReward.DrawGizmos();
         }
-        
+
+        protected override (float, bool) CalculateRewardInternal() => throw new NotImplementedException();
+
         /// <summary>
         /// Calculate drone's flight altitude.
         /// This method uses <see cref="HeightRewardProvider"/>.Height property to get accurate height.

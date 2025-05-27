@@ -37,7 +37,7 @@ namespace RL.Rewards
         }
 
 
-        public override float CalculateReward()
+        protected override (float, bool) CalculateRewardInternal()
         {
             var position = _agentRigidBody.position;
 
@@ -46,7 +46,7 @@ namespace RL.Rewards
                 IsNearObstacle = true;
                 ObstacleDistance = _settings.freeSpaceRadius;
                 ObstaclePosition = new Vector3(float.NaN, float.NaN, float.NaN);
-                return UpdateRewards(_settings.nearObstaclePenalty);
+                return (_settings.nearObstaclePenalty, false);
             }
 
             IsNearObstacle = false;
@@ -59,12 +59,12 @@ namespace RL.Rewards
             {
                 ObstaclePosition = hit.point;
                 ObstacleDistance = hit.distance;
-                return UpdateRewards(_settings.nearObstaclePenalty / (1 + ObstacleDistance));
+                return (_settings.nearObstaclePenalty / (1 + ObstacleDistance), false);
             }
 
             ObstaclePosition = new Vector3(float.NaN, float.NaN, float.NaN);
             ObstacleDistance = -1;
-            return UpdateRewards(0);
+            return (0, false);
         }
 
         public override void DrawGizmos()

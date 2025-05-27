@@ -38,7 +38,7 @@ namespace RL.Rewards
             _rayDown = new Ray(agent.transform.position, Vector3.down);
         }
         
-        public override float CalculateReward()
+        protected override (float, bool) CalculateRewardInternal()
         {
             if (_settings.useRaycastHeight)
             {
@@ -54,11 +54,11 @@ namespace RL.Rewards
             if (Height < _settings.minHeight || Height > _settings.maxHeight)
             {
                 IsInHeightRange = false;
-                return UpdateRewards(_settings.outOfHeightRangePenalty);
+                return (_settings.outOfHeightRangePenalty, false);
             }
 
             IsInHeightRange = true;
-            return UpdateRewards(_settings.heightReward);
+            return (_settings.heightReward, false);
         }
 
         public override void DrawGizmos()

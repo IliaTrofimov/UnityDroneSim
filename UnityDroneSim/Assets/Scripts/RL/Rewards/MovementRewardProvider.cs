@@ -21,7 +21,7 @@ namespace RL.Rewards
             _agentRigidBody = agentRigidBody ?? throw new ArgumentNullException(nameof(agentRigidBody));
         }
 
-        public override float CalculateReward()
+        protected override (float, bool) CalculateRewardInternal()
         {
             var speed = _agentRigidBody.linearVelocity.magnitude;
             var angularSpeed = math.abs(_agentRigidBody.YawVelocity());
@@ -33,7 +33,8 @@ namespace RL.Rewards
             if (angularSpeed > _settings.maxAngularSpeed)
                 reward += _settings.angularSpeedPenalty;
            
-            return UpdateRewards(reward);
+            AddAcademyAvgStats("Environment/Linear speed", speed);
+            return (reward, false);
         }
     }
 }

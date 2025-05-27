@@ -20,23 +20,28 @@ namespace RL.Rewards
             _droneState = droneState ?? throw new ArgumentNullException(nameof(droneState));
         }
 
-        public override float CalculateReward()
+        protected override (float, bool) CalculateRewardInternal()
         {
             if (_droneState.AnyMotorsDestroyed && !_isDestroyed)
-                UpdateRewards(_settings.destructionPenalty, _settings.finishOnDestruction);
-            else if (_droneState.Landed && !_isLanded)
-                UpdateRewards(_settings.landingReward, _settings.finishOnLanding);
-            else
-                UpdateRewards(0, false);
+            {
+                _isDestroyed = true;
+                AddAcademySumStats("Environment/Collisions", 1);
+                return (_settings.destructionPenalty, _settings.finishOnDestruction);
+            }
+            if (_droneState.Landed && !_isLanded)
+            {
+                _isLanded = true;
+                AddAcademySumStats("Environment/Landings", 1);
+                return (_settings.landingReward, _settings.finishOnLanding);
+            }
             
             _isDestroyed = _droneState.AnyMotorsDestroyed;
             _isLanded = _droneState.Landed;
-            return LastReward;
+            return (0, false);
         }
 
-        public override void Reset()
+        protected override void ResetInternal(bool shouldSaveStats = true)
         {
-            base.Reset();
             _isDestroyed = _isLanded = false;
         }
     }
