@@ -940,7 +940,7 @@ GameObject:
   m_Layer: 9
   m_Name: AI
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1031,13 +1031,13 @@ MonoBehaviour:
   navigator: {fileID: 5834208892645119488}
   spawnPoint: {fileID: 0}
   observationsSettings:
+    useAdditionalObservations: 0
     useLocalCoordinates: 1
     useNormalization: 1
     maxVelocityNormalization: 20
     maxAngularVelocityNormalization: 6
     maxAltitudeNormalization: 20
     maxWaypointDistanceNormalization: 30
-  useAdditionalObservations: 0
   trainingSettings: {fileID: 0}
   logsMode: 1
   resetEpisodeInHeuristic: 0
