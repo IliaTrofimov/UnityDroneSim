@@ -41,9 +41,19 @@
 Работоспособность проверена в Unity 6. Для работы необходимо открыть одну из имеющихся сцен (Pillars и Road готовы для обучения агентов, остальные для проверки функционала). Все агенты упакованы с отдельные префабы в Prefabs/Drones. Некоторые сторонние компоненты и пакеты, а также текстуры не были включены в репозиторий для экономии места. Пакеты можно самостоятельно найти и скачать (они не влияют на работу), текстуры и материалы придётся заменить на свои.
 
 # Демо
-YouTube видео https://youtu.be/gawx3zvAGjc:
+[YouTube видео](https://youtu.be/gawx3zvAGjc)
 
-[![YouTube видео](https://img.youtube.com/vi/gawx3zvAGjc/0.jpg)](http://www.youtube.com/watch?v=gawx3zvAGjc)
+GIF (качество и частота кадров снижены):
+
+![demo_1](https://github.com/user-attachments/assets/cd33b427-6c62-4c4b-bbaf-61a5304dd695)
+
+![demo_2](https://github.com/user-attachments/assets/ad301c0e-e5f8-46c8-9695-53b7a6a9816a)
+
+![demo_3](https://github.com/user-attachments/assets/f8473223-f75e-4914-b7bf-15313a6fe2a2)
+
+![demo_4](https://github.com/user-attachments/assets/dcd4bec4-cf19-4fc2-be84-b1d2214c58ba)
+
+![demo_5](https://github.com/user-attachments/assets/7fe4de8e-d22d-40f4-beef-51894eba2abf)
 
 # PS
 Изначально проект разрабатывался как форк [Berkeley UnityDroneSim](https://github.com/UAVs-at-Berkeley/UnityDroneSim), но в ходе работы почти весь оригинальный код был заменён, поэтому я отвязал исходный репозиторий.
